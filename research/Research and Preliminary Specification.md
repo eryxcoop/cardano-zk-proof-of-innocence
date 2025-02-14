@@ -241,6 +241,8 @@ The prover will generate a Groth16 proof with the following inputs:
     - The hash (**h(txid)**) of the transaction ID.
 - Private
     - The transaction ID (**txid**).
+    - The Merkle path (a list of hashes for each level).
+    - Optionally, a list of indices corresponding to the Merkle path, indicating whether each value is a left or right child. If this is not provided, it can be computed from the binary representation of the **txid**.
 
 Using the Merkle tree, the generated proof represents the following statement:
 
