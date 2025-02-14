@@ -398,4 +398,12 @@ Additionally, strengthening the oracle’s tracking capabilities is crucial. A h
 
 ## Ending note
 
-This document discusses the possible paths to take when implementing PoI for Cardano, according to our research. We summarized a few examples from other blockchains and, with that, we proposed two approaches for the implementation. Finally, we discussed some implementation challenges regarding the different aspects of the solution. We think this document will be a solid base on which to build a future implementation of PoI according to different product needs.
+This document discusses the possible paths to take when implementing PoI for Cardano, according to our research. We summarized a few examples from other blockchains and, with that, we proposed two approaches for the implementation. Finally, we discussed some implementation challenges regarding the different aspects of the solution. While some aspects of the implementation remain open and will be finalized during development, we reached several key conclusions:
+
+1. We designed the core components for implementing a Proof of Innocence on Cardano.
+2. We selected the Groth16 proof system for its efficiency and practicality.
+3. We anticipate that running a Proof of Innocence on the Cardano mainnet is feasible in terms of resources.
+4. We believe that using Aiken and Circom to develop our proof of concept is the best approach.
+5. We propose solutions and mitigations for some possible vulnerabilities like brute-force or race attacks.
+     
+We think this document will be a solid base on which to build a future implementation of PoI according to different product needs.
