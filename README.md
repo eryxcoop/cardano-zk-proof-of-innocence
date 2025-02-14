@@ -1,1 +1,0 @@
-# cardano-zk-proof-of-innocence
