@@ -4,3 +4,6 @@ artifacts/
 build/
 # Aiken's default documentation export
 docs/
+
+plutus.json
+.github/
