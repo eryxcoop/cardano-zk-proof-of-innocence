@@ -21,8 +21,12 @@ generate_and_validate_witnesses: compile_circuit_and_generate_constraints $(SCRI
 	bash $(SCRIPTS_PATH)generate_and_validate_witnesses.sh
 
 # Groth16 Setup – Uses the final Powers of Tau output to generate proving and verification keys for the specific circuit.
-generate_groth_16_keys: generate_and_validate_witnesses $(SCRIPTS_PATH)generate_groth_16_keys.sh $(COMPILED_CIRCUIT_CONSTRAINTS_FILE) $(WITNESS_FILE)
+generate_groth_16_keys: generate_and_validate_witnesses $(SCRIPTS_PATH)generate_groth_16_keys.sh $(COMPILED_CIRCUIT_CONSTRAINTS_FILE) $(FINAL_PTAU_FILE)
 	bash $(SCRIPTS_PATH)generate_groth_16_keys.sh
+
+# Proof Generation and Verification – Uses the proving key and witness to generate the proof, then verifies it.
+generate_and_verify_proof: generate_groth_16_keys $(SCRIPTS_PATH)generate_and_verify_proof.sh $(FINAL_ZKEY_FILE) $(WITNESS_FILE) $(VERIFICATION_KEY_FILE)
+	bash $(SCRIPTS_PATH)generate_and_verify_proof.sh
 
 
 .PHONY: compile_circuit_and_generate_constraints generate_and_validate_witnesses generate_groth_16_keys
