@@ -17,3 +17,10 @@ For details on the design and specification of the protocol, please refer to the
    - For instance, if trying to install version `v1.1.11` via `aikup`, do it by using `aikup install v1.1.11`.
 4. Install Circom following the official [installation instructions](https://docs.circom.io/getting-started/installation/).
 5. Install SnarkJS following the official installations instructions in [their repository](https://github.com/iden3/snarkjs).
+
+## Generate and verify the proof from the prover's side
+
+1. Enter the `implementation/` directory with `cd implementation`.
+2. Run `make generate_and_verify_proof`.
+
+All relevant files generated in the process will be in the `implementation/setup` directory.
