@@ -21,4 +21,4 @@ generate_and_validate_witnesses: compile_circuit_and_generate_constraints $(SCRI
 	bash $(SCRIPTS_PATH)generate_and_validate_witnesses.sh
 
 
-.PHONY: compile_circuit_and_generate_constraints
+.PHONY: compile_circuit_and_generate_constraints generate_and_validate_witnesses
