@@ -15,3 +15,6 @@ For details on the design and specification of the protocol, please refer to the
    - For instance, if trying to install version `v1.1.11` via `aikup`, do it by using `aikup install v1.1.11`.
 2. Install Circom following the official [installation instructions](https://docs.circom.io/getting-started/installation/).
 3. Install SnarkJS following the official installations instructions in [their repository](https://github.com/iden3/snarkjs).
+
+## Running cricuit tests
+1. From folder `implementation/` run `node node_modules/.bin/mocha "circuit/tests/*.js"` (this will run all javascript tests under folder `implementation/circuit/tests`)
