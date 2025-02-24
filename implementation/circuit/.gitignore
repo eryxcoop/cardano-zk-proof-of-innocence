@@ -1,2 +1,2 @@
-*.r1cs
-proof_of_innocence_js/
+setup/*
+!setup/pot15_final.ptau

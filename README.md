@@ -6,15 +6,27 @@ It is done in the context of [this proposal](https://milestones.projectcatalyst.
 
 For details on the design and specification of the protocol, please refer to the Research and Preliminary Specification document.
 
-## Setup - Linux
+## Setup
 
-### Dependencies
-
-1. Install Aiken following the official [installation instructions](https://aiken-lang.org/installation-instructions).
+1. Install NPM.
+   1. In Debian-based systems, via `sudo apt install npm`.
+   2. In MacOS, via `brew install npm`.
+2. Enter the `implementation/` directory with `cd implementation`.
+3. Install Aiken following the official [installation instructions](https://aiken-lang.org/installation-instructions).
    - Make sure to install the version specified in the `implementation/validator/aiken.toml` file.
    - For instance, if trying to install version `v1.1.11` via `aikup`, do it by using `aikup install v1.1.11`.
+
 2. Install Circom following the official [installation instructions](https://docs.circom.io/getting-started/installation/).
 3. Install SnarkJS following the official installations instructions in [their repository](https://github.com/iden3/snarkjs).
+4. Install Circom following the official [installation instructions](https://docs.circom.io/getting-started/installation/).
+5. Install SnarkJS following the official installations instructions in [their repository](https://github.com/iden3/snarkjs).
+
+## Generate and verify the proof from the prover's side
+
+1. Enter the `implementation/` directory with `cd implementation`.
+2. Run `make generate_and_verify_proof`.
+
+All relevant files generated in the process will be in the `implementation/setup` directory.
 
 ## Running cricuit tests
 1. From folder `implementation/` run `node node_modules/.bin/mocha "circuit/tests/*.js"` (this will run all javascript tests under folder `implementation/circuit/tests`)

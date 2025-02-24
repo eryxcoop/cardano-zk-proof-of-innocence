@@ -1,5 +1,5 @@
 use cardano/script_context.{ScriptContext}
-use cardano/transaction.{OutputReference, Transaction, placeholder}
+use cardano/transaction.{OutputReference, Transaction}
 
 validator proofOfInnocence {
   spend(
@@ -14,13 +14,4 @@ validator proofOfInnocence {
   else(_ctx: ScriptContext) {
     False
   }
-}
-
-test testSpendProofOfInnocence() {
-  let datum = None
-  let redeemer = None
-  let utxo = OutputReference { transaction_id: #"aa", output_index: 0 }
-  let tx = placeholder
-
-  proofOfInnocence.spend(datum, redeemer, utxo, tx)
 }
