@@ -1,5 +1,8 @@
 {
   "dependencies": {
+    "chai": "^5.2.0",
+    "circom_tester": "^0.0.20",
+    "mocha": "^11.1.0",
     "snarkjs": "^0.7.5"
   }
 }
