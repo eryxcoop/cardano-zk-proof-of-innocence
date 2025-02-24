@@ -1,8 +1,12 @@
 use aiken/collection/list.{any, has}
 use aiken/crypto.{VerificationKeyHash}
 use cardano/address.{from_script}
-use cardano/assets.{PolicyId, Value, flatten, from_asset, quantity_of}
-use cardano/transaction.{NoDatum, Output, Transaction}
+use cardano/assets.{
+  PolicyId, Value, flatten, from_asset, quantity_of, without_lovelace,
+}
+use cardano/transaction.{
+  NoDatum, Output, OutputReference, Transaction, find_input,
+}
 
 validator oracle(verification_key_hash: ByteArray) {
   mint(_redeemer: void, policy_id: PolicyId, self: Transaction) {
@@ -36,6 +40,35 @@ validator oracle(verification_key_hash: ByteArray) {
       transaction_includes_verification_key_hash,
       has_only_one_minted_token,
       minted_tokens_are_sent_to_validator_address,
+    }
+  }
+
+  spend(
+    _datum: Option<void>,
+    _redeemer: void,
+    utxo: OutputReference,
+    self: Transaction,
+  ) {
+    // The transaction signature matches with the verification key hash.
+    let vkh: VerificationKeyHash = verification_key_hash
+    let transaction_includes_verification_key_hash: Bool =
+      has(self.extra_signatories, vkh)
+
+    // The tokens spent are sent to the validator address.
+    expect Some(transaction_input) = find_input(self.inputs, utxo)
+    let input_value = transaction_input.output.value |> without_lovelace()
+    let sent_tokens_are_sent_to_validator_address: Bool =
+      any(
+        self.outputs,
+        fn(transaction_output) {
+          transaction_output.address == transaction_input.output.address && (
+            transaction_output.value |> without_lovelace()
+          ) == input_value
+        },
+      )
+    and {
+      transaction_includes_verification_key_hash,
+      sent_tokens_are_sent_to_validator_address,
     }
   }
 
