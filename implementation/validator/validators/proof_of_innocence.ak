@@ -1,5 +1,5 @@
 use cardano/script_context.{ScriptContext}
-use cardano/transaction.{OutputReference, Transaction, placeholder}
+use cardano/transaction.{OutputReference, Transaction}
 
 validator proofOfInnocence {
   spend(
