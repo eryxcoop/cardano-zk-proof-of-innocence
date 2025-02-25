@@ -1,5 +1,5 @@
-use cardano/address.{from_script}
-use cardano/assets.{from_asset}
+use cardano/address.{Address, from_script}
+use cardano/assets.{Value, from_asset}
 use cardano/transaction.{NoDatum, Output, Transaction}
 use oracle
 
@@ -15,18 +15,20 @@ fn validator_address() {
     from_script(policy_id)
 }
 
+fn transaction_output(address: Address, value: Value) -> Output {
+  Output {
+    address,
+    value: value,
+    datum: NoDatum,
+    // The datum should technically have the root hash in our use case.
+    reference_script: None,
+  }
+}
+
 test test_oracle_permits_a_valid_minting_transaction() {
   let value = value_with_one_minted_token()
   let address = validator_address()
-
-  let transaction_output =
-    Output {
-      address,
-      value: value,
-      datum: NoDatum,
-      // It should technically have the root hash in our use case.
-      reference_script: None,
-    }
+  let output = transaction_output(address, value)
 
   let transaction: Transaction =
     transaction.placeholder
@@ -35,7 +37,7 @@ test test_oracle_permits_a_valid_minting_transaction() {
             ..transaction,
             extra_signatories: [verification_key_hash],
             mint: value,
-            outputs: [transaction_output],
+            outputs: [output],
           }
         }
 
@@ -45,16 +47,8 @@ test test_oracle_permits_a_valid_minting_transaction() {
 test test_oracle_forbids_a_minting_transaction_with_an_invalid_signature() {
   let value = value_with_one_minted_token()
   let address = validator_address()
+  let output = transaction_output(address, value)
   let signature_different_from_verification_key_hash = #"ffff"
-
-  let transaction_output =
-    Output {
-      address,
-      value: value,
-      datum: NoDatum,
-      // It should technically have the root hash in our use case.
-      reference_script: None,
-    }
 
   let transaction: Transaction =
     transaction.placeholder
@@ -63,7 +57,7 @@ test test_oracle_forbids_a_minting_transaction_with_an_invalid_signature() {
             ..transaction,
             extra_signatories: [signature_different_from_verification_key_hash],
             mint: value,
-            outputs: [transaction_output],
+            outputs: [output],
           }
         }
 
