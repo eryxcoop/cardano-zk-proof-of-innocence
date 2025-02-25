@@ -1,11 +1,13 @@
+use aiken/crypto.{VerificationKeyHash}
 use cardano/address.{Address, from_script}
 use cardano/assets.{Value, from_asset}
-use aiken/crypto.{VerificationKeyHash}
 use cardano/transaction.{NoDatum, Output, Transaction}
 use oracle
 
 const unused_redeemer = None
+
 const policy_id = #"0001"
+
 const verification_key_hash = #"0002"
 
 fn value_with_one_minted_token() {
@@ -13,29 +15,33 @@ fn value_with_one_minted_token() {
 }
 
 fn validator_address() {
-    from_script(policy_id)
+  from_script(policy_id)
 }
 
 fn transaction_output(address: Address, value: Value) -> Output {
   Output {
     address,
-    value: value,
+    value,
     datum: NoDatum,
     // The datum should technically have the root hash in our use case.
     reference_script: None,
   }
 }
 
-fn minting_transaction_with(signature: VerificationKeyHash, value: Value, output: Output) -> Transaction {
-    transaction.placeholder
-      |> fn(transaction) {
-          Transaction {
-            ..transaction,
-            extra_signatories: [signature],
-            mint: value,
-            outputs: [output],
-          }
+fn minting_transaction_with(
+  signature: VerificationKeyHash,
+  value: Value,
+  output: Output,
+) -> Transaction {
+  transaction.placeholder
+    |> fn(transaction) {
+        Transaction {
+          ..transaction,
+          extra_signatories: [signature],
+          mint: value,
+          outputs: [output],
         }
+      }
 }
 
 test test_oracle_permits_a_valid_minting_transaction() {
@@ -43,9 +49,15 @@ test test_oracle_permits_a_valid_minting_transaction() {
   let address = validator_address()
   let output = transaction_output(address, value)
 
-  let transaction: Transaction = minting_transaction_with(verification_key_hash, value, output)
+  let transaction: Transaction =
+    minting_transaction_with(verification_key_hash, value, output)
 
-  oracle.oracle.mint(verification_key_hash, unused_redeemer, policy_id, transaction)
+  oracle.oracle.mint(
+    verification_key_hash,
+    unused_redeemer,
+    policy_id,
+    transaction,
+  )
 }
 
 test test_oracle_forbids_a_minting_transaction_with_an_invalid_signature() {
@@ -54,7 +66,17 @@ test test_oracle_forbids_a_minting_transaction_with_an_invalid_signature() {
   let output = transaction_output(address, value)
   let signature_different_from_verification_key_hash = #"ffff"
 
-  let transaction: Transaction = minting_transaction_with(signature_different_from_verification_key_hash, value, output)
+  let transaction: Transaction =
+    minting_transaction_with(
+      signature_different_from_verification_key_hash,
+      value,
+      output,
+    )
 
-  !oracle.oracle.mint(verification_key_hash, unused_redeemer, policy_id, transaction)
+  !oracle.oracle.mint(
+    verification_key_hash,
+    unused_redeemer,
+    policy_id,
+    transaction,
+  )
 }
