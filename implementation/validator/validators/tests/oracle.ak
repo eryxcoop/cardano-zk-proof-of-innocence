@@ -3,7 +3,7 @@ use cardano/assets.{from_asset}
 use cardano/transaction.{NoDatum, Output, Transaction}
 use oracle
 
-test test_mint_oracle_happy_path() {
+test test_oracle_permits_a_valid_minting_transaction() {
   let verification_key_hash = #"0002"
 
   let redeemer = None
