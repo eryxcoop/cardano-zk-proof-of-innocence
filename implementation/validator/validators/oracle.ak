@@ -1,5 +1,5 @@
-use aiken/collection/list.{at, any, has}
 use aiken/collection/dict.{get, keys, size}
+use aiken/collection/list.{any, at, has}
 use aiken/crypto.{VerificationKeyHash}
 use cardano/address.{from_script}
 use cardano/assets.{PolicyId, quantity_of, tokens, without_lovelace}
@@ -17,9 +17,9 @@ validator oracle(verification_key_hash: ByteArray) {
     if size(number_of_mints_per_asset) != 1 {
       False
     } else {
-
       expect Some(asset) = at(keys(number_of_mints_per_asset), 0)
-      expect Some(number_of_minted_tokens) = get(number_of_mints_per_asset, asset)
+      expect Some(number_of_minted_tokens) =
+        get(number_of_mints_per_asset, asset)
       let has_only_one_minted_token: Bool = number_of_minted_tokens == 1
 
       // The minted tokens are sent to the validator address (policy_id).
