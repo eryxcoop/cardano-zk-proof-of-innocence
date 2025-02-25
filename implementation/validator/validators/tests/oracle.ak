@@ -10,8 +10,8 @@ const policy_id = #"0001"
 
 const verification_key_hash = #"0002"
 
-fn value_with_one_minted_token() {
-  from_asset(policy_id, asset_name: #"0003", quantity: 1)
+fn value_with_number_of_minted_tokens(number_of_minted_tokens: Int) {
+  from_asset(policy_id, asset_name: #"0003", quantity: number_of_minted_tokens)
 }
 
 fn validator_address() {
@@ -45,7 +45,7 @@ fn minting_transaction_with(
 }
 
 test test_oracle_permits_a_valid_minting_transaction() {
-  let value = value_with_one_minted_token()
+  let value = value_with_number_of_minted_tokens(1)
   let address = validator_address()
   let output = transaction_output(address, value)
 
@@ -61,7 +61,7 @@ test test_oracle_permits_a_valid_minting_transaction() {
 }
 
 test test_oracle_forbids_a_minting_transaction_with_an_invalid_signature() {
-  let value = value_with_one_minted_token()
+  let value = value_with_number_of_minted_tokens(1)
   let address = validator_address()
   let output = transaction_output(address, value)
   let signature_different_from_verification_key_hash = #"ffff"
@@ -72,6 +72,22 @@ test test_oracle_forbids_a_minting_transaction_with_an_invalid_signature() {
       value,
       output,
     )
+
+  !oracle.oracle.mint(
+    verification_key_hash,
+    unused_redeemer,
+    policy_id,
+    transaction,
+  )
+}
+
+test test_oracle_forbids_a_minting_transaction_with_more_than_one_minted_token() {
+  let value = value_with_number_of_minted_tokens(2)
+  let address = validator_address()
+  let output = transaction_output(address, value)
+
+  let transaction =
+    minting_transaction_with(verification_key_hash, value, output)
 
   !oracle.oracle.mint(
     verification_key_hash,
