@@ -134,3 +134,20 @@ test test_oracle_forbids_a_minting_transaction_sending_tokens_to_an_arbitrary_ad
     transaction,
   )
 }
+
+test test_oracle_forbids_a_minting_transaction_sending_a_quantity_other_than_one_token_to_validator_address() {
+  let minting_value = value_with_number_of_minted_tokens(1)
+  let output_value = value_with_number_of_minted_tokens(2)
+  let address = validator_address()
+  let output = transaction_output(address, output_value)
+
+  let transaction =
+    minting_transaction_with(verification_key_hash, minting_value, output)
+
+  !oracle.oracle.mint(
+    verification_key_hash,
+    unused_redeemer,
+    policy_id,
+    transaction,
+  )
+}
