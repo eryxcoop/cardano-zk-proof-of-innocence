@@ -3,10 +3,10 @@ use cardano/assets.{from_asset}
 use cardano/transaction.{NoDatum, Output, Transaction}
 use oracle
 
+const unused_redeemer = None
+
 test test_oracle_permits_a_valid_minting_transaction() {
   let verification_key_hash = #"0002"
-
-  let redeemer = None
   let policy_id = #"0001"
   let value_with_one_minted_token =
     from_asset(policy_id, asset_name: #"0003", quantity: 1)
@@ -32,13 +32,11 @@ test test_oracle_permits_a_valid_minting_transaction() {
           }
         }
 
-  oracle.oracle.mint(verification_key_hash, redeemer, policy_id, transaction)
+  oracle.oracle.mint(verification_key_hash, unused_redeemer, policy_id, transaction)
 }
 
 test test_oracle_forbids_a_minting_transaction_with_an_invalid_signature() {
   let verification_key_hash = #"0002"
-
-  let redeemer = None
   let policy_id = #"0001"
   let value_with_one_minted_token =
     from_asset(policy_id, asset_name: #"0003", quantity: 1)
@@ -66,5 +64,5 @@ test test_oracle_forbids_a_minting_transaction_with_an_invalid_signature() {
           }
         }
 
-  !oracle.oracle.mint(verification_key_hash, redeemer, policy_id, transaction)
+  !oracle.oracle.mint(verification_key_hash, unused_redeemer, policy_id, transaction)
 }
