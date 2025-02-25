@@ -49,7 +49,7 @@ test test_oracle_permits_a_valid_minting_transaction() {
   let address = validator_address()
   let output = transaction_output(address, value)
 
-  let transaction: Transaction =
+  let transaction =
     minting_transaction_with(verification_key_hash, value, output)
 
   oracle.oracle.mint(
@@ -66,7 +66,7 @@ test test_oracle_forbids_a_minting_transaction_with_an_invalid_signature() {
   let output = transaction_output(address, value)
   let signature_different_from_verification_key_hash = #"ffff"
 
-  let transaction: Transaction =
+  let transaction =
     minting_transaction_with(
       signature_different_from_verification_key_hash,
       value,
