@@ -96,3 +96,19 @@ test test_oracle_forbids_a_minting_transaction_with_more_than_one_minted_token()
     transaction,
   )
 }
+
+test test_oracle_forbids_a_minting_transaction_with_no_minted_tokens() {
+  let value = value_with_number_of_minted_tokens(0)
+  let address = validator_address()
+  let output = transaction_output(address, value)
+
+  let transaction =
+    minting_transaction_with(verification_key_hash, value, output)
+
+  !oracle.oracle.mint(
+    verification_key_hash,
+    unused_redeemer,
+    policy_id,
+    transaction,
+  )
+}
