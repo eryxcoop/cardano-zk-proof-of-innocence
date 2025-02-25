@@ -7,15 +7,22 @@ const unused_redeemer = None
 const policy_id = #"0001"
 const verification_key_hash = #"0002"
 
+fn value_with_one_minted_token() {
+  from_asset(policy_id, asset_name: #"0003", quantity: 1)
+}
+
+fn validator_address() {
+    from_script(policy_id)
+}
+
 test test_oracle_permits_a_valid_minting_transaction() {
-  let value_with_one_minted_token =
-    from_asset(policy_id, asset_name: #"0003", quantity: 1)
-  let address = from_script(policy_id)
+  let value = value_with_one_minted_token()
+  let address = validator_address()
 
   let transaction_output =
     Output {
       address,
-      value: value_with_one_minted_token,
+      value: value,
       datum: NoDatum,
       // It should technically have the root hash in our use case.
       reference_script: None,
@@ -27,7 +34,7 @@ test test_oracle_permits_a_valid_minting_transaction() {
           Transaction {
             ..transaction,
             extra_signatories: [verification_key_hash],
-            mint: value_with_one_minted_token,
+            mint: value,
             outputs: [transaction_output],
           }
         }
@@ -36,16 +43,14 @@ test test_oracle_permits_a_valid_minting_transaction() {
 }
 
 test test_oracle_forbids_a_minting_transaction_with_an_invalid_signature() {
-  let value_with_one_minted_token =
-    from_asset(policy_id, asset_name: #"0003", quantity: 1)
-  let address = from_script(policy_id)
-
+  let value = value_with_one_minted_token()
+  let address = validator_address()
   let signature_different_from_verification_key_hash = #"ffff"
 
   let transaction_output =
     Output {
       address,
-      value: value_with_one_minted_token,
+      value: value,
       datum: NoDatum,
       // It should technically have the root hash in our use case.
       reference_script: None,
@@ -57,7 +62,7 @@ test test_oracle_forbids_a_minting_transaction_with_an_invalid_signature() {
           Transaction {
             ..transaction,
             extra_signatories: [signature_different_from_verification_key_hash],
-            mint: value_with_one_minted_token,
+            mint: value,
             outputs: [transaction_output],
           }
         }
