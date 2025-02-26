@@ -16,6 +16,8 @@ pub const asset_name = bytearray.from_string(@"assset_name")
 
 pub const arbitrary_signature = bytearray.from_string(@"arbitrary_signature")
 
+pub const transaction_id = bytearray.from_string(@"transaction_id")
+
 pub fn value_with_number_of_tokens(number_of_tokens: Int) {
   from_asset(policy_id, asset_name: asset_name, quantity: number_of_tokens)
 }
