@@ -3,8 +3,10 @@ use cardano/address.{Address}
 use cardano/assets.{Value}
 use cardano/transaction.{Input, Output, OutputReference, Transaction}
 use oracle
-
-use test_objects.{unused_datum, value_with_number_of_tokens, validator_address, verification_key_hash, unused_redeemer, policy_id, invalid_signature, arbitrary_address}
+use test_objects.{
+  arbitrary_address, invalid_signature, policy_id, unused_datum, unused_redeemer,
+  validator_address, value_with_number_of_tokens, verification_key_hash,
+}
 
 fn transaction_output(address: Address, value: Value) -> Output {
   Output {
@@ -213,7 +215,8 @@ test test_oracle_forbids_a_spending_transaction_sending_tokens_to_an_arbitrary_a
 
   let utxo = OutputReference { transaction_id, output_index: 0 }
 
-  let input = Input { output_reference: utxo, output: previous_transaction_output }
+  let input =
+    Input { output_reference: utxo, output: previous_transaction_output }
 
   let transaction =
     spending_transaction_with(verification_key_hash, input, transaction_output)
