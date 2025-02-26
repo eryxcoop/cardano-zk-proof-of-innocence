@@ -4,7 +4,7 @@ use cardano/assets.{Value}
 use cardano/transaction.{Input, Output, OutputReference, Transaction}
 use oracle
 use test_objects.{
-  arbitrary_address, invalid_signature, policy_id, unused_datum, unused_redeemer,
+  arbitrary_address, arbitrary_signature, policy_id, unused_datum, unused_redeemer,
   validator_address, value_with_number_of_tokens, verification_key_hash,
 }
 
@@ -52,11 +52,11 @@ test test_oracle_permits_a_valid_minting_transaction() {
   )
 }
 
-test test_oracle_forbids_a_minting_transaction_with_an_invalid_signature() {
+test test_oracle_forbids_a_minting_transaction_with_an_arbitrary_signature() {
   let value = value_with_number_of_tokens(1)
   let address = validator_address()
   let output = transaction_output(address, value)
-  let signature_different_from_verification_key_hash = invalid_signature
+  let signature_different_from_verification_key_hash = arbitrary_signature
 
   let transaction =
     minting_transaction_with(
@@ -179,11 +179,11 @@ test test_oracle_permits_a_valid_spending_transaction() {
   )
 }
 
-test test_oracle_forbids_a_spending_transaction_with_an_invalid_signature() {
+test test_oracle_forbids_a_spending_transaction_with_an_arbitrary_signature() {
   let value = value_with_number_of_tokens(2)
   let address = validator_address()
   let output = transaction_output(address, value)
-  let signature_different_from_verification_key_hash = invalid_signature
+  let signature_different_from_verification_key_hash = arbitrary_signature
 
   let utxo = OutputReference { transaction_id, output_index: 0 }
 
