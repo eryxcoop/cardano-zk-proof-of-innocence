@@ -1,8 +1,10 @@
-template proof_of_innocence () {
- signal input a;
- signal output b;
+pragma circom 2.0.0;
 
- b <== 2 * a;
+template ProofOfInnocence () {
+ signal input a;
+ signal input b;
+
+ b === 2 * a;
 }
 
-component main {public [a]} = proof_of_innocence();
+component main = ProofOfInnocence();
