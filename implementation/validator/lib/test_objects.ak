@@ -13,8 +13,6 @@ pub const verification_key_hash = bytearray.from_string(@"verification_key_hash"
 
 pub const asset_name = bytearray.from_string(@"assset_name")
 
-pub const invalid_byte_array = bytearray.from_string(@"invalid_byte_array")
-
 pub const arbitrary_signature = bytearray.from_string(@"arbitrary_signature")
 
 pub fn value_with_number_of_tokens(number_of_tokens: Int) {
@@ -26,5 +24,6 @@ pub fn validator_address() {
 }
 
 pub fn arbitrary_address() {
-  from_script(invalid_byte_array)
+  let arbitrary_script = bytearray.from_string(@"arbitrary_script")
+  from_script(arbitrary_script)
 }
