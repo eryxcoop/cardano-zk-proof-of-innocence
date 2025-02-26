@@ -1,21 +1,11 @@
 use aiken/crypto.{VerificationKeyHash}
-use cardano/address.{Address}
 use cardano/assets.{Value}
 use cardano/transaction.{Input, Output, OutputReference, Transaction}
 use oracle
 use test_objects.{
-  arbitrary_address, arbitrary_signature, policy_id, unused_datum, unused_redeemer,
-  validator_address, value_with_number_of_tokens, verification_key_hash,
-}
-
-fn transaction_output(address: Address, value: Value) -> Output {
-  Output {
-    address,
-    value,
-    datum: unused_datum,
-    // The datum should technically have the root hash in our use case.
-    reference_script: None,
-  }
+  arbitrary_address, arbitrary_signature, policy_id, transaction_output,
+  unused_redeemer, validator_address, value_with_number_of_tokens,
+  verification_key_hash,
 }
 
 fn minting_transaction_with(
