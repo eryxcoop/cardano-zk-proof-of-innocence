@@ -1,19 +1,23 @@
 use aiken/crypto.{VerificationKeyHash}
 use cardano/address.{Address, from_script}
 use cardano/assets.{Value, from_asset}
-use cardano/transaction.{NoDatum, Output, Transaction}
+use cardano/transaction.{Input, NoDatum, Output, OutputReference, Transaction}
 use oracle
 
 const unused_redeemer = None
+
+const unused_datum = NoDatum
 
 const policy_id = #"0001"
 
 const verification_key_hash = #"0002"
 
+const asset_name = #"0003"
+
 const invalid_byte_array = #"ffff"
 
 fn value_with_number_of_minted_tokens(number_of_minted_tokens: Int) {
-  from_asset(policy_id, asset_name: #"0003", quantity: number_of_minted_tokens)
+  from_asset(policy_id, asset_name: asset_name, quantity: number_of_minted_tokens)
 }
 
 fn validator_address() {
@@ -28,7 +32,7 @@ fn transaction_output(address: Address, value: Value) -> Output {
   Output {
     address,
     value,
-    datum: NoDatum,
+    datum: unused_datum,
     // The datum should technically have the root hash in our use case.
     reference_script: None,
   }
@@ -49,6 +53,8 @@ fn minting_transaction_with(
         }
       }
 }
+
+// Minting
 
 test test_oracle_permits_a_valid_minting_transaction() {
   let value = value_with_number_of_minted_tokens(1)
@@ -148,6 +154,53 @@ test test_oracle_forbids_a_minting_transaction_sending_a_quantity_other_than_one
     verification_key_hash,
     unused_redeemer,
     policy_id,
+    transaction,
+  )
+}
+
+// Spending
+
+const transaction_id = #"0004"
+
+fn spending_transaction_with(
+  signature: VerificationKeyHash,
+  input: Input,
+  output: Output,
+) -> Transaction {
+  transaction.placeholder
+    |> fn(transaction) {
+        Transaction {
+          ..transaction,
+          extra_signatories: [signature],
+          inputs: [input],
+          outputs: [output],
+        }
+      }
+}
+
+test test_oracle_permits_a_valid_spending_transaction() {
+  let value = value_with_number_of_minted_tokens(0)
+  let address = validator_address()
+  let output = transaction_output(address, value)
+
+  let utxo = OutputReference {
+    transaction_id: transaction_id,
+    output_index: 0
+  }
+
+  let input = Input {
+    output_reference: utxo,
+    output: output
+  }
+
+  let transaction =
+    spending_transaction_with(verification_key_hash, input, output)
+
+  oracle.oracle.spend(
+    verification_key_hash,
+    None,
+    unused_redeemer,
+    utxo,
     transaction,
   )
 }
