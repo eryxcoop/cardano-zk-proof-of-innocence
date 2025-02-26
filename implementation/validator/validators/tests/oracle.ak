@@ -16,8 +16,8 @@ const asset_name = #"0003"
 
 const invalid_byte_array = #"ffff"
 
-fn value_with_number_of_minted_tokens(number_of_minted_tokens: Int) {
-  from_asset(policy_id, asset_name: asset_name, quantity: number_of_minted_tokens)
+fn value_with_number_of_tokens(number_of_tokens: Int) {
+  from_asset(policy_id, asset_name: asset_name, quantity: number_of_tokens)
 }
 
 fn validator_address() {
@@ -57,7 +57,7 @@ fn minting_transaction_with(
 // Minting
 
 test test_oracle_permits_a_valid_minting_transaction() {
-  let value = value_with_number_of_minted_tokens(1)
+  let value = value_with_number_of_tokens(1)
   let address = validator_address()
   let output = transaction_output(address, value)
 
@@ -73,7 +73,7 @@ test test_oracle_permits_a_valid_minting_transaction() {
 }
 
 test test_oracle_forbids_a_minting_transaction_with_an_invalid_signature() {
-  let value = value_with_number_of_minted_tokens(1)
+  let value = value_with_number_of_tokens(1)
   let address = validator_address()
   let output = transaction_output(address, value)
   let signature_different_from_verification_key_hash = invalid_byte_array
@@ -94,7 +94,7 @@ test test_oracle_forbids_a_minting_transaction_with_an_invalid_signature() {
 }
 
 test test_oracle_forbids_a_minting_transaction_with_more_than_one_minted_token() {
-  let value = value_with_number_of_minted_tokens(2)
+  let value = value_with_number_of_tokens(2)
   let address = validator_address()
   let output = transaction_output(address, value)
 
@@ -110,7 +110,7 @@ test test_oracle_forbids_a_minting_transaction_with_more_than_one_minted_token()
 }
 
 test test_oracle_forbids_a_minting_transaction_with_no_minted_tokens() {
-  let value = value_with_number_of_minted_tokens(0)
+  let value = value_with_number_of_tokens(0)
   let address = validator_address()
   let output = transaction_output(address, value)
 
@@ -126,7 +126,7 @@ test test_oracle_forbids_a_minting_transaction_with_no_minted_tokens() {
 }
 
 test test_oracle_forbids_a_minting_transaction_sending_tokens_to_an_arbitrary_address() {
-  let value = value_with_number_of_minted_tokens(1)
+  let value = value_with_number_of_tokens(1)
   let address = arbitrary_address()
   let output = transaction_output(address, value)
 
@@ -142,8 +142,8 @@ test test_oracle_forbids_a_minting_transaction_sending_tokens_to_an_arbitrary_ad
 }
 
 test test_oracle_forbids_a_minting_transaction_sending_a_quantity_other_than_one_token_to_validator_address() {
-  let minting_value = value_with_number_of_minted_tokens(1)
-  let output_value = value_with_number_of_minted_tokens(2)
+  let minting_value = value_with_number_of_tokens(1)
+  let output_value = value_with_number_of_tokens(2)
   let address = validator_address()
   let output = transaction_output(address, output_value)
 
@@ -179,7 +179,7 @@ fn spending_transaction_with(
 }
 
 test test_oracle_permits_a_valid_spending_transaction() {
-  let value = value_with_number_of_minted_tokens(0)
+  let value = value_with_number_of_tokens(0)
   let address = validator_address()
   let output = transaction_output(address, value)
 
