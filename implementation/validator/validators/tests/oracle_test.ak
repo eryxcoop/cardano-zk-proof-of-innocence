@@ -1,32 +1,10 @@
 use aiken/crypto.{VerificationKeyHash}
-use cardano/address.{Address, from_script}
-use cardano/assets.{Value, from_asset}
-use cardano/transaction.{Input, NoDatum, Output, OutputReference, Transaction}
+use cardano/address.{Address}
+use cardano/assets.{Value}
+use cardano/transaction.{Input, Output, OutputReference, Transaction}
 use oracle
 
-const unused_redeemer = None
-
-const unused_datum = NoDatum
-
-const policy_id = #"0001"
-
-const verification_key_hash = #"0002"
-
-const asset_name = #"0003"
-
-const invalid_byte_array = #"ffff"
-
-fn value_with_number_of_tokens(number_of_tokens: Int) {
-  from_asset(policy_id, asset_name: asset_name, quantity: number_of_tokens)
-}
-
-fn validator_address() {
-  from_script(policy_id)
-}
-
-fn arbitrary_address() {
-  from_script(invalid_byte_array)
-}
+use test_objects.{unused_datum, value_with_number_of_tokens, validator_address, verification_key_hash, unused_redeemer, policy_id, invalid_signature, arbitrary_address}
 
 fn transaction_output(address: Address, value: Value) -> Output {
   Output {
@@ -76,7 +54,7 @@ test test_oracle_forbids_a_minting_transaction_with_an_invalid_signature() {
   let value = value_with_number_of_tokens(1)
   let address = validator_address()
   let output = transaction_output(address, value)
-  let signature_different_from_verification_key_hash = invalid_byte_array
+  let signature_different_from_verification_key_hash = invalid_signature
 
   let transaction =
     minting_transaction_with(
@@ -203,7 +181,7 @@ test test_oracle_forbids_a_spending_transaction_with_an_invalid_signature() {
   let value = value_with_number_of_tokens(2)
   let address = validator_address()
   let output = transaction_output(address, value)
-  let signature_different_from_verification_key_hash = invalid_byte_array
+  let signature_different_from_verification_key_hash = invalid_signature
 
   let utxo = OutputReference { transaction_id, output_index: 0 }
 
