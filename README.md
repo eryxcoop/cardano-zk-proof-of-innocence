@@ -28,5 +28,10 @@ For details on the design and specification of the protocol, please refer to the
 
 All relevant files generated in the process will be in the `implementation/setup` directory.
 
+## Running validator tests
+
+1. Enter the `implementation/validator` directory.
+2. Run `aiken check`.
+
 ## Running cricuit tests
 1. From folder `implementation/` run `node node_modules/.bin/mocha "circuit/tests/*.js"` (this will run all javascript tests under folder `implementation/circuit/tests`)
