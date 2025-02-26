@@ -210,7 +210,35 @@ test test_oracle_forbids_a_spending_transaction_with_an_invalid_signature() {
   let input = Input { output_reference: utxo, output }
 
   let transaction =
-    spending_transaction_with(signature_different_from_verification_key_hash, input, output)
+    spending_transaction_with(
+      signature_different_from_verification_key_hash,
+      input,
+      output,
+    )
+
+  !oracle.oracle.spend(
+    verification_key_hash,
+    None,
+    unused_redeemer,
+    utxo,
+    transaction,
+  )
+}
+
+test test_oracle_forbids_a_spending_transaction_sending_tokens_to_an_arbitrary_address() {
+  let value = value_with_number_of_tokens(2)
+  let transaction_input_address = validator_address()
+  let previous_transaction_output =
+    transaction_output(transaction_input_address, value)
+  let transaction_otuput_address = arbitrary_address()
+  let transaction_output = transaction_output(transaction_otuput_address, value)
+
+  let utxo = OutputReference { transaction_id, output_index: 0 }
+
+  let input = Input { output_reference: utxo, output: previous_transaction_output }
+
+  let transaction =
+    spending_transaction_with(verification_key_hash, input, transaction_output)
 
   !oracle.oracle.spend(
     verification_key_hash,
