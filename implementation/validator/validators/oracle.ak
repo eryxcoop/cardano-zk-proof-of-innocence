@@ -3,7 +3,7 @@ use aiken/collection/list.{any, at, has}
 use aiken/crypto.{VerificationKeyHash}
 use cardano/address.{from_script}
 use cardano/assets.{PolicyId, quantity_of, tokens, without_lovelace}
-use cardano/transaction.{OutputReference, Transaction, find_input}
+use cardano/transaction.{Datum, OutputReference, Transaction, find_input}
 
 validator oracle(verification_key_hash: ByteArray) {
   mint(_redeemer: void, policy_id: PolicyId, self: Transaction) {
@@ -47,7 +47,7 @@ validator oracle(verification_key_hash: ByteArray) {
   }
 
   spend(
-    _datum: Option<void>,
+    _datum: Option<Datum>,
     _redeemer: void,
     utxo: OutputReference,
     self: Transaction,

@@ -26,6 +26,11 @@ For details on the design and specification of the protocol, please refer to the
 
 All relevant files generated in the process will be in the `implementation/setup` directory.
 
+## Running validator tests
+
+1. Enter the `implementation/validator` directory.
+2. Run `aiken check`.
+
 ## Running cricuit tests
 The circuit tests are run using `circom_tester`. There are a few inconveniences though.
 

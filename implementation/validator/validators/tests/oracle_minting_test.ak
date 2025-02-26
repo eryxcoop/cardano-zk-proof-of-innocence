@@ -1,37 +1,11 @@
 use aiken/crypto.{VerificationKeyHash}
-use cardano/address.{Address, from_script}
-use cardano/assets.{Value, from_asset}
-use cardano/transaction.{NoDatum, Output, Transaction}
+use cardano/assets.{Value}
+use cardano/transaction.{Output, Transaction}
 use oracle
-
-const unused_redeemer = None
-
-const policy_id = #"0001"
-
-const verification_key_hash = #"0002"
-
-const invalid_byte_array = #"ffff"
-
-fn value_with_number_of_minted_tokens(number_of_minted_tokens: Int) {
-  from_asset(policy_id, asset_name: #"0003", quantity: number_of_minted_tokens)
-}
-
-fn validator_address() {
-  from_script(policy_id)
-}
-
-fn arbitrary_address() {
-  from_script(invalid_byte_array)
-}
-
-fn transaction_output(address: Address, value: Value) -> Output {
-  Output {
-    address,
-    value,
-    datum: NoDatum,
-    // The datum should technically have the root hash in our use case.
-    reference_script: None,
-  }
+use test_objects.{
+  arbitrary_address, arbitrary_signature, policy_id, transaction_output,
+  unused_redeemer, validator_address, value_with_number_of_tokens,
+  verification_key_hash,
 }
 
 fn minting_transaction_with(
@@ -51,7 +25,7 @@ fn minting_transaction_with(
 }
 
 test test_oracle_permits_a_valid_minting_transaction() {
-  let value = value_with_number_of_minted_tokens(1)
+  let value = value_with_number_of_tokens(1)
   let address = validator_address()
   let output = transaction_output(address, value)
 
@@ -66,11 +40,11 @@ test test_oracle_permits_a_valid_minting_transaction() {
   )
 }
 
-test test_oracle_forbids_a_minting_transaction_with_an_invalid_signature() {
-  let value = value_with_number_of_minted_tokens(1)
+test test_oracle_forbids_a_minting_transaction_with_an_arbitrary_signature() {
+  let value = value_with_number_of_tokens(1)
   let address = validator_address()
   let output = transaction_output(address, value)
-  let signature_different_from_verification_key_hash = invalid_byte_array
+  let signature_different_from_verification_key_hash = arbitrary_signature
 
   let transaction =
     minting_transaction_with(
@@ -88,7 +62,7 @@ test test_oracle_forbids_a_minting_transaction_with_an_invalid_signature() {
 }
 
 test test_oracle_forbids_a_minting_transaction_with_more_than_one_minted_token() {
-  let value = value_with_number_of_minted_tokens(2)
+  let value = value_with_number_of_tokens(2)
   let address = validator_address()
   let output = transaction_output(address, value)
 
@@ -104,7 +78,7 @@ test test_oracle_forbids_a_minting_transaction_with_more_than_one_minted_token()
 }
 
 test test_oracle_forbids_a_minting_transaction_with_no_minted_tokens() {
-  let value = value_with_number_of_minted_tokens(0)
+  let value = value_with_number_of_tokens(0)
   let address = validator_address()
   let output = transaction_output(address, value)
 
@@ -120,7 +94,7 @@ test test_oracle_forbids_a_minting_transaction_with_no_minted_tokens() {
 }
 
 test test_oracle_forbids_a_minting_transaction_sending_tokens_to_an_arbitrary_address() {
-  let value = value_with_number_of_minted_tokens(1)
+  let value = value_with_number_of_tokens(1)
   let address = arbitrary_address()
   let output = transaction_output(address, value)
 
@@ -136,8 +110,8 @@ test test_oracle_forbids_a_minting_transaction_sending_tokens_to_an_arbitrary_ad
 }
 
 test test_oracle_forbids_a_minting_transaction_sending_a_quantity_other_than_one_token_to_validator_address() {
-  let minting_value = value_with_number_of_minted_tokens(1)
-  let output_value = value_with_number_of_minted_tokens(2)
+  let minting_value = value_with_number_of_tokens(1)
+  let output_value = value_with_number_of_tokens(2)
   let address = validator_address()
   let output = transaction_output(address, output_value)
 
