@@ -40,7 +40,7 @@ test test_oracle_permits_a_valid_minting_transaction() {
   )
 }
 
-test test_oracle_forbids_a_minting_transaction_with_an_arbitrary_signature() {
+test test_oracle_forbids_a_minting_transaction_with_an_arbitrary_signature() fail {
   let value = value_with_number_of_tokens(1)
   let address = validator_address()
   let output = transaction_output(address, value)
@@ -53,7 +53,7 @@ test test_oracle_forbids_a_minting_transaction_with_an_arbitrary_signature() {
       output,
     )
 
-  !oracle.oracle.mint(
+  oracle.oracle.mint(
     verification_key_hash,
     unused_redeemer,
     policy_id,
@@ -61,7 +61,7 @@ test test_oracle_forbids_a_minting_transaction_with_an_arbitrary_signature() {
   )
 }
 
-test test_oracle_forbids_a_minting_transaction_with_more_than_one_minted_token() {
+test test_oracle_forbids_a_minting_transaction_with_more_than_one_minted_token() fail {
   let value = value_with_number_of_tokens(2)
   let address = validator_address()
   let output = transaction_output(address, value)
@@ -69,7 +69,7 @@ test test_oracle_forbids_a_minting_transaction_with_more_than_one_minted_token()
   let transaction =
     minting_transaction_with(verification_key_hash, value, output)
 
-  !oracle.oracle.mint(
+  oracle.oracle.mint(
     verification_key_hash,
     unused_redeemer,
     policy_id,
@@ -77,7 +77,7 @@ test test_oracle_forbids_a_minting_transaction_with_more_than_one_minted_token()
   )
 }
 
-test test_oracle_forbids_a_minting_transaction_with_no_minted_tokens() {
+test test_oracle_forbids_a_minting_transaction_with_no_minted_tokens() fail {
   let value = value_with_number_of_tokens(0)
   let address = validator_address()
   let output = transaction_output(address, value)
@@ -85,7 +85,7 @@ test test_oracle_forbids_a_minting_transaction_with_no_minted_tokens() {
   let transaction =
     minting_transaction_with(verification_key_hash, value, output)
 
-  !oracle.oracle.mint(
+  oracle.oracle.mint(
     verification_key_hash,
     unused_redeemer,
     policy_id,
@@ -93,7 +93,7 @@ test test_oracle_forbids_a_minting_transaction_with_no_minted_tokens() {
   )
 }
 
-test test_oracle_forbids_a_minting_transaction_sending_tokens_to_an_arbitrary_address() {
+test test_oracle_forbids_a_minting_transaction_sending_tokens_to_an_arbitrary_address() fail {
   let value = value_with_number_of_tokens(1)
   let address = arbitrary_address()
   let output = transaction_output(address, value)
@@ -101,7 +101,7 @@ test test_oracle_forbids_a_minting_transaction_sending_tokens_to_an_arbitrary_ad
   let transaction =
     minting_transaction_with(verification_key_hash, value, output)
 
-  !oracle.oracle.mint(
+  oracle.oracle.mint(
     verification_key_hash,
     unused_redeemer,
     policy_id,
@@ -109,7 +109,7 @@ test test_oracle_forbids_a_minting_transaction_sending_tokens_to_an_arbitrary_ad
   )
 }
 
-test test_oracle_forbids_a_minting_transaction_sending_a_quantity_other_than_one_token_to_validator_address() {
+test test_oracle_forbids_a_minting_transaction_sending_a_quantity_other_than_one_token_to_validator_address() fail {
   let minting_value = value_with_number_of_tokens(1)
   let output_value = value_with_number_of_tokens(2)
   let address = validator_address()
@@ -118,7 +118,7 @@ test test_oracle_forbids_a_minting_transaction_sending_a_quantity_other_than_one
   let transaction =
     minting_transaction_with(verification_key_hash, minting_value, output)
 
-  !oracle.oracle.mint(
+  oracle.oracle.mint(
     verification_key_hash,
     unused_redeemer,
     policy_id,

@@ -44,7 +44,7 @@ test test_oracle_permits_a_valid_spending_transaction() {
   )
 }
 
-test test_oracle_forbids_a_spending_transaction_with_an_arbitrary_signature() {
+test test_oracle_forbids_a_spending_transaction_with_an_arbitrary_signature() fail {
   let value = value_with_number_of_tokens(2)
   let address = validator_address()
   let output = transaction_output(address, value)
@@ -61,7 +61,7 @@ test test_oracle_forbids_a_spending_transaction_with_an_arbitrary_signature() {
       output,
     )
 
-  !oracle.oracle.spend(
+  oracle.oracle.spend(
     verification_key_hash,
     None,
     unused_redeemer,
@@ -70,7 +70,7 @@ test test_oracle_forbids_a_spending_transaction_with_an_arbitrary_signature() {
   )
 }
 
-test test_oracle_forbids_a_spending_transaction_sending_tokens_to_an_arbitrary_address() {
+test test_oracle_forbids_a_spending_transaction_sending_tokens_to_an_arbitrary_address() fail {
   let value = value_with_number_of_tokens(2)
   let transaction_input_address = validator_address()
   let previous_transaction_output =
@@ -86,7 +86,7 @@ test test_oracle_forbids_a_spending_transaction_sending_tokens_to_an_arbitrary_a
   let transaction =
     spending_transaction_with(verification_key_hash, input, transaction_output)
 
-  !oracle.oracle.spend(
+  oracle.oracle.spend(
     verification_key_hash,
     None,
     unused_redeemer,

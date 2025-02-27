@@ -1,8 +1,8 @@
-use aiken/collection/dict.{get, keys, size}
+use aiken/collection/dict.{Dict, get, keys, size}
 use aiken/collection/list.{any, at, has}
 use aiken/crypto.{VerificationKeyHash}
 use cardano/address.{from_script}
-use cardano/assets.{PolicyId, quantity_of, tokens, without_lovelace}
+use cardano/assets.{AssetName, PolicyId, quantity_of, tokens, without_lovelace}
 use cardano/transaction.{Datum, OutputReference, Transaction, find_input}
 
 validator oracle(verification_key_hash: ByteArray) {
@@ -13,7 +13,8 @@ validator oracle(verification_key_hash: ByteArray) {
       has(self.extra_signatories, vkh)
 
     // The number of minted tokens is exactly 1.
-    let number_of_mints_per_asset = tokens(self.mint, policy_id)
+    let number_of_mints_per_asset: Dict<AssetName, Int> =
+      tokens(self.mint, policy_id)
     if size(number_of_mints_per_asset) != 1 {
       False
     } else {
