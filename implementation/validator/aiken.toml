@@ -15,4 +15,9 @@ name = "aiken-lang/stdlib"
 version = "v2.2.0"
 source = "github"
 
+[[dependencies]]
+name = "modulo-p/ak-381"
+version = "v0.1"
+source = "github"
+
 [config]

@@ -6,9 +6,20 @@ name = "aiken-lang/stdlib"
 version = "v2.2.0"
 source = "github"
 
+[[requirements]]
+name = "modulo-p/ak-381"
+version = "v0.1"
+source = "github"
+
 [[packages]]
 name = "aiken-lang/stdlib"
 version = "v2.2.0"
+requirements = []
+source = "github"
+
+[[packages]]
+name = "modulo-p/ak-381"
+version = "v0.1"
 requirements = []
 source = "github"
 
