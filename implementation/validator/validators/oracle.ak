@@ -58,7 +58,7 @@ validator oracle(verification_key_hash: ByteArray) {
     let transaction_includes_verification_key_hash: Bool =
       has(self.extra_signatories, vkh)
 
-    // The tokens spent are sent to the validator address.
+    // The spent tokens are sent to the validator address.
     expect Some(transaction_input) = find_input(self.inputs, utxo)
     let input_value = transaction_input.output.value |> without_lovelace()
     let sent_tokens_are_sent_to_validator_address: Bool =
