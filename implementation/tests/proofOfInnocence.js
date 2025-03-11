@@ -7,6 +7,13 @@ const crypto = require("crypto");
 const assert = chai.assert;
 const expect = chai.expect;
 
+// The example tree is:
+// (1, 1) (0, 1)
+//    (10, 7)
+//     (79)
+
+// The dummy "hash" function is H(a,b) = 3a+7b
+
 describe("ProofOfInnocence", function () {
   this.timeout(10000);
   it("should not validate incorrect witness", async function () {
