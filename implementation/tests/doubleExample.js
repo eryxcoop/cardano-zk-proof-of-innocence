@@ -7,19 +7,18 @@ const crypto = require("crypto");
 const assert = chai.assert;
 const expect = chai.expect;
 
-describe("ProofOfInnocence", function () {
+describe("double", function () {
   this.timeout(10000);
   it("should not validate incorrect witness", async function () {
     try {
       const circuit = await wasm_tester(
-        path.join(__dirname, "../circuit/proof_of_innocence.circom"),
+        path.join(__dirname, "../circuit/double.circom"),
         {}
       );
 
       const w = await circuit.calculateWitness({
-        root: 85,
-        pathElements: [1, 10],
-        pathIndices: [0, 1],
+        a: 2,
+        b: 3,
       });
       await circuit.checkConstraints(w);
       assert.fail();
@@ -32,14 +31,13 @@ describe("ProofOfInnocence", function () {
   it("should validate correct witness", async function () {
     try {
       const circuit = await wasm_tester(
-        path.join(__dirname, "../circuit/proof_of_innocence.circom"),
+        path.join(__dirname, "../circuit/double.circom"),
         {}
       );
 
       const w = await circuit.calculateWitness({
-        root: 79,
-        pathElements: [1, 10],
-        pathIndices: [0, 1],
+        a: 2,
+        b: 4,
       });
 
       await circuit.checkConstraints(w);

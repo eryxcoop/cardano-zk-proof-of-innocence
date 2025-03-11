@@ -1,13 +1,23 @@
 pragma circom 2.0.0;
 
 
-include "../../node_modules/circomlib/circuits/bitify.circom";
-include "../../node_modules/circomlib/circuits/pedersen.circom";
-include "../../node_modules/circomlib/circuits/mimcsponge.circom";
+include "../node_modules/circomlib/circuits/bitify.circom";
+include "../node_modules/circomlib/circuits/pedersen.circom";
+include "../node_modules/circomlib/circuits/mimcsponge.circom";
+
+
+// Computes DummyHash([left, right]) which is an arbitrary hash function for testing purposes
+template DummyHashLeftRight() {
+    signal input left;
+    signal input right;
+    signal output hash;
+
+    hash <== 3 * left + 7 * right;
+}
 
 
 // Computes MiMC([left, right])
-template HashLeftRight() {
+template MiMCHashLeftRight() {
     signal input left;
     signal input right;
     signal output hash;
@@ -48,12 +58,10 @@ template MerkleTreeChecker(levels) {
         selectors[i].in[1] <== pathElements[i];
         selectors[i].s <== pathIndices[i];
 
-        hashers[i] = HashLeftRight();
+        hashers[i] = DummyHashLeftRight();
         hashers[i].left <== selectors[i].out[0];
         hashers[i].right <== selectors[i].out[1];
     }
-
-    log(hasher(0))
 
     root === hashers[levels - 1].hash;
 }
