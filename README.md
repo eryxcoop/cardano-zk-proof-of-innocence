@@ -40,4 +40,4 @@ For some reason, `circom_tester` tries to use the version of circom that is pres
 
 The workaround we found for this is ugly for now, until we find a way to pass the terminal context to Javascript or that we make a PR to `circom_tester` to be able to send a custom route to circom as a parameter. You have to edit the file `node_modules/circom_tester/wasm/tester.js` so that all calls to `circom` are replaced with `$HOME/.cargo/bin/circom` (because this is the directory in which the setup instructions put circom 2.1, if you installed it somewhere else this may vary). In this version this happens in two places: function `compiler_above_version` (around line 240) and function `compile` (around line 87). We intend to fix this in some neater way.
 
-When you're back from that, you can run any test file in the `tests` folder with `npx tests/FileName.js`.
+When you're back from that, you can run any test file in the `tests` folder with `npx mocha -pr ts-node/register tests/proofOfInnocence.js`. To run all tests, use `make test_circuit` from the `implementation` folder.
