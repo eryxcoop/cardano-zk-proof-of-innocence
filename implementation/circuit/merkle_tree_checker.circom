@@ -42,7 +42,7 @@ template DualMux() {
 }
 
 // Verifies that merkle proof is correct for given merkle root and a leaf
-// pathIndices input is an array of 0/1 selectors telling whether given pathElement is on the left or right side of merkle path
+// pathIndices input is an array of 0/1 selectors telling whether given pathElement is on the left (0) or right (1) side of merkle path
 template MerkleTreeChecker(levels) {  
     signal input leaf;
     signal input root;

@@ -15,7 +15,9 @@ const expect = chai.expect;
 // The dummy "hash" function is H(a,b) = 3a+7b
 
 describe("ProofOfInnocence", function () {
+
   this.timeout(10000);
+
   it("should not validate incorrect witness", async function () {
     try {
       const circuit = await wasm_tester(
@@ -27,6 +29,7 @@ describe("ProofOfInnocence", function () {
         root: 85,
         pathElements: [1, 10],
         pathIndices: [0, 1],
+        leafIndex: 2,
       });
       await circuit.checkConstraints(w);
       assert.fail();
@@ -36,6 +39,7 @@ describe("ProofOfInnocence", function () {
       assert.notInstanceOf(e, chai.AssertionError);
     }
   });
+
   it("should validate correct witness", async function () {
     try {
       const circuit = await wasm_tester(
@@ -47,6 +51,7 @@ describe("ProofOfInnocence", function () {
         root: 79,
         pathElements: [1, 10],
         pathIndices: [0, 1],
+        leafIndex: 2,
       });
 
       await circuit.checkConstraints(w);
@@ -54,4 +59,5 @@ describe("ProofOfInnocence", function () {
       assert.fail();
     }
   });
+
 });
