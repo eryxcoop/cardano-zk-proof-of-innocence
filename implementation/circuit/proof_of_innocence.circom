@@ -1,18 +1,9 @@
 pragma circom 2.0.0;
 
-include "merkle_tree_checker.circom";
 
-template PathIndicesChecker(levels) {
-    signal input leafIndex;
-    signal input pathIndices[levels];
+include "merkle_tree/merkle_tree_checker.circom";
+include "path_indices_checker.circom";
 
-    var indexSubtotal;
-    indexSubtotal = 0;
-    for (var i = levels - 1; i >= 0; i--) {
-        indexSubtotal = 2 * indexSubtotal + pathIndices[i];
-    }
-    leafIndex === indexSubtotal;
-}
 
 template ProofOfInnocence(levels) {
     signal input root;
@@ -30,7 +21,7 @@ template ProofOfInnocence(levels) {
     
     component pathIndicesChecker = PathIndicesChecker(levels);
     pathIndicesChecker.leafIndex <== leafIndex;
-    pathIndicesChecker.pathIndices <== pathIndices;
+    pathIndicesChecker.pathIndexes <== pathIndices;
 }
 
 component main = ProofOfInnocence(2);

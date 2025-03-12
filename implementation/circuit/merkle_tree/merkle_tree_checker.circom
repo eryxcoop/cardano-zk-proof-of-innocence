@@ -1,33 +1,11 @@
 pragma circom 2.0.0;
 
 
-include "../node_modules/circomlib/circuits/bitify.circom";
-include "../node_modules/circomlib/circuits/pedersen.circom";
-include "../node_modules/circomlib/circuits/mimcsponge.circom";
+include "../../node_modules/circomlib/circuits/bitify.circom";
+include "../../node_modules/circomlib/circuits/pedersen.circom";
+include "mimc_hash.circom";
+include "dummy_hash.circom";
 
-
-// Computes DummyHash([left, right]) which is an arbitrary hash function for testing purposes
-template DummyHashLeftRight() {
-    signal input left;
-    signal input right;
-    signal output hash;
-
-    hash <== 3 * left + 7 * right;
-}
-
-
-// Computes MiMC([left, right])
-template MiMCHashLeftRight() {
-    signal input left;
-    signal input right;
-    signal output hash;
-
-    component hasher = MiMCSponge(2, 220, 1);
-    hasher.ins[0] <== left;
-    hasher.ins[1] <== right;
-    hasher.k <== 0;
-    hash <== hasher.outs[0];
-}
 
 // if s == 0 returns [in[0], in[1]]
 // if s == 1 returns [in[1], in[0]]
@@ -42,7 +20,8 @@ template DualMux() {
 }
 
 // Verifies that merkle proof is correct for given merkle root and a leaf
-// pathIndices input is an array of 0/1 selectors telling whether given pathElement is on the left (0) or right (1) side of merkle path
+// pathIndices input is an array of 0/1 selectors
+// telling whether given pathElement is on the left (0) or right (1) side of merkle path
 template MerkleTreeChecker(levels) {  
     signal input leaf;
     signal input root;
