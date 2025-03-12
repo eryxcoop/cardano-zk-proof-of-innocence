@@ -18,7 +18,7 @@ describe("ProofOfInnocence", function () {
 
   this.timeout(10000);
 
-  it("should not validate incorrect witness", async function () {
+  it("should not validate incorrect root", async function () {
     try {
       const circuit = await wasm_tester(
         path.join(__dirname, "../circuit/proof_of_innocence.circom"),
@@ -30,6 +30,28 @@ describe("ProofOfInnocence", function () {
         pathElements: [1, 10],
         pathIndices: [0, 1],
         leafIndex: 2,
+      });
+      await circuit.checkConstraints(w);
+      assert.fail();
+    } catch (e) {
+      console.log(e);
+      assert.instanceOf(e, Error);
+      assert.notInstanceOf(e, chai.AssertionError);
+    }
+  });
+
+  it("should not validate incorrect leaf index", async function () {
+    try {
+      const circuit = await wasm_tester(
+        path.join(__dirname, "../circuit/proof_of_innocence.circom"),
+        {}
+      );
+
+      const w = await circuit.calculateWitness({
+        root: 79,
+        pathElements: [1, 10],
+        pathIndices: [0, 1],
+        leafIndex: 1,
       });
       await circuit.checkConstraints(w);
       assert.fail();
