@@ -3,24 +3,9 @@ use cardano/transaction.{Input, Output, OutputReference, Transaction}
 use proof_of_innocence.{Create, POIDatum, Update, ValidateProof}
 use test_objects.{
   arbitrary_address, arbitrary_signature, minting_transaction_with, policy_id,
-  transaction_id, transaction_output, transaction_value, validator_address,
-  value_with_number_of_tokens, verification_key_hash,
-}
-
-fn spending_transaction_with(
-  signature: VerificationKeyHash,
-  input: Input,
-  output: Output,
-) -> Transaction {
-  transaction.placeholder
-    |> fn(transaction) {
-        Transaction {
-          ..transaction,
-          extra_signatories: [signature],
-          inputs: [input],
-          outputs: [output],
-        }
-      }
+  spending_transaction_with, transaction_id, transaction_output,
+  transaction_value, validator_address, value_with_number_of_tokens,
+  verification_key_hash,
 }
 
 test test_proof_of_innocence_validator_permits_a_valid_spending_transaction() {

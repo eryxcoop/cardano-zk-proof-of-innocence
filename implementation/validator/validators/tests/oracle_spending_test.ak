@@ -1,26 +1,9 @@
-use aiken/crypto.{VerificationKeyHash}
-use cardano/transaction.{Input, Output, OutputReference, Transaction}
+use cardano/transaction.{Input, OutputReference}
 use oracle
 use test_objects.{
-  arbitrary_address, arbitrary_signature, transaction_id, transaction_output,
-  unused_redeemer, validator_address, value_with_number_of_tokens,
-  verification_key_hash,
-}
-
-fn spending_transaction_with(
-  signature: VerificationKeyHash,
-  input: Input,
-  output: Output,
-) -> Transaction {
-  transaction.placeholder
-    |> fn(transaction) {
-        Transaction {
-          ..transaction,
-          extra_signatories: [signature],
-          inputs: [input],
-          outputs: [output],
-        }
-      }
+  arbitrary_address, arbitrary_signature, spending_transaction_with,
+  transaction_id, transaction_output, unused_redeemer, validator_address,
+  value_with_number_of_tokens, verification_key_hash,
 }
 
 test test_oracle_permits_a_valid_spending_transaction() {
