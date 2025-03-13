@@ -34,7 +34,7 @@ test test_proof_of_innocence_validator_permits_a_valid_spending_update_transacti
   )
 }
 
-test test_proof_of_innocence_forbids_a_spending_transaction_with_an_arbitrary_signature() fail {
+test test_proof_of_innocence_forbids_a_spending_update_transaction_with_an_arbitrary_signature() fail {
   let value = transaction_value()
   let address = validator_address()
   let output = transaction_output(address, value)
@@ -55,6 +55,31 @@ test test_proof_of_innocence_forbids_a_spending_transaction_with_an_arbitrary_si
   proof_of_innocence.proof_of_innocence.spend(
     verification_key_hash,
     Some(datum),
+    Update,
+    utxo,
+    transaction,
+  )
+}
+
+test test_oracle_forbids_a_spending_update_transaction_sending_tokens_to_an_arbitrary_address() fail {
+  let value = transaction_value()
+  let transaction_input_address = validator_address()
+  let previous_transaction_output =
+    transaction_output(transaction_input_address, value)
+  let transaction_otuput_address = arbitrary_address()
+  let transaction_output = transaction_output(transaction_otuput_address, value)
+
+  let utxo = OutputReference { transaction_id, output_index: 0 }
+
+  let input =
+    Input { output_reference: utxo, output: previous_transaction_output }
+
+  let transaction =
+    spending_transaction_with(verification_key_hash, input, transaction_output)
+
+  proof_of_innocence.proof_of_innocence.spend(
+    verification_key_hash,
+    None,
     Update,
     utxo,
     transaction,
