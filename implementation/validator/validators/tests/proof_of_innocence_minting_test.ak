@@ -1,7 +1,8 @@
 use proof_of_innocence.{Create}
 use test_objects.{
-  arbitrary_signature, minting_transaction_with, policy_id, transaction_output, validator_address,
-  transaction_value, verification_key_hash,
+  arbitrary_address, arbitrary_signature, minting_transaction_with, policy_id,
+  transaction_output, transaction_value, validator_address,
+  verification_key_hash,
 }
 
 test test_proof_of_innocence_validator_permits_a_valid_minting_transaction() {
@@ -32,6 +33,22 @@ test test_proof_of_innocence_forbids_a_minting_transaction_with_an_arbitrary_sig
       value,
       output,
     )
+
+  proof_of_innocence.proof_of_innocence.mint(
+    verification_key_hash,
+    Create,
+    policy_id,
+    transaction,
+  )
+}
+
+test test_proof_of_innocence_forbids_a_minting_transaction_sending_tokens_to_an_arbitrary_address() fail {
+  let value = transaction_value()
+  let address = arbitrary_address()
+  let output = transaction_output(address, value)
+
+  let transaction =
+    minting_transaction_with(verification_key_hash, value, output)
 
   proof_of_innocence.proof_of_innocence.mint(
     verification_key_hash,
