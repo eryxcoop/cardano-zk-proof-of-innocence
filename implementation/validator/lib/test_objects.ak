@@ -1,7 +1,8 @@
+use aiken/crypto.{VerificationKeyHash}
 use aiken/primitive/bytearray
 use cardano/address.{Address, from_script}
 use cardano/assets.{Value, from_asset}
-use cardano/transaction.{NoDatum, Output}
+use cardano/transaction.{NoDatum, Output, Transaction}
 
 pub const unused_redeemer = None
 
@@ -39,4 +40,20 @@ pub fn transaction_output(address: Address, value: Value) -> Output {
     // The datum should technically have the root hash in our use case.
     reference_script: None,
   }
+}
+
+pub fn minting_transaction_with(
+  signature: VerificationKeyHash,
+  value: Value,
+  output: Output,
+) -> Transaction {
+  transaction.placeholder
+    |> fn(transaction) {
+        Transaction {
+          ..transaction,
+          extra_signatories: [signature],
+          mint: value,
+          outputs: [output],
+        }
+      }
 }

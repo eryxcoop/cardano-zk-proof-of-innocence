@@ -1,27 +1,8 @@
-use aiken/crypto.{VerificationKeyHash}
-use cardano/assets.{Value}
-use cardano/transaction.{Output, Transaction}
 use oracle
 use test_objects.{
-  arbitrary_address, arbitrary_signature, policy_id, transaction_output,
-  unused_redeemer, validator_address, value_with_number_of_tokens,
-  verification_key_hash,
-}
-
-fn minting_transaction_with(
-  signature: VerificationKeyHash,
-  value: Value,
-  output: Output,
-) -> Transaction {
-  transaction.placeholder
-    |> fn(transaction) {
-        Transaction {
-          ..transaction,
-          extra_signatories: [signature],
-          mint: value,
-          outputs: [output],
-        }
-      }
+  arbitrary_address, arbitrary_signature, minting_transaction_with, policy_id,
+  transaction_output, unused_redeemer, validator_address,
+  value_with_number_of_tokens, verification_key_hash,
 }
 
 test test_oracle_permits_a_valid_minting_transaction() {
