@@ -13,7 +13,7 @@ pub const policy_id = bytearray.from_string(@"policy_id")
 pub const verification_key_hash =
   bytearray.from_string(@"verification_key_hash")
 
-pub const asset_name = bytearray.from_string(@"assset_name")
+pub const asset_name = bytearray.from_string(@"asset_name")
 
 pub const arbitrary_signature = bytearray.from_string(@"arbitrary_signature")
 
@@ -21,6 +21,10 @@ pub const transaction_id = bytearray.from_string(@"transaction_id")
 
 pub fn value_with_number_of_tokens(number_of_tokens: Int) {
   from_asset(policy_id, asset_name: asset_name, quantity: number_of_tokens)
+}
+
+pub fn transaction_value() {
+  value_with_number_of_tokens(1)
 }
 
 pub fn validator_address() {
