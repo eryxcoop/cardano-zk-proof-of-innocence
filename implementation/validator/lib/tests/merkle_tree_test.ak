@@ -32,14 +32,14 @@ fn hash_1234() -> Hash {
   dummy_hash_pair(hash_12(), hash_34())
 }
 
-test test_correctly_calculate_merkle_tree_root() {
+test test_merkle_tree_root_is_correctly_calculated_for_a_tree_with_many_levels() {
   let root = merkle_tree_root_for(vector)
 
   let expected_root = hash_1234()
   root == expected_root
 }
 
-test test_correctly_calculate_merkle_tree_authentication_path_for_index() {
+test test_merkle_tree_authentication_path_is_correctly_calculated_for_a_tree_with_many_levels() {
   let index = 0
   let authentication_path = merkle_tree_authentication_path_for(vector, index)
 
