@@ -5,6 +5,10 @@ use merkle_tree.{merkle_tree_authentication_path_for, merkle_tree_root_for}
 
 const vector = [1, 2, 3, 4]
 
+fn vector_with_one_element() {
+  slice(vector, from: 0, to: 0)
+}
+
 fn hash_1() -> Hash {
   dummy_hash_single(value_at(vector, 0))
 }
@@ -34,8 +38,7 @@ fn hash_1234() -> Hash {
 }
 
 test test_merkle_tree_root_is_correctly_calculated_for_a_tree_with_one_level() {
-  let vector_with_one_element = slice(vector, from: 0, to: 0)
-  let root = merkle_tree_root_for(vector_with_one_element)
+  let root = merkle_tree_root_for(vector_with_one_element())
 
   let expected_root = hash_1()
   root == expected_root
@@ -50,8 +53,7 @@ test test_merkle_tree_root_is_correctly_calculated_for_a_tree_with_many_levels()
 
 test test_merkle_tree_authentication_path_is_correctly_calculated_for_a_tree_with_one_level() {
   let index = 0
-  let vector_with_one_element = slice(vector, from: 0, to: 0)
-  let authentication_path = merkle_tree_authentication_path_for(vector_with_one_element, index)
+  let authentication_path = merkle_tree_authentication_path_for(vector_with_one_element(), index)
 
   let expected_authentication_path = []
   authentication_path == expected_authentication_path
