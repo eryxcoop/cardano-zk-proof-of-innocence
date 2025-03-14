@@ -1,3 +1,4 @@
+use aiken/collection/list.{slice}
 use common.{value_at}
 use dummy_hash.{Hash, dummy_hash_pair, dummy_hash_single}
 use merkle_tree.{merkle_tree_authentication_path_for, merkle_tree_root_for}
@@ -30,6 +31,14 @@ fn hash_34() -> Hash {
 
 fn hash_1234() -> Hash {
   dummy_hash_pair(hash_12(), hash_34())
+}
+
+test test_merkle_tree_root_is_correctly_calculated_for_a_tree_with_one_level() {
+  let vector_with_one_element = slice(vector, from: 0, to: 0)
+  let root = merkle_tree_root_for(vector_with_one_element)
+
+  let expected_root = hash_1()
+  root == expected_root
 }
 
 test test_merkle_tree_root_is_correctly_calculated_for_a_tree_with_many_levels() {
