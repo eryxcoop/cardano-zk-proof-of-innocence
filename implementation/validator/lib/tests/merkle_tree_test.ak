@@ -48,6 +48,15 @@ test test_merkle_tree_root_is_correctly_calculated_for_a_tree_with_many_levels()
   root == expected_root
 }
 
+test test_merkle_tree_authentication_path_is_correctly_calculated_for_a_tree_with_one_level() {
+  let index = 0
+  let vector_with_one_element = slice(vector, from: 0, to: 0)
+  let authentication_path = merkle_tree_authentication_path_for(vector_with_one_element, index)
+
+  let expected_authentication_path = []
+  authentication_path == expected_authentication_path
+}
+
 test test_merkle_tree_authentication_path_is_correctly_calculated_for_a_tree_with_many_levels() {
   let index = 0
   let authentication_path = merkle_tree_authentication_path_for(vector, index)
