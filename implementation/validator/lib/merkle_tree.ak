@@ -13,10 +13,16 @@ pub type MerkleTreeLeafIndex =
 const length_is_zero_error_message = @"Length must be greater than zero"
 
 fn left_part_of(vector: List<a>) -> List<a> {
-  let length = length(vector)
-  let half_length = length / 2
+  let half_length = length(vector) / 2
 
   slice(vector, from: 0, to: half_length - 1)
+}
+
+fn right_part_of(vector: List<a>) -> List<a> {
+  let length = length(vector)
+  let half_length = length / 2
+  
+  slice(vector, from: half_length, to: length)
 }
 
 pub fn merkle_tree_root_for(vector: List<MerkleTreeLeafElement>) -> Hash {
@@ -29,10 +35,8 @@ pub fn merkle_tree_root_for(vector: List<MerkleTreeLeafElement>) -> Hash {
       dummy_hash_single(value)
     }
     _ -> {
-      let half_length = length / 2
-
       let left_vector = left_part_of(vector)
-      let right_vector = slice(vector, from: half_length, to: length)
+      let right_vector = right_part_of(vector)
 
       let left_hash = merkle_tree_root_for(left_vector)
       let right_hash = merkle_tree_root_for(right_vector)
@@ -54,7 +58,7 @@ pub fn merkle_tree_authentication_path_for(
       let half_length = length / 2
 
       let left_vector = left_part_of(vector)
-      let right_vector = slice(vector, from: half_length, to: length)
+      let right_vector = right_part_of(vector)
 
       if index < half_length {
         let left_vector_authentication_path =
