@@ -55,10 +55,9 @@ pub fn merkle_tree_authentication_path_for(
     0 -> fail length_is_zero_error_message
     1 -> []
     _ -> {
-      let half_length = length / 2
-
       let left_vector = left_part_of(vector)
       let right_vector = right_part_of(vector)
+      let half_length = length / 2
 
       if index < half_length {
         let left_vector_authentication_path =
