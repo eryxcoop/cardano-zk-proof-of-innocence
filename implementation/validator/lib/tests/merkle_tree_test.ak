@@ -41,7 +41,7 @@ test test_merkle_tree_root_cannot_be_calculated_when_list_is_empty() fail {
   let root = merkle_tree_root_for([])
 
   root == root
-  // For that the line above to be executed
+  // For the line above to be executed
 }
 
 test test_merkle_tree_root_is_correctly_calculated_for_a_tree_with_one_level() {
@@ -63,7 +63,7 @@ test test_merkle_tree_authentication_path_cannot_be_calculated_when_list_is_empt
   let authentication_path = merkle_tree_authentication_path_for([], index)
 
   authentication_path == authentication_path
-  // For that the line above to be executed
+  // For the line above to be executed
 }
 
 test test_merkle_tree_authentication_path_is_correctly_calculated_for_a_tree_with_one_level() {
