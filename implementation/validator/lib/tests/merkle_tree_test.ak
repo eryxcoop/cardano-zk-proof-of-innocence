@@ -37,6 +37,11 @@ fn hash_1234() -> Hash {
   dummy_hash_pair(hash_12(), hash_34())
 }
 
+test test_merkle_tree_root_cannot_be_calculated_when_list_is_empty() fail {
+  let root = merkle_tree_root_for([])
+  root == root
+}
+
 test test_merkle_tree_root_is_correctly_calculated_for_a_tree_with_one_level() {
   let root = merkle_tree_root_for(vector_with_one_element())
 
