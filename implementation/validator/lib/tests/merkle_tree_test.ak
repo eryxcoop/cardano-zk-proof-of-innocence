@@ -1,6 +1,6 @@
 use common.{value_at}
 use dummy_hash.{Hash, dummy_hash_pair, dummy_hash_single}
-use merkle_tree.{merkle_tree_root_for}
+use merkle_tree.{merkle_tree_authentication_path_for, merkle_tree_root_for}
 
 const vector = [1, 2, 3, 4]
 
@@ -37,4 +37,12 @@ test test_correctly_calculate_merkle_tree_root() {
 
   let expected_root = hash_1234()
   root == expected_root
+}
+
+test test_correctly_calculate_merkle_tree_authentication_path_for_index() {
+  let index = 0
+  let authentication_path = merkle_tree_authentication_path_for(vector, index)
+
+  let expected_authentication_path = [hash_2(), hash_34()]
+  authentication_path == expected_authentication_path
 }
