@@ -39,6 +39,7 @@ fn hash_1234() -> Hash {
 
 test test_merkle_tree_root_cannot_be_calculated_when_list_is_empty() fail {
   let root = merkle_tree_root_for([])
+
   root == root
 }
 
@@ -56,9 +57,17 @@ test test_merkle_tree_root_is_correctly_calculated_for_a_tree_with_many_levels()
   root == expected_root
 }
 
+test test_merkle_tree_authentication_path_cannot_be_calculated_when_list_is_empty() fail {
+  let index = 0
+  let authentication_path = merkle_tree_authentication_path_for([], index)
+
+  authentication_path == authentication_path
+}
+
 test test_merkle_tree_authentication_path_is_correctly_calculated_for_a_tree_with_one_level() {
   let index = 0
-  let authentication_path = merkle_tree_authentication_path_for(vector_with_one_element(), index)
+  let authentication_path =
+    merkle_tree_authentication_path_for(vector_with_one_element(), index)
 
   let expected_authentication_path = []
   authentication_path == expected_authentication_path
