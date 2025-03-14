@@ -14,7 +14,7 @@ pub fn merkle_tree_root_for(vector: List<MerkleTreeLeafElement>) -> Hash {
   let length = length(vector)
 
   when length is {
-    0 -> fail
+    0 -> fail @"Length must be greater than zero"
     1 -> {
       let value = value_at(vector, 0)
       dummy_hash_single(value)
@@ -39,7 +39,7 @@ pub fn merkle_tree_authentication_path_for(
   let length = length(vector)
 
   when length is {
-    0 -> fail
+    0 -> fail @"Length must be greater than zero"
     1 -> []
     _ -> {
       let half_length = length / 2
