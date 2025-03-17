@@ -1,9 +1,8 @@
 use cardano/transaction.{Input, OutputReference}
 use proof_of_innocence.{Create, POIDatum, Update}
 use test_objects.{
-  arbitrary_address, arbitrary_signature, policy_id,
-  spending_transaction_with, transaction_id, transaction_output,
-  transaction_value, validator_address,
+  arbitrary_address, arbitrary_signature, policy_id, spending_transaction_with,
+  transaction_id, transaction_output, transaction_value, validator_address,
   verification_key_hash,
 }
 
@@ -51,7 +50,11 @@ test test_proof_of_innocence_forbids_a_spending_update_transaction_with_an_arbit
     }
 
   let transaction =
-    spending_transaction_with(signature_different_from_verification_key_hash, input, output)
+    spending_transaction_with(
+      signature_different_from_verification_key_hash,
+      input,
+      output,
+    )
 
   proof_of_innocence.proof_of_innocence.spend(
     verification_key_hash,
