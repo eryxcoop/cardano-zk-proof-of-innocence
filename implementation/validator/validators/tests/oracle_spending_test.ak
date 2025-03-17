@@ -6,6 +6,7 @@ use test_objects.{
   value_with_number_of_tokens, verification_key_hash,
 }
 
+// A successfull transaction. Usually done to update the Oracle State.
 test test_oracle_permits_a_valid_spending_transaction() {
   let value = value_with_number_of_tokens(2)
   let address = validator_address()
@@ -27,6 +28,7 @@ test test_oracle_permits_a_valid_spending_transaction() {
   )
 }
 
+// Try to withdraw the token with the wrong VK.
 test test_oracle_forbids_a_spending_transaction_with_an_arbitrary_signature() fail {
   let value = value_with_number_of_tokens(2)
   let address = validator_address()
@@ -53,6 +55,7 @@ test test_oracle_forbids_a_spending_transaction_with_an_arbitrary_signature() fa
   )
 }
 
+// The transaction maker doesn't return tokens to the correct script address.
 test test_oracle_forbids_a_spending_transaction_sending_tokens_to_an_arbitrary_address() fail {
   let value = value_with_number_of_tokens(2)
   let transaction_input_address = validator_address()
