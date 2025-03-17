@@ -5,6 +5,8 @@ use merkle_tree.{merkle_tree_authentication_path_for, merkle_tree_root_for}
 
 const vector = [1, 2, 3, 4]
 
+const vector_with_size_that_is_not_power_of_two = [1, 2, 3]
+
 fn vector_with_one_element() {
   slice(vector, from: 0, to: 0)
 }
@@ -39,6 +41,13 @@ fn hash_1234() -> Hash {
 
 test test_merkle_tree_root_cannot_be_calculated_when_list_is_empty() fail {
   let root = merkle_tree_root_for([])
+
+  root == root
+  // For the line above to be executed
+}
+
+test test_merkle_tree_root_cannot_be_calculated_when_list_size_is_not_a_power_of_two() fail {
+  let root = merkle_tree_root_for(vector_with_size_that_is_not_power_of_two)
 
   root == root
   // For the line above to be executed

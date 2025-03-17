@@ -1,5 +1,5 @@
 use aiken/collection/list.{concat, length, slice}
-use common.{value_at}
+use common.{is_power_of_two, value_at}
 use dummy_hash.{Hash, dummy_hash_pair, dummy_hash_single}
 
 // We assume vectors to have a length that is a power of two
@@ -10,7 +10,11 @@ pub type MerkleTreeLeafElement =
 pub type MerkleTreeLeafIndex =
   Int
 
-const length_is_zero_error_message = @"Length must be greater than zero"
+const length_is_zero_error_message =
+  @"The length of the list used to build this Merkle tree must be greater than zero"
+
+const length_is_not_power_of_two_error_message =
+  @"The length of the list used to build this Merkle tree must be a power of two"
 
 fn left_part_of(vector: List<a>) -> List<a> {
   let half_length = length(vector) / 2
@@ -21,27 +25,26 @@ fn left_part_of(vector: List<a>) -> List<a> {
 fn right_part_of(vector: List<a>) -> List<a> {
   let length = length(vector)
   let half_length = length / 2
-  
   slice(vector, from: half_length, to: length)
 }
 
 pub fn merkle_tree_root_for(vector: List<MerkleTreeLeafElement>) -> Hash {
   let length = length(vector)
 
-  when length is {
-    0 -> fail length_is_zero_error_message
-    1 -> {
-      let value = value_at(vector, 0)
-      dummy_hash_single(value)
-    }
-    _ -> {
-      let left_vector = left_part_of(vector)
-      let right_vector = right_part_of(vector)
+  if length == 0 {
+    fail length_is_zero_error_message
+  } else if length == 1 {
+    let value = value_at(vector, 0)
+    dummy_hash_single(value)
+  } else if !is_power_of_two(length) {
+    fail length_is_not_power_of_two_error_message
+  } else {
+    let left_vector = left_part_of(vector)
+    let right_vector = right_part_of(vector)
 
-      let left_hash = merkle_tree_root_for(left_vector)
-      let right_hash = merkle_tree_root_for(right_vector)
-      dummy_hash_pair(left_hash, right_hash)
-    }
+    let left_hash = merkle_tree_root_for(left_vector)
+    let right_hash = merkle_tree_root_for(right_vector)
+    dummy_hash_pair(left_hash, right_hash)
   }
 }
 
