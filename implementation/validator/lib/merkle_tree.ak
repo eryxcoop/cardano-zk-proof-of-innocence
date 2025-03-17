@@ -2,8 +2,6 @@ use aiken/collection/list.{concat, length, slice}
 use common.{is_power_of_two, value_at}
 use dummy_hash.{Hash, dummy_hash_pair, dummy_hash_single}
 
-// We assume vectors to have a length that is a power of two
-
 pub type MerkleTreeLeafElement =
   Int
 
