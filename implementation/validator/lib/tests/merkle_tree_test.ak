@@ -75,6 +75,18 @@ test test_merkle_tree_authentication_path_cannot_be_calculated_when_list_is_empt
   // For the line above to be executed
 }
 
+test test_merkle_tree_authentication_path_cannot_be_calculated_when_list_size_is_not_a_power_of_two() fail {
+  let index = 0
+  let authentication_path =
+    merkle_tree_authentication_path_for(
+      vector_with_size_that_is_not_power_of_two,
+      index,
+    )
+
+  authentication_path == authentication_path
+  // For the line above to be executed
+}
+
 test test_merkle_tree_authentication_path_is_correctly_calculated_for_a_tree_with_one_level() {
   let index = 0
   let authentication_path =

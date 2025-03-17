@@ -54,27 +54,29 @@ pub fn merkle_tree_authentication_path_for(
 ) -> List<Hash> {
   let length = length(vector)
 
-  when length is {
-    0 -> fail length_is_zero_error_message
-    1 -> []
-    _ -> {
-      let left_vector = left_part_of(vector)
-      let right_vector = right_part_of(vector)
-      let half_length = length / 2
+  if length == 0 {
+    fail length_is_zero_error_message
+  } else if length == 1 {
+    []
+  } else if !is_power_of_two(length) {
+    fail length_is_not_power_of_two_error_message
+  } else {
+    let left_vector = left_part_of(vector)
+    let right_vector = right_part_of(vector)
+    let half_length = length / 2
 
-      if index < half_length {
-        let left_vector_authentication_path =
-          merkle_tree_authentication_path_for(left_vector, index)
-        let right_hash = merkle_tree_root_for(right_vector)
+    if index < half_length {
+      let left_vector_authentication_path =
+        merkle_tree_authentication_path_for(left_vector, index)
+      let right_hash = merkle_tree_root_for(right_vector)
 
-        concat(left_vector_authentication_path, [right_hash])
-      } else {
-        let left_hash = merkle_tree_root_for(left_vector)
-        let right_vector_authentication_path =
-          merkle_tree_authentication_path_for(right_vector, index)
+      concat(left_vector_authentication_path, [right_hash])
+    } else {
+      let left_hash = merkle_tree_root_for(left_vector)
+      let right_vector_authentication_path =
+        merkle_tree_authentication_path_for(right_vector, index)
 
-        concat([left_hash], right_vector_authentication_path)
-      }
+      concat([left_hash], right_vector_authentication_path)
     }
   }
 }
