@@ -8,7 +8,7 @@ use test_objects.{
 
 // A successfull transaction. Usually done to update the Oracle State.
 test test_oracle_permits_a_valid_spending_transaction() {
-  let value = value_with_number_of_tokens(2)
+  let value = value_with_number_of_tokens(1)
   let address = validator_address()
   let output = transaction_output(address, value)
 
@@ -30,7 +30,7 @@ test test_oracle_permits_a_valid_spending_transaction() {
 
 // Try to withdraw the token with the wrong VK.
 test test_oracle_forbids_a_spending_transaction_with_an_arbitrary_signature() fail {
-  let value = value_with_number_of_tokens(2)
+  let value = value_with_number_of_tokens(1)
   let address = validator_address()
   let output = transaction_output(address, value)
   let signature_different_from_verification_key_hash = arbitrary_signature
