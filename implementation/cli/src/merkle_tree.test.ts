@@ -9,7 +9,7 @@ class MerkleTree {
 
     constructor(list: number[]) {
         if (list.length == 0) {
-            throw new Error("List must not be empty")
+            throw new Error(MerkleTree.emptyListErrorMessage())
         }
 
         this.list = list
@@ -18,12 +18,16 @@ class MerkleTree {
     root() {
         return hashSingleValue(this.list[0])
     }
+
+    static emptyListErrorMessage() {
+        return "List must not be empty"
+    }
 }
 
 test ("Cannot calculate root hash from an empty list", () => {
     expect (
         () => new MerkleTree([])     
-    ).toThrow("List must not be empty")
+    ).toThrow(MerkleTree.emptyListErrorMessage())
 })
 
 test ("Can calculate root hash for a list with one element", () => {
