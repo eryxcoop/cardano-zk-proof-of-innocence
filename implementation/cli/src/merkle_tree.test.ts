@@ -4,6 +4,10 @@ function hashSingleValue(value: number) {
     return value
 }
 
+function hashPair(left: number, right: number) {
+    return 3 * left + 7 * right
+}
+
 class MerkleTree {
     private list: number[]
 
@@ -15,29 +19,59 @@ class MerkleTree {
         this.list = list
     }
 
-    root() {
-        return hashSingleValue(this.list[0])
+    root(): number {
+        if (this.list.length == 1) {
+            return hashSingleValue(this.list[0])
+        } else {
+            return hashPair(this.left().root(), this.right().root())
+        }
     }
 
+    left() {
+        return new MerkleTree(this.list.slice(0,this.halfIndex()))
+    }
+
+    right() {
+        return new MerkleTree(this.list.slice(this.halfIndex(), this.list.length))
+    }
+
+    halfIndex() {
+        return this.list.length / 2
+    }
+ 
     static emptyListErrorMessage() {
         return "List must not be empty"
     }
 }
 
-test ("Cannot calculate root hash from an empty list", () => {
-    expect (
-        () => new MerkleTree([])     
+test("Cannot calculate root hash from an empty list", () => {
+    expect(
+        () => new MerkleTree([])
     ).toThrow(MerkleTree.emptyListErrorMessage())
 })
 
-test ("Can calculate root hash for a list with one element", () => {
+test("Can calculate root hash for a list with one element", () => {
     const merkleTree = new MerkleTree([1])
 
     const root = merkleTree.root()
 
     const expectedRoot = hashSingleValue(1)
 
-    expect (root).toEqual(expectedRoot)    
+    expect(root).toEqual(expectedRoot)
 
 })
 
+test("Can calculate root hash for a list with many elements", () => {
+    const list = [1,2,3,4]
+    const v1 = hashSingleValue(list[0])
+    const v2 = hashSingleValue(list[1])
+    const v3 = hashSingleValue(list[2])
+    const v4 = hashSingleValue(list[3])
+    const v12 = hashPair(v1,v2) 
+    const v34 = hashPair(v3,v4) 
+    const v1234 = hashPair(v12,v34)
+
+    const mkt = new MerkleTree(list)
+    const root = mkt.root() 
+    expect(root).toEqual(v1234)
+})
