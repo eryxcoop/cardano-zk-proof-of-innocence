@@ -3,12 +3,12 @@ use oracle
 use test_objects.{
   arbitrary_address, arbitrary_signature, spending_transaction_with,
   transaction_id, transaction_output, unused_redeemer, validator_address,
-  value_with_number_of_tokens, verification_key_hash,
+  value_with_number_of_script_tokens, verification_key_hash,
 }
 
 // A successfull transaction. Usually done to update the Oracle State.
 test test_oracle_permits_a_valid_spending_transaction() {
-  let value = value_with_number_of_tokens(1)
+  let value = value_with_number_of_script_tokens(1)
   let address = validator_address()
   let output = transaction_output(address, value)
 
@@ -30,7 +30,7 @@ test test_oracle_permits_a_valid_spending_transaction() {
 
 // Try to withdraw the token with the wrong VK.
 test test_oracle_forbids_a_spending_transaction_with_an_arbitrary_signature() fail {
-  let value = value_with_number_of_tokens(1)
+  let value = value_with_number_of_script_tokens(1)
   let address = validator_address()
   let output = transaction_output(address, value)
   let signature_different_from_verification_key_hash = arbitrary_signature
@@ -57,7 +57,7 @@ test test_oracle_forbids_a_spending_transaction_with_an_arbitrary_signature() fa
 
 // The transaction maker doesn't return tokens to the correct script address.
 test test_oracle_forbids_a_spending_transaction_sending_tokens_to_an_arbitrary_address() fail {
-  let value = value_with_number_of_tokens(2)
+  let value = value_with_number_of_script_tokens(1)
   let transaction_input_address = validator_address()
   let previous_transaction_output =
     transaction_output(transaction_input_address, value)

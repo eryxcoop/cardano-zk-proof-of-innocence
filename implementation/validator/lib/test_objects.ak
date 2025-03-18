@@ -19,12 +19,8 @@ pub const arbitrary_signature = bytearray.from_string(@"arbitrary_signature")
 
 pub const transaction_id = bytearray.from_string(@"transaction_id")
 
-pub fn value_with_number_of_tokens(number_of_tokens: Int) {
+pub fn value_with_number_of_script_tokens(number_of_tokens: Int) {
   from_asset(policy_id, asset_name: asset_name, quantity: number_of_tokens)
-}
-
-pub fn transaction_value() {
-  value_with_number_of_tokens(1)
 }
 
 pub fn validator_address() {

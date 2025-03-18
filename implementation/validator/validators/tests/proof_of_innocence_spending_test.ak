@@ -2,22 +2,23 @@ use cardano/transaction.{Input, OutputReference}
 use proof_of_innocence.{Create, POIDatum, Update}
 use test_objects.{
   arbitrary_address, arbitrary_signature, policy_id, spending_transaction_with,
-  transaction_id, transaction_output, transaction_value, validator_address,
-  verification_key_hash,
+  transaction_id, transaction_output, validator_address,
+  value_with_number_of_script_tokens, verification_key_hash,
 }
 
+// Valid update of POI script.
 test test_proof_of_innocence_validator_permits_a_valid_spending_update_transaction() {
-  let value = transaction_value()
+  let value = value_with_number_of_script_tokens(1)
   let address = validator_address()
   let output = transaction_output(address, value)
 
-  let utxo = OutputReference { transaction_id, output_index: 0 }
+  let oref = OutputReference { transaction_id, output_index: 0 }
 
-  let input = Input { output_reference: utxo, output }
+  let input = Input { output_reference: oref, output }
 
   let datum =
     POIDatum {
-      verification_key_output_reference: utxo,
+      verification_key_output_reference: oref,
       oracle_token_policy_id: policy_id,
     }
 
@@ -28,24 +29,25 @@ test test_proof_of_innocence_validator_permits_a_valid_spending_update_transacti
     verification_key_hash,
     Some(datum),
     Update,
-    utxo,
+    oref,
     transaction,
   )
 }
 
+// Invalid PoI update using an incorrect signature.
 test test_proof_of_innocence_forbids_a_spending_update_transaction_with_an_arbitrary_signature() fail {
-  let value = transaction_value()
+  let value = value_with_number_of_script_tokens(1)
   let address = validator_address()
   let output = transaction_output(address, value)
   let signature_different_from_verification_key_hash = arbitrary_signature
 
-  let utxo = OutputReference { transaction_id, output_index: 0 }
+  let oref = OutputReference { transaction_id, output_index: 0 }
 
-  let input = Input { output_reference: utxo, output }
+  let input = Input { output_reference: oref, output }
 
   let datum =
     POIDatum {
-      verification_key_output_reference: utxo,
+      verification_key_output_reference: oref,
       oracle_token_policy_id: policy_id,
     }
 
@@ -60,27 +62,28 @@ test test_proof_of_innocence_forbids_a_spending_update_transaction_with_an_arbit
     verification_key_hash,
     Some(datum),
     Update,
-    utxo,
+    oref,
     transaction,
   )
 }
 
+// Invalid PoI update - Send funds to a different address than the script adress.
 test test_oracle_forbids_a_spending_update_transaction_sending_tokens_to_an_arbitrary_address() fail {
-  let value = transaction_value()
+  let value = value_with_number_of_script_tokens(1)
   let transaction_input_address = validator_address()
   let previous_transaction_output =
     transaction_output(transaction_input_address, value)
   let transaction_otuput_address = arbitrary_address()
   let transaction_output = transaction_output(transaction_otuput_address, value)
 
-  let utxo = OutputReference { transaction_id, output_index: 0 }
+  let oref = OutputReference { transaction_id, output_index: 0 }
 
   let input =
-    Input { output_reference: utxo, output: previous_transaction_output }
+    Input { output_reference: oref, output: previous_transaction_output }
 
   let datum =
     POIDatum {
-      verification_key_output_reference: utxo,
+      verification_key_output_reference: oref,
       oracle_token_policy_id: policy_id,
     }
 
@@ -91,23 +94,25 @@ test test_oracle_forbids_a_spending_update_transaction_sending_tokens_to_an_arbi
     verification_key_hash,
     Some(datum),
     Update,
-    utxo,
+    oref,
     transaction,
   )
 }
 
+// Tries to spend the validator invoking the minting part of the script.
+// Revisor: Similarly, to the spending Oracle test, we need to check this out further.
 test test_proof_of_innocence_validator_forbids_a_spending_transaction_that_is_not_updating_or_validating_a_proof() fail {
-  let value = transaction_value()
+  let value = value_with_number_of_script_tokens(1)
   let address = validator_address()
   let output = transaction_output(address, value)
 
-  let utxo = OutputReference { transaction_id, output_index: 0 }
+  let oref = OutputReference { transaction_id, output_index: 0 }
 
-  let input = Input { output_reference: utxo, output }
+  let input = Input { output_reference: oref, output }
 
   let datum =
     POIDatum {
-      verification_key_output_reference: utxo,
+      verification_key_output_reference: oref,
       oracle_token_policy_id: policy_id,
     }
 
@@ -118,7 +123,8 @@ test test_proof_of_innocence_validator_forbids_a_spending_transaction_that_is_no
     verification_key_hash,
     Some(datum),
     Create,
-    utxo,
+    oref,
     transaction,
   )
 }
+// TODO: Test the actual PoI functionality (ValidateProof)
