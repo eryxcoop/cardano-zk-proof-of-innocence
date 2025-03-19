@@ -54,7 +54,7 @@ class MerkleTree {
     }
 }
 
-test("Cannot calculate root hash from an empty list", () => {
+test("Cannot create merkle tree from an empty list", () => {
     expect(
         () => new MerkleTree([])
     ).toThrow(MerkleTree.emptyListErrorMessage())
