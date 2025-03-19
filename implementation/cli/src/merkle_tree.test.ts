@@ -8,13 +8,19 @@ function hashPair(left: number, right: number) {
     return 3 * left + 7 * right
 }
 
+function isPowerOfTwo(value: number): boolean {
+    return value > 0 && (value & (value - 1)) === 0
+}
+
 class MerkleTree {
     private list: number[]
 
     constructor(list: number[]) {
         if (list.length == 0) {
             throw new Error(MerkleTree.emptyListErrorMessage())
-        }
+        } else if (!isPowerOfTwo(list.length)) {
+            throw new Error(MerkleTree.listSizeErrorMessage())
+        } 
 
         this.list = list
     }
@@ -41,6 +47,10 @@ class MerkleTree {
  
     static emptyListErrorMessage() {
         return "List must not be empty"
+    }
+
+    static listSizeErrorMessage() {
+        return "List size must be a power of 2"
     }
 }
 
@@ -74,4 +84,11 @@ test("Can calculate root hash for a list with many elements", () => {
     const mkt = new MerkleTree(list)
     const root = mkt.root() 
     expect(root).toEqual(v1234)
+})
+
+test("Cannot create a MKT from an list with size is not pow of 2", () => {
+   // console.log(isPowerOfTwo(8))
+    expect(
+        () => new MerkleTree([1,2,3,4,5,6])
+    ).toThrow(MerkleTree.listSizeErrorMessage())
 })
