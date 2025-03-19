@@ -33,6 +33,10 @@ class MerkleTree {
         }
     }
 
+    authenticationPathFor(): number[] {
+        return []
+    }
+
     left() {
         return new MerkleTree(this.list.slice(0,this.halfIndex()))
     }
@@ -87,8 +91,17 @@ test("Can calculate root hash for a list with many elements", () => {
 })
 
 test("Cannot create a MKT from an list with size is not pow of 2", () => {
-   // console.log(isPowerOfTwo(8))
     expect(
         () => new MerkleTree([1,2,3,4,5,6])
     ).toThrow(MerkleTree.listSizeErrorMessage())
 })
+
+test("Can calculate authentication path for a list with one element", () => {
+    const merkleTree = new MerkleTree([1])
+
+    const authenticationPath = merkleTree.authenticationPathFor([0])
+
+    const expectedAuthenticationPath = []
+
+    expect(authenticationPath).toEqual(expectedAuthenticationPath)
+ })
