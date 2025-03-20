@@ -1,10 +1,15 @@
 import { expect, test } from 'vitest'
 
-function hashSingleValue(value: number) {
+type merkleTreeLeafElement = number
+type merkleTreeLeafIndex = number
+type hash = number
+
+
+function hashSingleValue(value: merkleTreeLeafElement | hash) {
     return value
 }
 
-function hashPair(left: number, right: number) {
+function hashPair(left: hash, right: hash) {
     return 3 * left + 7 * right
 }
 
@@ -13,9 +18,9 @@ function isPowerOfTwo(value: number): boolean {
 }
 
 class MerkleTree {
-    private list: number[]
+    private list: merkleTreeLeafElement[]
 
-    constructor(list: number[]) {
+    constructor(list: merkleTreeLeafElement[]) {
         if (list.length == 0) {
             throw new Error(MerkleTree.emptyListErrorMessage())
         } else if (!isPowerOfTwo(list.length)) {
@@ -25,7 +30,7 @@ class MerkleTree {
         this.list = list
     }
 
-    root(): number {
+    root(): hash {
         if (this.list.length == 1) {
             return hashSingleValue(this.list[0])
         } else {
@@ -33,7 +38,7 @@ class MerkleTree {
         }
     }
 
-    authenticationPathFor(index: number): number[] {
+    authenticationPathFor(index: merkleTreeLeafIndex): hash[] {
         if (this.list.length == 1) {
             return []
         } else {
@@ -109,7 +114,7 @@ test("Can calculate authentication path for a list with one element", () => {
 
     const authenticationPath = merkleTree.authenticationPathFor(0)
 
-    const expectedAuthenticationPath: number[] = []
+    const expectedAuthenticationPath: hash[] = []
 
     expect(authenticationPath).toEqual(expectedAuthenticationPath)
  })
