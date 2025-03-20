@@ -1,11 +1,9 @@
 import { describe, expect, test } from 'vitest'
-import { hashSingleValue, hashPair } from '../dummyHash.ts'
+import { hash, hashSingleValue, hashPair } from '../dummyHash.ts'
 import { isPowerOfTwo } from '../common.ts'
 
 export type merkleTreeLeafElement = number
 type merkleTreeLeafIndex = number
-export type hash = number
-
 
 class MerkleTree {
     private list: merkleTreeLeafElement[]

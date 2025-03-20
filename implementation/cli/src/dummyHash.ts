@@ -1,6 +1,6 @@
-import { merkleTreeLeafElement, hash } from './tests/merkle_tree.test.ts';
+export type hash = number
 
-export function hashSingleValue(value: merkleTreeLeafElement | hash) {
+export function hashSingleValue(value: hash) {
     return value;
 }
 export function hashPair(left: hash, right: hash) {
