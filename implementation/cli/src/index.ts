@@ -1,18 +1,31 @@
 #!/usr/bin/env node
-
-import { intro } from './intro.js';
+//import { intro } from './intro.js';
+import dotenv from 'dotenv';
 import { BlockfrostProvider, MeshWallet } from '@meshsdk/core';
 
 
 // Display intro
-console.log(intro);
+//console.log(intro);
+
+// Create enviroment variables
+
+dotenv.config();
+const secretKey: string = process.env.WALLET_SECREY_KEY || "nothing";
+const apiKey: string = process.env.API_KEY || "nothing";
 
 
+// =================================== Preliminaries ===================================
 
-const blockchainProvider = new BlockfrostProvider('mainnetUL5mZhjwzx74yL1FU4FaSMfXNmSz8oFy');
+/*
+1. Create sk.
+2. Create Provider.
+3. Create wallet.
+4. Import the Oracle script.
+5. Import the PoI script.
+*/
 
-const sk_1 = "xprv1zp6frpv9hu5y8nvcdz3umv9z4wang0f5k433rzyvj7xlefxmy3f20hg30jsnwyvazz87e80fzngd9tgcdmut62n80ve3cq8c7px7lg6tc4vtaqxrg8nkqtx4jxkqm4sgt0as4hc70q29xkxrzzmk64f38yr2ns3p"
 
+const blockchainProvider = new BlockfrostProvider(apiKey);
 
 
 const wallet_1 = new MeshWallet({
@@ -21,12 +34,79 @@ const wallet_1 = new MeshWallet({
     submitter: blockchainProvider,
     key: {
       type: 'root',
-      bech32: sk_1,
+      bech32: secretKey,
     },
 });
 
 console.log(wallet_1);
 
+
+
+// =================================== Program CLI ===================================
+
+// Set VK.
+/*
+Create a Tx that sends an UTXO with the wk to an always false script.
+*/
+
+
+// Generate an Oracle.
+/*      - Creates an UTXO with the NEW root hash of banned Txs.
+      - Sends this token again to script.
+A command that let's you create an Oracle.
+
+1. We need to import merkle tree functions.
+2. Import the Oracle scipt and apply a vk
+3. Define a Tx that which:
+      - Creates an UTXO with the root hash of banned Txs.
+      - Mint a single token.
+*/
+
+// Update the Oracle
+/*
+1. Recompute a new MKT.
+2. Update the new MKT root at the script address.
+3. Define a Tx that which:
+      - Creates an UTXO with the NEW root hash of banned Txs.
+      - Sends this token again to script.
+*/
+
+
+// Create an instance of a PoI validator.
+/*
+1. Apply the parameter (vk) to the contract.
+2. Define the Datum with the oref and the Oracle's token policy Id.
+3. Define a Reedmer Create.
+4.. Define a Tx that:
+      - Mints a single POI token and sends it to script address.
+      - Attaches the datum.
+      - Attaches the redeemer.
+*/
+
+// Update the Datum of the PoI validator.
+/*
+1. Define an updated Datum
+2. Define Redeemer Update.
+3. Define a Tx that:
+      - Sends this token again to script.
+      - Attachs the new Datum.
+      - Attaches theand Redeemer.
+*/
+
+// Execute a proof of innocence.
+/* 
+1. Create the ZK proof (snarkjs)
+2. Define Redeemer VerifyProof()
+3. Define a Tx that:
+  - Has the reference input of the Oracle.
+  - Has the reference input of the vk.
+  - Appends the proof inside the redeemer.
+  - Spends the UTXO and create a new one in the script address. Sends the PoI token again to validator.
+*/
+
+
+
+// ClI commands bootsrap.
 
 //import { Command } from "commander";
 //import chalk from "chalk";
