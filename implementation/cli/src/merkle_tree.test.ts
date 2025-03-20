@@ -25,7 +25,7 @@ class MerkleTree {
             throw new Error(MerkleTree.emptyListErrorMessage())
         } else if (!isPowerOfTwo(list.length)) {
             throw new Error(MerkleTree.listSizeErrorMessage())
-        } 
+        }
 
         this.list = list
     }
@@ -72,6 +72,15 @@ class MerkleTree {
 }
 
 describe("Merkle tree", () => {
+    const list = [1,2,3,4]
+    const v1 = hashSingleValue(list[0])
+    const v2 = hashSingleValue(list[1])
+    const v3 = hashSingleValue(list[2])
+    const v4 = hashSingleValue(list[3])
+    const v12 = hashPair(v1,v2) 
+    const v34 = hashPair(v3,v4) 
+    const v1234 = hashPair(v12,v34)
+
     test("Cannot create merkle tree from an empty list", () => {
         expect(
             () => new MerkleTree([])
@@ -96,15 +105,6 @@ describe("Merkle tree", () => {
     })
 
     test("Can calculate root hash for a list with many elements", () => {
-        const list = [1,2,3,4]
-        const v1 = hashSingleValue(list[0])
-        const v2 = hashSingleValue(list[1])
-        const v3 = hashSingleValue(list[2])
-        const v4 = hashSingleValue(list[3])
-        const v12 = hashPair(v1,v2) 
-        const v34 = hashPair(v3,v4) 
-        const v1234 = hashPair(v12,v34)
-
         const mkt = new MerkleTree(list)
         const root = mkt.root() 
         expect(root).toEqual(v1234)
@@ -121,15 +121,6 @@ describe("Merkle tree", () => {
     })
 
     test("Can calculate authentication path for a list with many elements", () => {
-        const list = [1,2,3,4]
-        const v1 = hashSingleValue(list[0])
-        const v2 = hashSingleValue(list[1])
-        const v3 = hashSingleValue(list[2])
-        const v4 = hashSingleValue(list[3])
-        const v12 = hashPair(v1,v2) 
-        const v34 = hashPair(v3,v4) 
-        const v1234 = hashPair(v12,v34)
-
         const mkt = new MerkleTree(list)
         const authenticationPath = mkt.authenticationPathFor(0)
 
