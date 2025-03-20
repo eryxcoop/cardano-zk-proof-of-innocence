@@ -31,7 +31,7 @@ class MerkleTree {
     }
 
     root(): hash {
-        if (this.list.length == 1) {
+        if (this.size() == 1) {
             return hashSingleValue(this.list[0])
         } else {
             return hashPair(this.left().root(), this.right().root())
@@ -39,27 +39,37 @@ class MerkleTree {
     }
 
     authenticationPathFor(index: merkleTreeLeafIndex): hash[] {
-        if (this.list.length == 1) {
+        if (this.size() == 1) {
             return []
         } else {
             if (index < this.halfIndex()) {
-                return this.left().authenticationPathFor(index).concat([this.right().root()])
+                return this.left().authenticationPathFor(index)
+                    .concat([this.right().root()])
             } else {
-                return [this.left().root()].concat(this.right().authenticationPathFor(index))
+                return [this.left().root()]
+                    .concat(this.right().authenticationPathFor(index))
             }
         }
     }
 
     left() {
-        return new MerkleTree(this.list.slice(0,this.halfIndex()))
+        return new MerkleTree(
+            this.list.slice(0,this.halfIndex())
+        )
     }
 
     right() {
-        return new MerkleTree(this.list.slice(this.halfIndex(), this.list.length))
+        return new MerkleTree(
+            this.list.slice(this.halfIndex(), this.size())
+        )
     }
 
     halfIndex() {
         return this.list.length / 2
+    }
+
+    size() {
+        return this.list.length
     }
  
     static emptyListErrorMessage() {
