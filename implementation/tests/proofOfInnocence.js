@@ -12,7 +12,8 @@ const expect = chai.expect;
 //    (10, 7)
 //     (79)
 
-// The dummy "hash" function is H(a,b) = 3a+7b
+// The dummy "hash" function for the Merkle tree is H(a,b) = 3a+7b
+// The dummy hash function for verifying the secret leaf is H(x) = 2x+5
 
 describe("ProofOfInnocence", function () {
 
@@ -30,6 +31,7 @@ describe("ProofOfInnocence", function () {
         pathElements: [1, 10],
         pathIndices: [0, 1],
         leafIndex: 2,
+        leafIndexHash: 9,
       });
       await circuit.checkConstraints(w);
       assert.fail();
@@ -52,6 +54,30 @@ describe("ProofOfInnocence", function () {
         pathElements: [1, 10],
         pathIndices: [0, 1],
         leafIndex: 1,
+        leafIndexHash: 7,
+      });
+      await circuit.checkConstraints(w);
+      assert.fail();
+    } catch (e) {
+      console.log(e);
+      assert.instanceOf(e, Error);
+      assert.notInstanceOf(e, chai.AssertionError);
+    }
+  });
+
+  it("should not validate incorrect leaf hash", async function () {
+    try {
+      const circuit = await wasm_tester(
+        path.join(__dirname, "../circuit/proof_of_innocence.circom"),
+        {}
+      );
+
+      const w = await circuit.calculateWitness({
+        root: 79,
+        pathElements: [1, 10],
+        pathIndices: [0, 1],
+        leafIndex: 2,
+        leafIndexHash: 20,
       });
       await circuit.checkConstraints(w);
       assert.fail();
@@ -74,6 +100,7 @@ describe("ProofOfInnocence", function () {
         pathElements: [1, 10],
         pathIndices: [0, 1],
         leafIndex: 2,
+        leafIndexHash: 9,
       });
 
       await circuit.checkConstraints(w);
