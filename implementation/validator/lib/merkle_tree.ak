@@ -8,11 +8,9 @@ pub type MerkleTreeLeafElement =
 pub type MerkleTreeLeafIndex =
   Int
 
-const length_is_zero_error_message =
-  @"The length of the list used to build this Merkle tree must be greater than zero"
+const length_is_zero_error_message = @"The length of the list used to build this Merkle tree must be greater than zero"
 
-const length_is_not_power_of_two_error_message =
-  @"The length of the list used to build this Merkle tree must be a power of two"
+const length_is_not_power_of_two_error_message = @"The length of the list used to build this Merkle tree must be a power of two"
 
 fn left_part_of(vector: List<a>) -> List<a> {
   let half_length = length(vector) / 2

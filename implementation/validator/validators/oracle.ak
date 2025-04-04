@@ -6,7 +6,7 @@ use cardano/assets.{AssetName, PolicyId, quantity_of, tokens, without_lovelace}
 use cardano/transaction.{Datum, OutputReference, Transaction, find_input}
 
 validator oracle(verification_key_hash: ByteArray) {
-  mint(_redeemer: void, policy_id: PolicyId, self: Transaction) {
+  mint(_redeemer: Void, policy_id: PolicyId, self: Transaction) {
     // The transaction signature matches with the verification key hash.
     let vkh: VerificationKeyHash = verification_key_hash
     let transaction_includes_verification_key_hash: Bool =

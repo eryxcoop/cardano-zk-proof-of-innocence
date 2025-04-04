@@ -4,7 +4,7 @@ use cardano/address.{Address, from_script}
 use cardano/assets.{Value, from_asset}
 use cardano/transaction.{Input, NoDatum, Output, Transaction}
 
-pub const unused_redeemer = None
+pub const unused_redeemer = Void
 
 pub const unused_datum = NoDatum
 
