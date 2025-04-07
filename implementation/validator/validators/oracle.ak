@@ -49,7 +49,7 @@ validator oracle(verification_key_hash: ByteArray) {
 
   spend(
     _datum: Option<Datum>,
-    _redeemer: void,
+    _redeemer: Void,
     utxo: OutputReference,
     self: Transaction,
   ) {
