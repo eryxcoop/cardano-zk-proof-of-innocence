@@ -1,6 +1,6 @@
 import { describe, expect, test } from 'vitest'
-import { hash, hashSingleValue, hashPair } from '../dummyHash.ts'
-import { MerkleTree } from '../MerkleTree.ts'
+import { hash, hashSingleValue, hashPair } from '../dummyHash.js'
+import { MerkleTree } from '../MerkleTree.js'
 
 describe("Merkle tree", () => {
     const list = [1,2,3,4]

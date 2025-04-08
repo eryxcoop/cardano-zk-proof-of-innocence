@@ -1,5 +1,5 @@
-import { isPowerOfTwo } from './common.ts';
-import { hash, hashSingleValue, hashPair } from './dummyHash.ts';
+import { isPowerOfTwo } from './common.js';
+import { hash, hashSingleValue, hashPair } from './dummyHash.js';
 
 type merkleTreeLeafElement = number;
 type merkleTreeLeafIndex = number;

@@ -1,7 +1,14 @@
 #!/usr/bin/env node
 //import { intro } from './intro.js';
 import dotenv from 'dotenv';
-import { BlockfrostProvider, MeshWallet } from '@meshsdk/core';
+import { BlockfrostProvider, MeshWallet, serializePlutusScript} from '@meshsdk/core';
+import { applyParamsToScript } from "@meshsdk/core-csl";
+import fs, { read } from 'fs';
+
+
+//const privatekey = MeshWallet.brew(true);
+//console.log(privatekey);
+
 
 
 // Display intro
@@ -29,7 +36,7 @@ const blockchainProvider = new BlockfrostProvider(apiKey);
 
 
 const wallet_1 = new MeshWallet({
-    networkId: 1, 
+    networkId: 0, 
     fetcher: blockchainProvider,
     submitter: blockchainProvider,
     key: {
@@ -38,7 +45,29 @@ const wallet_1 = new MeshWallet({
     },
 });
 
-console.log(wallet_1);
+//console.log(wallet_1.getAddresses().baseAddress)
+
+
+async function initializeWallet(wallet: MeshWallet) {
+      await wallet.init()
+      console.log(wallet.getAddresses())
+      const balance = await wallet.getBalance()
+      console.log(balance)
+}
+
+initializeWallet(wallet_1)
+
+
+
+const blueprint = JSON.parse(fs.readFileSync("./plutus.json", "utf-8"));
+
+
+
+
+
+
+
+
 
 
 
