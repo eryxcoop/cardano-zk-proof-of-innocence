@@ -16,12 +16,12 @@ template ProofOfInnocence(levels) {
     signal input pathIndices[levels];
     signal input leafIndex;
 
-    component merkle_tree_checker = MerkleTreeChecker(levels);
-    merkle_tree_checker.leaf <== 0;
-    merkle_tree_checker.root <== root;
+    component merkleTreeChecker = MerkleTreeChecker(levels);
+    merkleTreeChecker.leaf <== 0;
+    merkleTreeChecker.root <== root;
     for(var i=0; i<levels; i++) {
-        merkle_tree_checker.pathElements[i] <== pathElements[i];
-        merkle_tree_checker.pathIndices[i] <== pathIndices[i];
+        merkleTreeChecker.pathElements[i] <== pathElements[i];
+        merkleTreeChecker.pathIndices[i] <== pathIndices[i];
     }
     
     component pathIndicesChecker = PathIndicesChecker(levels);
