@@ -2,13 +2,14 @@
 //import { intro } from './intro.js';
 import dotenv from 'dotenv';
 import { BlockfrostProvider, MeshWallet, serializePlutusScript} from '@meshsdk/core';
-import { applyParamsToScript } from "@meshsdk/core-csl";
+import { applyParamsToScript, skeyToPubKeyHash, toPlutusData, deserializeAddress } from "@meshsdk/core-csl";
+import {  } from "@meshsdk/common"
 import fs, { read } from 'fs';
+import { error } from 'console';
 
 
 //const privatekey = MeshWallet.brew(true);
 //console.log(privatekey);
-
 
 
 // Display intro
@@ -45,7 +46,6 @@ const wallet_1 = new MeshWallet({
     },
 });
 
-//console.log(wallet_1.getAddresses().baseAddress)
 
 
 async function initializeWallet(wallet: MeshWallet) {
@@ -55,11 +55,29 @@ async function initializeWallet(wallet: MeshWallet) {
       console.log(balance)
 }
 
-initializeWallet(wallet_1)
 
 
+async function instantiateOracle(wallet: MeshWallet) {
+      await initializeWallet(wallet)
+      const walletAddr = wallet_1.getAddresses().baseAddressBech32
+      console.log(walletAddr)
 
-const blueprint = JSON.parse(fs.readFileSync("./plutus.json", "utf-8"));
+      //if (walletAddr == undefined) throw new Error("Can't find bech32 wallet address")
+      const pubKeyHash = deserializeAddress(walletAddr!)
+      
+      
+      //console.log(pubKeyHash);
+      //const blueprint = JSON.parse(fs.readFileSync("../validator/plutus.json", "utf-8"));
+      //const scriptCbor = applyParamsToScript(blueprint.validators[0].compiledCode, [pubKeyHash]);
+      //const scriptAddr = serializePlutusScript(
+      //      { code: scriptCbor, version: "V3" },
+      //      undefined,
+      //      0
+      //).address;
+      //console.log(scriptAddr);     
+}
+
+instantiateOracle(wallet_1)
 
 
 
