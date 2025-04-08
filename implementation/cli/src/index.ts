@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 //import { intro } from './intro.js';
 import dotenv from 'dotenv';
-import { BlockfrostProvider, MeshWallet, serializePlutusScript} from '@meshsdk/core';
+import { BlockfrostProvider, MeshWallet, serializePlutusScript, conStr, MeshTxBuilder, resolveScriptHash, mTuple, Asset} from '@meshsdk/core';
 import { applyParamsToScript, skeyToPubKeyHash, toPlutusData, deserializeAddress } from "@meshsdk/core-csl";
 import { Address } from '@emurgo/cardano-serialization-lib-nodejs';
 import {  } from "@meshsdk/common"
@@ -20,6 +20,8 @@ import { error } from 'console';
 
 dotenv.config();
 const secretKey: string = process.env.WALLET_SECREY_KEY || "nothing";
+const mnemonic =  secretKey.split(" ");
+console.log(mnemonic)
 const apiKey: string = process.env.API_KEY || "nothing";
 
 
@@ -42,8 +44,8 @@ const wallet_1 = new MeshWallet({
     fetcher: blockchainProvider,
     submitter: blockchainProvider,
     key: {
-      type: 'root',
-      bech32: secretKey,
+      type: 'mnemonic',
+      words: mnemonic,
     },
 });
 
@@ -52,7 +54,7 @@ const wallet_1 = new MeshWallet({
 async function initializeWallet(wallet: MeshWallet) {
       await wallet.init()
       console.log(wallet.getAddresses())
-      const balance = await wallet.getBalance()
+      const balance = await wallet.getUtxos()
       console.log(balance)
 }
 
@@ -60,23 +62,68 @@ async function initializeWallet(wallet: MeshWallet) {
 
 async function instantiateOracle(wallet: MeshWallet) {
       await initializeWallet(wallet)
-      const walletAddr = wallet_1.getAddresses().baseAddressBech32
-      //if (walletAddr == undefined) throw new Error("Can't find bech32 wallet address")
-      //const pubKeyHash = deserializeAddress(walletAddr!)
+
+      const walletAddr = wallet.getAddresses().baseAddressBech32
       const pubKeyHash = Address.from_bech32(walletAddr!);
-
       const paymentKeyHash = pubKeyHash!.payment_cred()!.to_keyhash();
-      console.log(Buffer.from(paymentKeyHash!.to_bytes()).toString('hex'));
-      
 
+      const paymentKeyHashData = (Buffer.from(paymentKeyHash!.to_bytes()).toString('hex'));
+      
       const blueprint = JSON.parse(fs.readFileSync("../validator/plutus.json", "utf-8"));
-      const scriptCbor = applyParamsToScript(blueprint.validators[0].compiledCode, paymentKeyHash);
-      //const scriptAddr = serializePlutusScript(
-      //      { code: scriptCbor, version: "V3" },
-      //      undefined,
-      //      0
-      //).address;
-      //console.log(scriptAddr);     
+      //console.log(blueprint.validators[0])
+      const scriptCbor = applyParamsToScript(blueprint.validators[0].compiledCode, [paymentKeyHashData]);
+      console.log(scriptCbor)
+      const scriptAddr = serializePlutusScript(
+            { code: scriptCbor, version: "V3" },
+            undefined,
+            0
+      ).address;
+
+      console.log("Script Address: " + scriptAddr);     
+
+
+      // Todo: Right now we'll use a dummy value hash to define the datum, but in the future we will need to create a roothash and make it an integer compatible with ak_381.grothverify() function.
+      const oracleDatum = conStr(0, [0]);
+      const policyId = resolveScriptHash(scriptCbor, "V3");
+      console.log("Script policyId: " + policyId);
+
+      const oracleRedeemer = mTuple;
+
+      const txBuilder = new MeshTxBuilder({
+            fetcher: blockchainProvider,
+            evaluator: blockchainProvider,
+            verbose: true,
+      })
+
+      const wallet_utxos = await blockchainProvider.fetchAddressUTxOs(walletAddr!);
+
+      const collateral: Asset[] = [
+            { unit: "lovelace", quantity: "5000000" },
+          ];
+
+      const mint_oracle_value: Asset[] = [
+            { unit: "lovelace", quantity: "1500000" },
+            { unit: policyId + "6d6173746572", quantity: "1" },
+          ];
+
+      const unsignedMintTx = await txBuilder
+            .txIn("e016e6d32d51d894440373737a6390fda2e7e369b73938d7e0a69e8f510bf3d2",1)
+            .setNetwork("preprod")
+            .mintPlutusScriptV3()
+            .mint("1", policyId, "6d6173746572")
+            .mintingScript(scriptCbor)
+            .mintRedeemerValue(oracleRedeemer, "Mesh")
+            .selectUtxosFrom(wallet_utxos)
+            .txInCollateral("e016e6d32d51d894440373737a6390fda2e7e369b73938d7e0a69e8f510bf3d2",5, collateral, walletAddr)
+            .txOutDatumEmbedValue(oracleDatum)
+            .txOut(scriptAddr, mint_oracle_value)
+            .changeAddress(walletAddr!)
+            .complete()
+
+      const signedTx =  await wallet.signTx(unsignedMintTx, true);
+      const txHash = await wallet.submitTx(signedTx);
+      console.log(txHash);
+            
 }
 
 instantiateOracle(wallet_1)
