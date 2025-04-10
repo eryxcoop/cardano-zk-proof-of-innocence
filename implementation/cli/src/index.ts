@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 //import { intro } from './intro.js';
 import dotenv from 'dotenv';
-import { BlockfrostProvider, MeshWallet, serializePlutusScript, conStr, MeshTxBuilder, resolveScriptHash, mTuple, Asset} from '@meshsdk/core';
+import { integer, BlockfrostProvider, MeshWallet, serializePlutusScript, conStr, MeshTxBuilder, resolveScriptHash, Asset,} from '@meshsdk/core';
 import { applyParamsToScript, skeyToPubKeyHash, toPlutusData, deserializeAddress } from "@meshsdk/core-csl";
 import { Address } from '@emurgo/cardano-serialization-lib-nodejs';
 import {  } from "@meshsdk/common"
@@ -87,7 +87,7 @@ async function instantiateOracle(wallet: MeshWallet) {
       const policyId = resolveScriptHash(scriptCbor, "V3");
       console.log("Script policyId: " + policyId);
 
-      const oracleRedeemer = mTuple;
+      const oracleRedeemer = integer(0);
 
       const txBuilder = new MeshTxBuilder({
             fetcher: blockchainProvider,
@@ -95,35 +95,34 @@ async function instantiateOracle(wallet: MeshWallet) {
             verbose: true,
       })
 
-      const wallet_utxos = await blockchainProvider.fetchAddressUTxOs(walletAddr!);
+      const wallet_utxos = await wallet.getUtxos()
 
       const collateral: Asset[] = [
-            { unit: "lovelace", quantity: "5000000" },
+            { unit: "lovelace", quantity: "4994819715" },
           ];
 
       const mint_oracle_value: Asset[] = [
-            { unit: "lovelace", quantity: "1500000" },
+            { unit: "lovelace", quantity: "2000000" },
             { unit: policyId + "6d6173746572", quantity: "1" },
           ];
 
       const unsignedMintTx = await txBuilder
-            .txIn("e016e6d32d51d894440373737a6390fda2e7e369b73938d7e0a69e8f510bf3d2",1)
+            //.txIn("e016e6d32d51d894440373737a6390fda2e7e369b73938d7e0a69e8f510bf3d2",0)
             .setNetwork("preprod")
             .mintPlutusScriptV3()
             .mint("1", policyId, "6d6173746572")
             .mintingScript(scriptCbor)
-            .mintRedeemerValue(oracleRedeemer, "Mesh")
+            .mintRedeemerValue(oracleRedeemer, "JSON")
             .selectUtxosFrom(wallet_utxos)
-            .txInCollateral("e016e6d32d51d894440373737a6390fda2e7e369b73938d7e0a69e8f510bf3d2",5, collateral, walletAddr)
-            .txOutDatumEmbedValue(oracleDatum)
+            .txInCollateral("e016e6d32d51d894440373737a6390fda2e7e369b73938d7e0a69e8f510bf3d2",1, collateral, walletAddr)
+            .txOutInlineDatumValue(oracleDatum)
             .txOut(scriptAddr, mint_oracle_value)
             .changeAddress(walletAddr!)
             .complete()
 
       const signedTx =  await wallet.signTx(unsignedMintTx, true);
       const txHash = await wallet.submitTx(signedTx);
-      console.log(txHash);
-            
+      console.log(txHash);         
 }
 
 instantiateOracle(wallet_1)
