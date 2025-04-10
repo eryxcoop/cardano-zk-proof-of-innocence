@@ -83,7 +83,7 @@ async function instantiateOracle(wallet: MeshWallet) {
 
 
       // Todo: Right now we'll use a dummy value hash to define the datum, but in the future we will need to create a roothash and make it an integer compatible with ak_381.grothverify() function.
-      const oracleDatum = conStr(0, [0]);
+      const oracleDatum = conStr(0, [integer(0)]);
       const policyId = resolveScriptHash(scriptCbor, "V3");
       console.log("Script policyId: " + policyId);
 
@@ -98,25 +98,26 @@ async function instantiateOracle(wallet: MeshWallet) {
       const wallet_utxos = await wallet.getUtxos()
 
       const collateral: Asset[] = [
-            { unit: "lovelace", quantity: "4994819715" },
+            { unit: "lovelace", quantity: "1248750000" },
           ];
 
       const mint_oracle_value: Asset[] = [
-            { unit: "lovelace", quantity: "2000000" },
-            { unit: policyId + "6d6173746572", quantity: "1" },
+            { unit: "lovelace", quantity: "5000000" },
+            { unit: "6d6173746572" + policyId, quantity: "1" },
           ];
 
+
       const unsignedMintTx = await txBuilder
-            //.txIn("e016e6d32d51d894440373737a6390fda2e7e369b73938d7e0a69e8f510bf3d2",0)
+            //.txIn("e016e6d32d51d894440373737a6390fda2e7e369b73938d7e0a69e8f510bf3d2",1)
             .setNetwork("preprod")
             .mintPlutusScriptV3()
             .mint("1", policyId, "6d6173746572")
             .mintingScript(scriptCbor)
             .mintRedeemerValue(oracleRedeemer, "JSON")
             .selectUtxosFrom(wallet_utxos)
-            .txInCollateral("e016e6d32d51d894440373737a6390fda2e7e369b73938d7e0a69e8f510bf3d2",1, collateral, walletAddr)
-            .txOutInlineDatumValue(oracleDatum)
+            .txInCollateral("e016e6d32d51d894440373737a6390fda2e7e369b73938d7e0a69e8f510bf3d2",4 ,collateral, walletAddr)
             .txOut(scriptAddr, mint_oracle_value)
+            .txOutInlineDatumValue(oracleDatum, "JSON")
             .changeAddress(walletAddr!)
             .complete()
 

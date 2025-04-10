@@ -16,6 +16,7 @@ validator oracle(verification_key_hash: ByteArray) {
     let number_of_mints_per_asset: Dict<AssetName, Int> =
       tokens(self.mint, policy_id)
     if size(number_of_mints_per_asset) != 1 {
+      trace @"1"
       False
     } else {
       expect Some(asset) = at(keys(number_of_mints_per_asset), 0)
@@ -40,8 +41,11 @@ validator oracle(verification_key_hash: ByteArray) {
         )
 
       and {
+        trace @"2"
         transaction_includes_verification_key_hash,
+        trace @"3"
         has_only_one_minted_token,
+        trace @"4"
         minted_tokens_are_sent_to_validator_address,
       }
     }
