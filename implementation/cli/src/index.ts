@@ -3,8 +3,8 @@
 import dotenv from 'dotenv';
 import { integer, BlockfrostProvider, MeshWallet, serializePlutusScript, conStr, MeshTxBuilder, resolveScriptHash, Asset,} from '@meshsdk/core';
 import { applyParamsToScript, skeyToPubKeyHash, toPlutusData, deserializeAddress } from "@meshsdk/core-csl";
-import { Address } from '@emurgo/cardano-serialization-lib-nodejs';
-import {  } from "@meshsdk/common"
+import { Address, Int } from '@emurgo/cardano-serialization-lib-nodejs';
+import { UTxO } from "@meshsdk/common"
 import fs, { read } from 'fs';
 import { error } from 'console';
 
@@ -58,6 +58,42 @@ async function initializeWallet(wallet: MeshWallet) {
       console.log(balance)
 }
 
+function lovelaceAmountIn(utxo: UTxO): number {
+      const lovelaceAsset = lovelaceAssetIn(utxo)
+      return Number(lovelaceAsset.quantity)
+}
+
+function lovelaceAssetIn(utxo: UTxO): Asset {
+      const assets: Asset[] = utxo.output.amount
+      return assets.find(
+            (asset) => asset.unit == "lovelace"
+      )!
+}
+
+function removeUtxoForCollateralFrom(utxoList: UTxO[]) {
+      const collateralValueThreshold = 5000000
+      let selectedUtxo = utxoList[0]
+      let selectedUtxoValue = lovelaceAmountIn(selectedUtxo)
+
+      for (let index = 1; index < utxoList.length; index++) {
+            const utxo = utxoList[index]   
+            const value = lovelaceAmountIn(utxo)
+            if (value >= collateralValueThreshold && value <= selectedUtxoValue) {
+                  selectedUtxo = utxo
+                  selectedUtxoValue = value
+            }
+      } 
+      
+      const utxoListExcludingCollateral = utxoList.filter( 
+            (utxo) => utxo !== selectedUtxo
+      )
+      
+      return {
+            collateralUtxo: selectedUtxo,
+            utxoListExcludingCollateral
+      } 
+}
+
 
 
 async function instantiateOracle(wallet: MeshWallet) {
@@ -97,14 +133,13 @@ async function instantiateOracle(wallet: MeshWallet) {
 
       const wallet_utxos = await wallet.getUtxos()
 
-      const collateral: Asset[] = [
-            { unit: "lovelace", quantity: "1238322072" },
-          ];
-
+     
       const mint_oracle_value: Asset[] = [
             { unit: "lovelace", quantity: "5000000" },
             { unit: policyId + "6d6173746572", quantity: "1" },
           ];
+
+      const { collateralUtxo, utxoListExcludingCollateral} = removeUtxoForCollateralFrom(wallet_utxos)
 
       const unsignedMintTx = await txBuilder
             .setNetwork("preprod")
@@ -112,8 +147,8 @@ async function instantiateOracle(wallet: MeshWallet) {
             .mint("1", policyId, "6d6173746572")
             .mintingScript(scriptCbor)
             .mintRedeemerValue(oracleRedeemer, "JSON")
-            .selectUtxosFrom(wallet_utxos)
-            .txInCollateral("bf8ed8db3e2fe36c50ef1af24150599e3f8fabad4939da5f00787c18ae44abd2", 1, collateral, walletAddr)
+            .selectUtxosFrom(utxoListExcludingCollateral)
+            .txInCollateral(collateralUtxo.input.txHash, collateralUtxo.input.outputIndex, [lovelaceAssetIn(collateralUtxo)], walletAddr)
             .txOut(scriptAddr, mint_oracle_value)
             .txOutInlineDatumValue(oracleDatum, "JSON")
             .changeAddress(walletAddr!)
