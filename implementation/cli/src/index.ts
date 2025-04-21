@@ -98,7 +98,7 @@ async function instantiateOracle(wallet: MeshWallet) {
       const wallet_utxos = await wallet.getUtxos()
 
       const collateral: Asset[] = [
-            { unit: "lovelace", quantity: "1248750000" },
+            { unit: "lovelace", quantity: "1238322072" },
           ];
 
       const mint_oracle_value: Asset[] = [
@@ -113,10 +113,11 @@ async function instantiateOracle(wallet: MeshWallet) {
             .mintingScript(scriptCbor)
             .mintRedeemerValue(oracleRedeemer, "JSON")
             .selectUtxosFrom(wallet_utxos)
-            .txInCollateral("e016e6d32d51d894440373737a6390fda2e7e369b73938d7e0a69e8f510bf3d2",4 ,collateral, walletAddr)
+            .txInCollateral("bf8ed8db3e2fe36c50ef1af24150599e3f8fabad4939da5f00787c18ae44abd2", 1, collateral, walletAddr)
             .txOut(scriptAddr, mint_oracle_value)
             .txOutInlineDatumValue(oracleDatum, "JSON")
             .changeAddress(walletAddr!)
+            .requiredSignerHash(paymentKeyHash!.to_hex())
             .complete()
 
       const signedTx =  await wallet.signTx(unsignedMintTx, true);

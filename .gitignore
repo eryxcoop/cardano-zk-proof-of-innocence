@@ -1,1 +1,4 @@
 *.DS_Store
+.idea/*
+*.env
+implementation/circuit/output/*
