@@ -107,7 +107,6 @@ async function instantiateOracle(wallet: MeshWallet) {
           ];
 
       const unsignedMintTx = await txBuilder
-            .txIn("e016e6d32d51d894440373737a6390fda2e7e369b73938d7e0a69e8f510bf3d2",1)
             .setNetwork("preprod")
             .mintPlutusScriptV3()
             .mint("1", policyId, "6d6173746572")
