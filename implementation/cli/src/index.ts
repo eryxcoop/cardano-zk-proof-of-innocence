@@ -38,6 +38,10 @@ const apiKey: string = process.env.API_KEY || "nothing";
 
 const blockchainProvider = new BlockfrostProvider(apiKey);
 
+function oracleTokenAsset(policyId: string) {
+      return { unit: policyId + "6d6173746572", quantity: "1" }
+}
+
 
 async function createWallet() {
       const wallet =  new MeshWallet({
@@ -81,13 +85,13 @@ function removeUtxoForCollateralFrom(utxoList: UTxO[]) {
             }
       } 
       
-      const utxoListExcludingCollateral = utxoList.filter( 
+      const walletUtxosExcludingCollateral = utxoList.filter( 
             (utxo) => utxo !== selectedUtxo
       )
       
       return {
             collateralUtxo: selectedUtxo,
-            utxoListExcludingCollateral
+            walletUtxosExcludingCollateral
       } 
 }
 
@@ -115,6 +119,14 @@ function scriptAddressFor(sciptCbor: string) {
             undefined,
             0
       ).address;
+}
+
+async function oracleTokenUtxoFrom(scriptAddress: string, policyId: string) {
+      const utxosWithOracleToken = await blockchainProvider.fetchAddressUTxOs(
+            scriptAddress,
+            oracleTokenAsset(policyId).unit
+      );
+      return utxosWithOracleToken[0]
 }
 
 async function instantiateOracle() {
@@ -147,10 +159,10 @@ async function instantiateOracle() {
      
       const mint_oracle_value: Asset[] = [
             { unit: "lovelace", quantity: "5000000" },
-            { unit: policyId + "6d6173746572", quantity: "1" },
+            oracleTokenAsset(policyId),
           ];
 
-      const { collateralUtxo, utxoListExcludingCollateral} = removeUtxoForCollateralFrom(wallet_utxos)
+      const { collateralUtxo, walletUtxosExcludingCollateral} = removeUtxoForCollateralFrom(wallet_utxos)
 
       const unsignedMintTx = await txBuilder
             .setNetwork("preprod")
@@ -158,7 +170,7 @@ async function instantiateOracle() {
             .mint("1", policyId, "6d6173746572")
             .mintingScript(scriptCbor)
             .mintRedeemerValue(oracleRedeemer, "JSON")
-            .selectUtxosFrom(utxoListExcludingCollateral)
+            .selectUtxosFrom(walletUtxosExcludingCollateral)
             .txInCollateral(collateralUtxo.input.txHash, collateralUtxo.input.outputIndex, [lovelaceAssetIn(collateralUtxo)], walletAddr)
             .txOut(scriptAddr, mint_oracle_value)
             .txOutInlineDatumValue(oracleDatum, "JSON")
@@ -193,10 +205,10 @@ async function updateOracle() {
       const scriptAddr = scriptAddressFor(scriptCbor)
       const policyId = resolveScriptHash(scriptCbor, "V3");
 
-      const oracleDatum = conStr(0, [integer(3)]);
+      const oracleDatum = conStr(0, [integer(4)]);
 
       const wallet_utxos = await wallet.getUtxos()
-      const { collateralUtxo, utxoListExcludingCollateral} = removeUtxoForCollateralFrom(wallet_utxos)
+      const { collateralUtxo, walletUtxosExcludingCollateral} = removeUtxoForCollateralFrom(wallet_utxos)
 
       const oracleRedeemer = integer(0);
       const outputOracleValue: Asset[] = [
@@ -210,15 +222,16 @@ async function updateOracle() {
             verbose: true,
       })
 
+      const oracleTokenUtxo = await oracleTokenUtxoFrom(scriptAddr, policyId)
 
       const unsignedMintTx = await txBuilder
             .setNetwork("preprod")
             .spendingPlutusScriptV3()
-            .txIn("8f27a64c192a66e968353ae46217e411c9af0e84b212d3996eaaf35a9b3203c8", 0)
+            .txIn(oracleTokenUtxo.input.txHash, oracleTokenUtxo.input.outputIndex)
             .txInInlineDatumPresent()
             .txInScript(scriptCbor)
             .txInRedeemerValue(oracleRedeemer, "JSON")
-            .selectUtxosFrom(utxoListExcludingCollateral)
+            .selectUtxosFrom(walletUtxosExcludingCollateral)
             .txInCollateral(collateralUtxo.input.txHash, collateralUtxo.input.outputIndex, [lovelaceAssetIn(collateralUtxo)], walletAddr)
             .txOut(scriptAddr, outputOracleValue)
             .txOutInlineDatumValue(oracleDatum, "JSON")
@@ -229,8 +242,7 @@ async function updateOracle() {
 
       const signedTx =  await wallet.signTx(unsignedMintTx, true);
       const txHash = await wallet.submitTx(signedTx);
-      console.log(txHash); 
-
+      console.log(txHash);
 
       // Obtener el código del validador
 
@@ -239,18 +251,6 @@ async function updateOracle() {
 
 //instantiateOracle()
 updateOracle()
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
