@@ -39,24 +39,21 @@ const apiKey: string = process.env.API_KEY || "nothing";
 const blockchainProvider = new BlockfrostProvider(apiKey);
 
 
-const wallet_1 = new MeshWallet({
-    networkId: 0, 
-    fetcher: blockchainProvider,
-    submitter: blockchainProvider,
-    key: {
-      type: 'mnemonic',
-      words: mnemonic,
-    },
-});
+async function createWallet() {
+      const wallet =  new MeshWallet({
+            networkId: 0, 
+            fetcher: blockchainProvider,
+            submitter: blockchainProvider,
+            key: {
+              type: 'mnemonic',
+              words: mnemonic,
+            },
+      });  
 
-
-
-async function initializeWallet(wallet: MeshWallet) {
       await wallet.init()
-      console.log(wallet.getAddresses())
-      const balance = await wallet.getUtxos()
-      console.log(balance)
+      return wallet
 }
+
 
 function lovelaceAmountIn(utxo: UTxO): number {
       const lovelaceAsset = lovelaceAssetIn(utxo)
@@ -94,14 +91,23 @@ function removeUtxoForCollateralFrom(utxoList: UTxO[]) {
       } 
 }
 
+function walletBaseAddress(wallet: MeshWallet) {
+      return wallet.getAddresses().baseAddressBech32
+}
 
-
-async function instantiateOracle(wallet: MeshWallet) {
-      await initializeWallet(wallet)
-
-      const walletAddr = wallet.getAddresses().baseAddressBech32
+function paymentKeyHashForWallet(wallet: MeshWallet) {
+      const walletAddr = walletBaseAddress(wallet)
       const pubKeyHash = Address.from_bech32(walletAddr!);
-      const paymentKeyHash = pubKeyHash!.payment_cred()!.to_keyhash();
+      return pubKeyHash!.payment_cred()!.to_keyhash();
+}
+
+
+
+async function instantiateOracle() {
+      const wallet = await createWallet()
+
+      const walletAddr = walletBaseAddress(wallet)
+      const paymentKeyHash = paymentKeyHashForWallet(wallet)
 
       const paymentKeyHashData = (Buffer.from(paymentKeyHash!.to_bytes()).toString('hex'));
       
@@ -160,7 +166,36 @@ async function instantiateOracle(wallet: MeshWallet) {
       console.log(txHash);         
 }
 
-instantiateOracle(wallet_1)
+
+
+// Update the Oracle
+/*
+1. Recompute a new MKT.
+2. Update the new MKT root at the script address.
+3. Define a Tx that which:
+      - Creates an UTXO with the NEW root hash of banned Txs.
+      - Sends this token again to script.
+*/
+
+
+
+async function updateOracle() {
+      const wallet = await createWallet()
+
+
+
+
+      // Obtener el código del validador
+
+      // Generar Datum (Definir a 1)
+
+
+}
+
+instantiateOracle()
+
+
+
 
 
 
