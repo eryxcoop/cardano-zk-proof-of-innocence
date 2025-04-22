@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 //import { intro } from './intro.js';
 import dotenv from 'dotenv';
-import { integer, BlockfrostProvider, MeshWallet, serializePlutusScript, conStr, MeshTxBuilder, resolveScriptHash, Asset,} from '@meshsdk/core';
+import { integer, BlockfrostProvider, MeshWallet, serializePlutusScript, conStr, MeshTxBuilder, resolveScriptHash, Asset} from '@meshsdk/core';
 import { applyParamsToScript, skeyToPubKeyHash, toPlutusData, deserializeAddress } from "@meshsdk/core-csl";
 import { Address, Int } from '@emurgo/cardano-serialization-lib-nodejs';
 import { UTxO } from "@meshsdk/common"
@@ -101,6 +101,22 @@ function paymentKeyHashForWallet(wallet: MeshWallet) {
       return pubKeyHash!.payment_cred()!.to_keyhash();
 }
 
+function instantiateOracleContract(wallet: MeshWallet) {
+      const paymentKeyHash = paymentKeyHashForWallet(wallet)
+      const paymentKeyHashData = (Buffer.from(paymentKeyHash!.to_bytes()).toString('hex'));
+      const blueprint = JSON.parse(fs.readFileSync("../validator/plutus.json", "utf-8"));
+      const scriptCbor =  applyParamsToScript(blueprint.validators[0].compiledCode, [paymentKeyHashData]);
+      return scriptCbor
+}
+
+function scriptAddressFor(sciptCbor: string) {
+      return serializePlutusScript(
+            { code: sciptCbor, version: "V3" },
+            undefined,
+            0
+      ).address;
+}
+
 
 
 async function instantiateOracle() {
@@ -109,19 +125,10 @@ async function instantiateOracle() {
       const walletAddr = walletBaseAddress(wallet)
       const paymentKeyHash = paymentKeyHashForWallet(wallet)
 
-      const paymentKeyHashData = (Buffer.from(paymentKeyHash!.to_bytes()).toString('hex'));
-      
-      const blueprint = JSON.parse(fs.readFileSync("../validator/plutus.json", "utf-8"));
-      //console.log(blueprint.validators[0])
-      const scriptCbor = applyParamsToScript(blueprint.validators[0].compiledCode, [paymentKeyHashData]);
-      console.log(scriptCbor)
-      const scriptAddr = serializePlutusScript(
-            { code: scriptCbor, version: "V3" },
-            undefined,
-            0
-      ).address;
+      const scriptCbor = instantiateOracleContract(wallet)
+      const scriptAddr = scriptAddressFor(scriptCbor)
 
-      console.log("Script Address: " + scriptAddr);     
+      // console.log("Script Address: " + scriptAddr); 
 
 
       // Todo: Right now we'll use a dummy value hash to define the datum, but in the future we will need to create a roothash and make it an integer compatible with ak_381.grothverify() function.
@@ -181,18 +188,60 @@ async function instantiateOracle() {
 
 async function updateOracle() {
       const wallet = await createWallet()
+      const walletAddr = walletBaseAddress(wallet)
+      const paymentKeyHash = paymentKeyHashForWallet(wallet)
 
+      const scriptCbor = instantiateOracleContract(wallet)
+      const scriptAddr = scriptAddressFor(scriptCbor)
+      const policyId = resolveScriptHash(scriptCbor, "V3");
+
+      const oracleDatum = conStr(0, [integer(2)]);
+
+      const wallet_utxos = await wallet.getUtxos()
+      const { collateralUtxo, utxoListExcludingCollateral} = removeUtxoForCollateralFrom(wallet_utxos)
+
+      const oracleRedeemer = integer(0);
+      const outputOracleValue: Asset[] = [
+            { unit: "lovelace", quantity: "5000000" },
+            { unit: policyId + "6d6173746572", quantity: "1" },
+          ];
+
+      const txBuilder = new MeshTxBuilder({
+            fetcher: blockchainProvider,
+            evaluator: blockchainProvider,
+            verbose: true,
+      })
+
+
+      const unsignedMintTx = await txBuilder
+            .setNetwork("preprod")
+            .spendingPlutusScriptV3()
+            .txIn("53ea7fcdf9fa63b3618fdfe88c905be2ed02262c65f39cd4adb8a9788078bf74", 0)
+            .txInInlineDatumPresent()
+            .txInScript(scriptCbor)
+            .txInRedeemerValue(oracleRedeemer, "JSON")
+            .selectUtxosFrom(utxoListExcludingCollateral)
+            .txInCollateral(collateralUtxo.input.txHash, collateralUtxo.input.outputIndex, [lovelaceAssetIn(collateralUtxo)], walletAddr)
+            .txOut(scriptAddr, outputOracleValue)
+            .txOutInlineDatumValue(oracleDatum, "JSON")
+            .changeAddress(walletAddr!)
+            .requiredSignerHash(paymentKeyHash!.to_hex())
+            .complete()
+            
+
+      const signedTx =  await wallet.signTx(unsignedMintTx, true);
+      const txHash = await wallet.submitTx(signedTx);
+      console.log(txHash); 
 
 
 
       // Obtener el código del validador
 
       // Generar Datum (Definir a 1)
-
-
 }
 
-instantiateOracle()
+//instantiateOracle()
+updateOracle()
 
 
 
