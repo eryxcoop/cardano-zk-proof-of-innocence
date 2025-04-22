@@ -1,5 +1,8 @@
-import { isPowerOfTwo } from './common.js';
 import { hash, hashSingleValue, hashPair } from './dummyHash.js';
+
+function isPowerOfTwo(value: number): boolean {
+    return value > 0 && (value & (value - 1)) === 0;
+}
 
 type merkleTreeLeafElement = number;
 type merkleTreeLeafIndex = number;
