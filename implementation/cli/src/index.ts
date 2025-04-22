@@ -117,8 +117,6 @@ function scriptAddressFor(sciptCbor: string) {
       ).address;
 }
 
-
-
 async function instantiateOracle() {
       const wallet = await createWallet()
 
@@ -195,7 +193,7 @@ async function updateOracle() {
       const scriptAddr = scriptAddressFor(scriptCbor)
       const policyId = resolveScriptHash(scriptCbor, "V3");
 
-      const oracleDatum = conStr(0, [integer(2)]);
+      const oracleDatum = conStr(0, [integer(3)]);
 
       const wallet_utxos = await wallet.getUtxos()
       const { collateralUtxo, utxoListExcludingCollateral} = removeUtxoForCollateralFrom(wallet_utxos)
@@ -216,7 +214,7 @@ async function updateOracle() {
       const unsignedMintTx = await txBuilder
             .setNetwork("preprod")
             .spendingPlutusScriptV3()
-            .txIn("53ea7fcdf9fa63b3618fdfe88c905be2ed02262c65f39cd4adb8a9788078bf74", 0)
+            .txIn("8f27a64c192a66e968353ae46217e411c9af0e84b212d3996eaaf35a9b3203c8", 0)
             .txInInlineDatumPresent()
             .txInScript(scriptCbor)
             .txInRedeemerValue(oracleRedeemer, "JSON")
@@ -232,7 +230,6 @@ async function updateOracle() {
       const signedTx =  await wallet.signTx(unsignedMintTx, true);
       const txHash = await wallet.submitTx(signedTx);
       console.log(txHash); 
-
 
 
       // Obtener el código del validador
