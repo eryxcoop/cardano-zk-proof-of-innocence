@@ -1,5 +1,6 @@
 #!/usr/bin/env node
 //import { intro } from './intro.js';
+import { instantiateOracle } from "./blockchain/instantiateOracle.js"
 import { updateOracle } from "./blockchain/updateOracle.js"
 
 
