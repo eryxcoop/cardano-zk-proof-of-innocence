@@ -95,6 +95,14 @@ export function instantiateOracleContract(wallet: MeshWallet) {
       return scriptCbor
 }
 
+export function instantiatePoIContract(wallet: MeshWallet) {
+      const paymentKeyHash = paymentKeyHashForWallet(wallet)
+      const paymentKeyHashData = (Buffer.from(paymentKeyHash!.to_bytes()).toString('hex'));
+      const blueprint = JSON.parse(fs.readFileSync("../validator/plutus.json", "utf-8"));
+      const scriptCbor =  applyParamsToScript(blueprint.validators[3].compiledCode, [paymentKeyHashData]);
+      return scriptCbor
+}
+
 export function oracleTokenAsset(policyId: string) {
       return { unit: policyId + "6d6173746572", quantity: "1" }
 }

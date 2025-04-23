@@ -1,12 +1,13 @@
 #!/usr/bin/env node
 //import { intro } from './intro.js';
 import { instantiateOracle } from "./blockchain/instantiateOracle.js"
+import { instantiatePoi } from "./blockchain/instantiatePoi.js"
 import { updateOracle } from "./blockchain/updateOracle.js"
 
 
 //instantiateOracle()
-updateOracle()
-
+//updateOracle()
+instantiatePoi()
 
 
 
