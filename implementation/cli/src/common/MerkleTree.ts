@@ -27,16 +27,30 @@ export class MerkleTree {
         }
     }
 
-    authenticationPathFor(index: merkleTreeLeafIndex): hash[] {
+    authenticationPathElementsFor(index: merkleTreeLeafIndex): hash[] {
         if (this.size() == 1) {
             return [];
         } else {
             if (index < this.halfIndex()) {
-                return this.left().authenticationPathFor(index)
+                return this.left().authenticationPathElementsFor(index)
                     .concat([this.right().root()]);
             } else {
                 return [this.left().root()]
-                    .concat(this.right().authenticationPathFor(index));
+                    .concat(this.right().authenticationPathElementsFor(index));
+            }
+        }
+    }
+
+    authenticationPathIndicesFor(index: merkleTreeLeafIndex): hash[] {
+        if (this.size() == 1) {
+            return [];
+        } else {
+            if (index < this.halfIndex()) {
+                return this.left().authenticationPathIndicesFor(index)
+                    .concat([1]);
+            } else {
+                return [0]
+                    .concat(this.right().authenticationPathIndicesFor(index));
             }
         }
     }

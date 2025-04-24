@@ -41,21 +41,39 @@ describe("Merkle tree", () => {
         expect(root).toEqual(v1234)
     })
 
-    test("Can calculate the authentication path for a list with one element", () => {
+    test("Can calculate the authentication path elements for a list with one element", () => {
         const merkleTree = new MerkleTree([1])
 
-        const authenticationPath = merkleTree.authenticationPathFor(0)
+        const authenticationPathElements = merkleTree.authenticationPathElementsFor(0)
 
-        const expectedAuthenticationPath: hash[] = []
+        const expectedAuthenticationPathElements: hash[] = []
 
-        expect(authenticationPath).toEqual(expectedAuthenticationPath)
+        expect(authenticationPathElements).toEqual(expectedAuthenticationPathElements)
+    })
+
+    test("Can calculate the authentication path elements for a list with many elements", () => {
+        const mkt = new MerkleTree(list)
+        const authenticationPathElements = mkt.authenticationPathElementsFor(1)
+
+        const expectedAuthenticationPathElements = [v1,v34]
+        expect(authenticationPathElements).toEqual(expectedAuthenticationPathElements)
+    })
+
+    test("Can calculate the authentication path indices for a list with one element", () => {
+        const merkleTree = new MerkleTree([1])
+
+        const authenticationPathIndices = merkleTree.authenticationPathIndicesFor(0)
+
+        const expectedAuthenticationPathIndices: hash[] = []
+
+        expect(authenticationPathIndices).toEqual(expectedAuthenticationPathIndices)
     })
 
     test("Can calculate the authentication path for a list with many elements", () => {
         const mkt = new MerkleTree(list)
-        const authenticationPath = mkt.authenticationPathFor(1)
+        const authenticationPathIndices = mkt.authenticationPathIndicesFor(1)
 
-        const expectedAuthenticationPath = [v1,v34]
-        expect(authenticationPath).toEqual(expectedAuthenticationPath)
+        const expectedAuthenticationPathIndices = [0, 1]
+        expect(authenticationPathIndices).toEqual(expectedAuthenticationPathIndices)
     })
 })

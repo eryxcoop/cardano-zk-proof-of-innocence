@@ -1,13 +1,24 @@
 #!/usr/bin/env node
 //import { intro } from './intro.js';
-import { instantiateOracle } from "./blockchain/instantiateOracle.js"
-import { instantiatePoi } from "./blockchain/instantiatePoi.js"
-import { updateOracle } from "./blockchain/updateOracle.js"
+import { MerkleTree } from "./common/MerkleTree.js"
+import { buldPoi } from "./off_chain/buildPoi.js"
+import { instantiateOracle } from "./on_chain/instantiateOracle.js"
+import { instantiatePoi } from "./on_chain/instantiatePoi.js"
+import { updateOracle } from "./on_chain/updateOracle.js"
 
 
 //instantiateOracle()
 //updateOracle()
-instantiatePoi()
+//instantiatePoi()
+
+const merkleTree = new MerkleTree([0, 1, 2, 3])
+
+const leafIndex = 3
+const pathIndices = 
+const pathElements = merkleTree.authenticationPathElementsFor(3)
+const leafIndexHash = 
+const oracleMerkleTreeRootHash = merkleTree.root()
+buldPoi(oracleMerkleTreeRootHash, leafIndexHash, pathElements, pathIndices, leafIndex)
 
 
 
