@@ -1,5 +1,6 @@
 import { hash } from "../common/dummyHash.js";
-const snarkjs = require("snarkjs");
+// @ts-ignore
+import * as snarkjs from "snarkjs";
 
 export type SnarkJSProof = {
     pi_a: Array<string>;
@@ -8,7 +9,7 @@ export type SnarkJSProof = {
 };
 
 
-export async function buldPoi(oracleMerkleTreeRootHash: hash, leafIndexHash: hash, pathElements: hash[], pathIndices: number, leafIndex: number) {
+export async function buldPoi(oracleMerkleTreeRootHash: hash, leafIndexHash: hash, pathElements: hash[], pathIndices: number[], leafIndex: number) {
     const levels = 2
 
     const inputs = {
@@ -22,8 +23,8 @@ export async function buldPoi(oracleMerkleTreeRootHash: hash, leafIndexHash: has
         leafIndex: leafIndex,
     }
 
-    const wasmFilePath = `../../../proof_of_innocence_js/proof_of_innocence.wasm`
-    const privateKeyFilePath = `../../../circuit/setup/proof_of_innocence_final.zkey`
+    const wasmFilePath = `../proof_of_innocence_js/proof_of_innocence.wasm`
+    const privateKeyFilePath = `../circuit/setup/proof_of_innocence_final.zkey`
 
     const { proof }: { proof: SnarkJSProof } = await snarkjs.groth16.fullProve(
         inputs,
