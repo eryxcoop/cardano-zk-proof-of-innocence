@@ -10,27 +10,42 @@ export type SnarkJSProof = {
 
 
 export async function buldPoi(oracleMerkleTreeRootHash: hash, leafIndexHash: hash, pathElements: hash[], pathIndices: number[], leafIndex: number) {
-    const levels = 2
+    // const levels = 2
 
+    // const inputs = {
+    //     // Public inputs
+    //     root: oracleMerkleTreeRootHash,
+    //     leafIndexHash: leafIndexHash,
+
+    //     // Private inputs
+    //     pathElements: pathElements,
+    //     pathIndices: pathIndices,
+    //     leafIndex: leafIndex,
+    // }
+
+    // const wasmFilePath = `../proof_of_innocence_js/proof_of_innocence.wasm`
+    // const privateKeyFilePath = `../circuit/setup/proof_of_innocence_final.zkey`
+
+    // const { proof }: { proof: SnarkJSProof } = await snarkjs.groth16.fullProve(
+    //     inputs,
+    //     wasmFilePath,
+    //     privateKeyFilePath
+    // );
+
+    // console.log(proof)
+
+    const a = 1
+    const b = 2
     const inputs = {
-        // Public inputs
-        root: oracleMerkleTreeRootHash,
-        leafIndexHash: leafIndexHash,
-
-        // Private inputs
-        pathElements: pathElements,
-        pathIndices: pathIndices,
-        leafIndex: leafIndex,
+        a: a,
+        b: b,
     }
-
-    const wasmFilePath = `../proof_of_innocence_js/proof_of_innocence.wasm`
-    const privateKeyFilePath = `../circuit/setup/proof_of_innocence_final.zkey`
-
-    const { proof }: { proof: SnarkJSProof } = await snarkjs.groth16.fullProve(
+    const wasmFilePath = "../double_js/double.wasm"
+    const privateKeyFilePath = "../circuit/setup/double_final.zkey"
+    const proof = await snarkjs.groth16.prove(
         inputs,
         wasmFilePath,
-        privateKeyFilePath
+        privateKeyFilePath,
     );
-
-    console.log(proof)
+    console.log("****", proof)
 }
