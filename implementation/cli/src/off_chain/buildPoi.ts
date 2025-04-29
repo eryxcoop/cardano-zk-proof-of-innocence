@@ -34,15 +34,13 @@ export async function buldPoi(oracleMerkleTreeRootHash: hash, leafIndexHash: has
 
     // console.log(proof)
 
-    const a = 1
-    const b = 2
     const inputs = {
-        a: a,
-        b: b,
+        a: 1,
+        b: 2,
     }
     const wasmFilePath = "../double_js/double.wasm"
     const privateKeyFilePath = "../circuit/setup/double_final.zkey"
-    const proof = await snarkjs.groth16.prove(
+    const {proof, publicSignals} = await snarkjs.groth16.fullProve(
         inputs,
         wasmFilePath,
         privateKeyFilePath,
