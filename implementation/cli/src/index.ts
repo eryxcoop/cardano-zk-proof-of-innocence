@@ -53,12 +53,29 @@ program
 
     program
     .command("update")
-    .description("Updating the Oracle Data")
-    //.argument(")
-    .action(() => {
-      updateOracle()
-      console.log(chalk.green(`Updating the Oracle data`));
+    .description("Updating the data of a concract")
+    .argument("contract", "Name of the contract")
+    .action((contract) => {
+      if (contract == "oracle") {
+            updateOracle()
+            console.log(chalk.green(`Updating the PoI Oracle`));
+      } else if (contract == "poi") {
+            //updatePoi()
+            console.log(chalk.green(`Updating the PoI contract.`));
+      } else {
+            console.log(chalk.red(`Error: "${contract}" contract doesn't exist.`));
+      }
     });
+
+    program
+    .command("verify")
+    .description("Verify the PoI proof")
+    //.argument("contract", "Name of the contract")
+    .action(() => {
+      console.log(chalk.green(`Verifying the PoI proof.`));
+      // spendPoI()
+    });
+
 
   program.parse(process.argv);
 
@@ -149,24 +166,4 @@ A command that let's you create an Oracle.
 
 
 
-// ClI commands bootsrap.
 
-//import { Command } from "commander";
-//import chalk from "chalk";
-//
-//const program = new Command();
-//
-//program
-//  .name("mi-cli")
-//  .description("Una CLI de ejemplo con TypeScript")
-//  .version("1.0.0");
-//
-//program
-//  .command("saludar")
-//  .description("Muestra un saludo personalizado")
-//  .argument("<nombre>", "Nombre de la persona a saludar")
-//  .action((nombre) => {
-//    console.log(chalk.green(`¡Hola, ${nombre}! Bienvenido a mi CLI.`));
-//  });
-//
-//program.parse(process.argv);
