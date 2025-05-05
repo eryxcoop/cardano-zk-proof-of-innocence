@@ -35,6 +35,18 @@ program
   .description("A simple cli for testing PoI in Cardano")
   .version("0.1");
 
+  program.addHelpText('beforeAll', `
+      General description:
+        This cli program allows you to run transactions related to a PoI application on the Cardano network. You can create an instance of a PoI contract and verify it on-chain. Also you can manage the Oracle needed to verify the PoI proof. 
+      `);
+
+   program.addHelpText('afterAll', `
+      examples:
+          $ poi-cli create oracle
+          $ poi-cli create poi
+          $ poi-cli update oracle
+      `);
+
   program
     .command("create")
     .description("Creating an instance of a contract")
@@ -75,6 +87,8 @@ program
       console.log(chalk.green(`Verifying the PoI proof.`));
       // spendPoI()
     });
+
+
 
 
   program.parse(process.argv);
