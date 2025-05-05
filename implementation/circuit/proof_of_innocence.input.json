@@ -1,1 +1,7 @@
-{ "a": 2 }
+{
+    "root": 79,
+    "pathElements": [1, 10],
+    "pathIndices": [0, 1],
+    "leafIndex": 2,
+    "leafIndexHash": 9
+}

@@ -38,8 +38,8 @@ export async function buldPoi(oracleMerkleTreeRootHash: hash, leafIndexHash: has
         a: 1,
         b: 2,
     }
-    const wasmFilePath = "../double_js/double.wasm"
-    const privateKeyFilePath = "../circuit/setup/double_final.zkey"
+    const wasmFilePath = "../proof_of_innocence_js/proof_of_innocence.wasm"
+    const privateKeyFilePath = "../circuit/setup/proof_of_innocence_final.zkey"
     const {proof, publicSignals} = await snarkjs.groth16.fullProve(
         inputs,
         wasmFilePath,
