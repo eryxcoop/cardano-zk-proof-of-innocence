@@ -12,12 +12,15 @@ import { updateOracle } from "./on_chain/updateOracle.js"
 //updateOracle()
 //instantiatePoi()
 
-const list = [1, 1, 1, 0]
+const list = [1, 1, 0, 1]
 const merkleTree = new MerkleTree(list)
-const leafIndex = 3
+const leafIndex = 2
+
+const leafIndexHash = hashSingleValue(list[leafIndex])
+
 const pathIndices = merkleTree.authenticationPathIndicesFor(leafIndex)
 const pathElements = merkleTree.authenticationPathElementsFor(leafIndex)
-const leafIndexHash = hashSingleValue(list[leafIndex])
+console.log(pathElements)
 const oracleMerkleTreeRootHash = merkleTree.root()
 await buldPoi(oracleMerkleTreeRootHash, leafIndexHash, pathElements, pathIndices, leafIndex)
 console.log("APA")

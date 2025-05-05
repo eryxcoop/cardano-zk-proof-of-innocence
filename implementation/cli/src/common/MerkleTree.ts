@@ -35,8 +35,8 @@ export class MerkleTree {
                 return this.left().authenticationPathElementsFor(index)
                     .concat([this.right().root()]);
             } else {
-                return [this.left().root()]
-                    .concat(this.right().authenticationPathElementsFor(index));
+                return this.right().authenticationPathElementsFor(index - this.halfIndex())
+                    .concat([this.left().root()]);
             }
         }
     }

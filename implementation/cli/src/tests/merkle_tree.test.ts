@@ -53,9 +53,9 @@ describe("Merkle tree", () => {
 
     test("Can calculate the authentication path elements for a list with many elements", () => {
         const mkt = new MerkleTree(list)
-        const authenticationPathElements = mkt.authenticationPathElementsFor(1)
+        const authenticationPathElements = mkt.authenticationPathElementsFor(2)
 
-        const expectedAuthenticationPathElements = [v1,v34]
+        const expectedAuthenticationPathElements = [v4, v12]
         expect(authenticationPathElements).toEqual(expectedAuthenticationPathElements)
     })
 
