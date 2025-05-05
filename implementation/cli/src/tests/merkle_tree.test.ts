@@ -4,10 +4,10 @@ import { MerkleTree } from '../common/MerkleTree.js'
 
 describe("Merkle tree", () => {
     const list = [1,2,3,4]
-    const v1 = hashSingleValue(list[0])
-    const v2 = hashSingleValue(list[1])
-    const v3 = hashSingleValue(list[2])
-    const v4 = hashSingleValue(list[3])
+    const v1 = list[0]
+    const v2 = list[1]
+    const v3 = list[2]
+    const v4 = list[3]
     const v12 = hashPair(v1,v2) 
     const v34 = hashPair(v3,v4) 
     const v1234 = hashPair(v12,v34)
@@ -29,7 +29,7 @@ describe("Merkle tree", () => {
 
         const root = merkleTree.root()
 
-        const expectedRoot = hashSingleValue(1)
+        const expectedRoot = 1
 
         expect(root).toEqual(expectedRoot)
 

@@ -21,7 +21,7 @@ export class MerkleTree {
 
     root(): hash {
         if (this.size() == 1) {
-            return hashSingleValue(this.list[0]);
+            return this.list[0];
         } else {
             return hashPair(this.left().root(), this.right().root());
         }
