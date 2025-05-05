@@ -47,10 +47,10 @@ export class MerkleTree {
         } else {
             if (index < this.halfIndex()) {
                 return this.left().authenticationPathIndicesFor(index)
-                    .concat([1]);
+                    .concat([0]);
             } else {
-                return [0]
-                    .concat(this.right().authenticationPathIndicesFor(index));
+                return this.right().authenticationPathIndicesFor(index - this.halfIndex())
+                    .concat([1]);
             }
         }
     }
