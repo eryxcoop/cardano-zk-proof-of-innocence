@@ -20,9 +20,47 @@ const pathElements = merkleTree.authenticationPathElementsFor(leafIndex)
 const pathIndices = merkleTree.authenticationPathIndicesFor(leafIndex)
 const leafIndexHash = hashSingleValue(leafIndex)
 
-await buldPoi(oracleMerkleTreeRootHash, leafIndexHash, pathElements, pathIndices, leafIndex)
+//await buldPoi(oracleMerkleTreeRootHash, leafIndexHash, pathElements, pathIndices, leafIndex)
 
-process.exit(0)
+//process.exit(0)
+
+
+import { Command } from "commander";
+import chalk from "chalk";
+
+const program = new Command();
+
+program
+  .name("poi-cli")
+  .description("A simple cli for testing PoI in Cardano")
+  .version("0.1");
+
+  program
+    .command("create")
+    .description("Creating an instance of a contract")
+    .argument("contract", "Name of the contract")
+    .action((contract) => {
+      if (contract == "oracle") {
+            instantiateOracle()
+            console.log(chalk.green(`Creating an instance of the PoI Oracle`));
+      } else if (contract == "poi") {
+            instantiatePoi()
+            console.log(chalk.green(`Creating an instance of the PoI contract.`));
+      } else {
+            console.log(chalk.red(`Error: "${contract}" contract doesn't exist.`));
+      }
+    });
+
+    program
+    .command("update")
+    .description("Updating the Oracle Data")
+    //.argument(")
+    .action(() => {
+      updateOracle()
+      console.log(chalk.green(`Updating the Oracle data`));
+    });
+
+  program.parse(process.argv);
 
 
 // =================================== Preliminaries ===================================
