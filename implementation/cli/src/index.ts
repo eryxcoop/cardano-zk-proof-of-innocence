@@ -19,8 +19,10 @@ const pathIndices = merkleTree.authenticationPathIndicesFor(leafIndex)
 const pathElements = merkleTree.authenticationPathElementsFor(leafIndex)
 const leafIndexHash = hashSingleValue(list[leafIndex])
 const oracleMerkleTreeRootHash = merkleTree.root()
-buldPoi(oracleMerkleTreeRootHash, leafIndexHash, pathElements, pathIndices, leafIndex)
+await buldPoi(oracleMerkleTreeRootHash, leafIndexHash, pathElements, pathIndices, leafIndex)
+console.log("APA")
 
+process.exit(0)
 
 
 // =================================== Preliminaries ===================================
