@@ -129,28 +129,41 @@ test test_proof_of_innocence_validator_forbids_a_spending_transaction_that_is_no
   )
 }
 
+const happy_path_snark_vk = SnarkVerificationKey {
+  nPublic: 8,
+  vkAlpha: #"b7c29c886159ce127ef268743fc9dca8888983909c77fa62065f44dc99b3accd876781e47a89b09b492f954ba806b3d3",
+  vkBeta: #"8470dee8df0bbfd19e98b780623752ebc94e81bb07c176d1cc7b1b0a00e069f1c9043316f2262a69b2bdd8026bf19a7811b13b04eca7f2aba975d227a1b5489316fcc92372d1724a460071b6b09d13721f3d63b3dede83ef006142f5016207ef",
+  vkGamma: #"93e02b6052719f607dacd3a088274f65596bd0d09920b61ab5da61bbdc7f5049334cf11213945d57e5ac7d055d042b7e024aa2b2f08f0a91260805272dc51051c6e47ad4fa403b02b4510b647ae3d1770bac0326a805bbefd48056c8c121bdb8",
+  vkDelta: #"90df0b0696b0a7ce5c9959fc28b3371b7f84e6e587448fa735b2e8dcddd6034a8be99ae4e8cf0bc7c2c8f08c165e253d10194c9cc7146701c998bade9e2768ceb262ea8cc7026bf41fadd8d5ac182f014f036244962b07f80de0bfefb45d455d",
+  vkAlphaBeta: [
+    #"93e02b6052719f607dacd3a088274f65596bd0d09920b61ab5da61bbdc7f5049334cf11213945d57e5ac7d055d042b7e024aa2b2f08f0a91260805272dc51051c6e47ad4fa403b02b4510b647ae3d1770bac0326a805bbefd48056c8c121bdb8",
+  ],
+  vkIC: [
+    #"8320572bc050f9a58f6868c6d521ea91b2db5082b8e07e5abf7a9522876351a676029ea661444a8b0caabfcae5693e70",
+  ],
+}
+
+const happy_path_proof = Proof {
+  piA: #"8d47869bfb8a21556d7fb5e2d08fbcaf074602b3b2b615630a23ecb426ce5aae9a3d1f5ab7a3e91445deca68232bc1ff",
+  piB: #"805b96c6c35f56ccbc7708b4d21c5db9f5a64ed961c901b8f6d4ad05496bc8d7350a2f75c60fad1990954ff0300038d80194f0c8c6f7644b1188d7b0cbe88a58a694f86d6e294e5bf242ce30dc1911dc1d8eed21c27785fa73599161e3b55851",
+  piC: #"9268315b6ba4561b31850c66b56a1bd65b123104481068d63f3001576421ea01e66d40d437e84f8576613d8929d32e3b",
+}
+
 test test_proof_can_be_verified() {
-  let snark_vk =
-    SnarkVerificationKey {
-      nPublic: 8,
-      vkAlpha: #"b7c29c886159ce127ef268743fc9dca8888983909c77fa62065f44dc99b3accd876781e47a89b09b492f954ba806b3d3",
-      vkBeta: #"8470dee8df0bbfd19e98b780623752ebc94e81bb07c176d1cc7b1b0a00e069f1c9043316f2262a69b2bdd8026bf19a7811b13b04eca7f2aba975d227a1b5489316fcc92372d1724a460071b6b09d13721f3d63b3dede83ef006142f5016207ef",
-      vkGamma: #"93e02b6052719f607dacd3a088274f65596bd0d09920b61ab5da61bbdc7f5049334cf11213945d57e5ac7d055d042b7e024aa2b2f08f0a91260805272dc51051c6e47ad4fa403b02b4510b647ae3d1770bac0326a805bbefd48056c8c121bdb8",
-      vkDelta: #"90df0b0696b0a7ce5c9959fc28b3371b7f84e6e587448fa735b2e8dcddd6034a8be99ae4e8cf0bc7c2c8f08c165e253d10194c9cc7146701c998bade9e2768ceb262ea8cc7026bf41fadd8d5ac182f014f036244962b07f80de0bfefb45d455d",
-      vkAlphaBeta: [
-        #"93e02b6052719f607dacd3a088274f65596bd0d09920b61ab5da61bbdc7f5049334cf11213945d57e5ac7d055d042b7e024aa2b2f08f0a91260805272dc51051c6e47ad4fa403b02b4510b647ae3d1770bac0326a805bbefd48056c8c121bdb8",
-      ],
-      vkIC: [
-        #"8320572bc050f9a58f6868c6d521ea91b2db5082b8e07e5abf7a9522876351a676029ea661444a8b0caabfcae5693e70",
-      ],
-    }
-  let proof =
-    Proof {
-      piA: #"8d47869bfb8a21556d7fb5e2d08fbcaf074602b3b2b615630a23ecb426ce5aae9a3d1f5ab7a3e91445deca68232bc1ff",
-      piB: #"805b96c6c35f56ccbc7708b4d21c5db9f5a64ed961c901b8f6d4ad05496bc8d7350a2f75c60fad1990954ff0300038d80194f0c8c6f7644b1188d7b0cbe88a58a694f86d6e294e5bf242ce30dc1911dc1d8eed21c27785fa73599161e3b55851",
-      piC: #"9268315b6ba4561b31850c66b56a1bd65b123104481068d63f3001576421ea01e66d40d437e84f8576613d8929d32e3b",
-    }
+  let snark_vk = happy_path_snark_vk
+  let proof = happy_path_proof
 
   let public_inputs = []
   groth_verify(snark_vk, proof, public_inputs)
+}
+
+test test_invalid_proof_cannot_be_verified() fail {
+  let snark_vk = happy_path_snark_vk
+
+  let invalid_curve_point = #"00"
+
+  let invalid_proof = Proof { ..happy_path_proof, piA: invalid_curve_point }
+
+  let public_inputs = []
+  groth_verify(snark_vk, invalid_proof, public_inputs)
 }
