@@ -2,7 +2,7 @@
 //import { intro } from './intro.js';
 import { hashSingleValue } from "./common/dummyHash.js"
 import { MerkleTree } from "./common/MerkleTree.js"
-import { buldPoi } from "./off_chain/buildPoi.js"
+import { buildPoi } from "./off_chain/buildPoi.js"
 import { instantiateOracle } from "./on_chain/instantiateOracle.js"
 import { instantiatePoi } from "./on_chain/instantiatePoi.js"
 import { updateOracle } from "./on_chain/updateOracle.js"
@@ -20,7 +20,7 @@ const pathElements = merkleTree.authenticationPathElementsFor(leafIndex)
 const pathIndices = merkleTree.authenticationPathIndicesFor(leafIndex)
 const leafIndexHash = hashSingleValue(leafIndex)
 
-//await buldPoi(oracleMerkleTreeRootHash, leafIndexHash, pathElements, pathIndices, leafIndex)
+//await buildPoi(oracleMerkleTreeRootHash, leafIndexHash, pathElements, pathIndices, leafIndex)
 
 //process.exit(0)
 
@@ -37,7 +37,7 @@ program
 
   program.addHelpText('beforeAll', `
       General description:
-        This cli program allows you to run transactions related to a PoI application on the Cardano network. You can create an instance of a PoI contract and verify it on-chain. Also you can manage the Oracle needed to verify the PoI proof. 
+        This cli program allows you to run transactions related to a PoI application on the Cardano network. You can create an instance of a PoI contract and verify it on-chain. Also you can manage the Oracle needed to verify the PoI proof.
       `);
 
    program.addHelpText('afterAll', `
@@ -85,14 +85,14 @@ program
     //.argument("contract", "Name of the contract")
     .action(() => {
       console.log(chalk.green(`Verifying the PoI proof.`));
-      // spendPoI()
+      buildPoi(oracleMerkleTreeRootHash, leafIndexHash, pathElements, pathIndices, leafIndex);
     });
 
 
 
 
   program.parse(process.argv);
-
+  console.log("Termine");
 
 // =================================== Preliminaries ===================================
 
@@ -168,7 +168,7 @@ A command that let's you create an Oracle.
 */
 
 // Execute a proof of innocence.
-/* 
+/*
 1. Create the ZK proof (snarkjs)
 2. Define Redeemer VerifyProof()
 3. Define a Tx that:

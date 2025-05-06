@@ -2,11 +2,6 @@ import * as fs from "fs"
 import * as bb from "bigint-buffer";
 import * as ff from "ffjavascript";
 
-const proofPath = "../circuit/setup/proof.json";
-const verificationKeyPath = "../circuit/setup/verification_key.json";
-const proof = JSON.parse(fs.readFileSync(proofPath, "utf-8"));
-const verificationKey = JSON.parse(fs.readFileSync(verificationKeyPath, "utf-8"));
-
 async function compressedG1(point) {
   const curve = await ff.getCurveFromName("bls12381");
 
@@ -88,7 +83,7 @@ async function compressedG2(point) {
 }
 
 
-async function convertProofToUncompressed(proof) {
+export async function convertProofToUncompressed(proof) {
 
   const uncompressedProof = {
     "pi_a": await compressedG1(proof.pi_a),
@@ -119,12 +114,12 @@ async function convertVerificationKeyToUncompressed(verificationKey) {
   return uncompressedVerificationKey;
 }
 
-async function printCompressedProof() {
+async function printCompressedProof(proof) {
   console.log("Uncompressed proof", JSON.stringify(await convertProofToUncompressed(proof)));
 }
 
 
-async function printCompressedVerificationKey() {
+async function printCompressedVerificationKey(verificationKey) {
   console.log("\n\nUncompressed verification key", JSON.stringify(await convertVerificationKeyToUncompressed(verificationKey)));
 }
 
@@ -165,8 +160,13 @@ async function ffTest() {
 }
 
 async function run_program () {
-  await printCompressedVerificationKey();
-  await printCompressedProof();
+  //const proofPath = "../circuit/setup/proof.json";
+  //const verificationKeyPath = "../circuit/setup/verification_key.json";
+  //const proof = JSON.parse(fs.readFileSync(proofPath, "utf-8"));
+  //const verificationKey = JSON.parse(fs.readFileSync(verificationKeyPath, "utf-8"));
+
+  //await printCompressedVerificationKey(verificationKey);
+  //await printCompressedProof(proof);
   process.exit();
 }
 

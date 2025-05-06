@@ -2,6 +2,8 @@ import { hash } from "../common/dummyHash.js";
 // @ts-ignore
 import * as snarkjs from "snarkjs";
 
+import { convertProofToUncompressed } from "../common/conversion.js"
+
 export type SnarkJSProof = {
     pi_a: Array<string>;
     pi_b: Array<Array<string>>;
@@ -9,7 +11,7 @@ export type SnarkJSProof = {
 };
 
 
-export async function buldPoi(oracleMerkleTreeRootHash: hash, leafIndexHash: hash, pathElements: hash[], pathIndices: number[], leafIndex: number) {
+export async function buildPoi(oracleMerkleTreeRootHash: hash, leafIndexHash: hash, pathElements: hash[], pathIndices: number[], leafIndex: number) {
     const levels = 2
 
     const inputs = {
@@ -32,5 +34,6 @@ export async function buldPoi(oracleMerkleTreeRootHash: hash, leafIndexHash: has
         privateKeyFilePath
     );
 
-    console.log(proof)
+    const convertedProof = convertProofToUncompressed(proof);
+    console.log(convertedProof)
 }
