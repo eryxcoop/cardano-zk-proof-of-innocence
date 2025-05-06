@@ -33,4 +33,4 @@ template ProofOfInnocence(levels) {
     leafHashChecker.hashedValue <== leafIndexHash;
 }
 
-component main = ProofOfInnocence(2);
+component main {public [leafIndexHash, root]} = ProofOfInnocence(2);
