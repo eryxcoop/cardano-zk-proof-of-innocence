@@ -1,12 +1,15 @@
 use ak_381/groth16.{Proof, SnarkVerificationKey, groth_verify}
-use cardano/transaction.{Input, OutputReference}
-use cardano/assets{zero}
+use cardano/transaction.{Input, OutputReference, Output, InlineDatum, Transaction}
+use cardano/address.{from_script}
+use cardano/assets.{zero, from_asset}
 use proof_of_innocence.{Create, POIDatum, Update, ValidateProof}
 use test_objects.{
   arbitrary_address, arbitrary_signature, policy_id, spending_transaction_with,
   transaction_id, transaction_output, validator_address,
   value_with_number_of_script_tokens, verification_key_hash,
 }
+use common.{OracleDatum}
+
 
 // Valid update of POI script.
 test test_proof_of_innocence_validator_permits_a_valid_spending_update_transaction() {
@@ -154,7 +157,7 @@ test test_proof_can_be_verified() {
   let snark_vk = happy_path_snark_vk
   let proof = happy_path_proof
 
-  let public_inputs = []
+  let public_inputs = [1,2,3]
   groth_verify(snark_vk, proof, public_inputs)
 }
 
@@ -169,48 +172,74 @@ test test_invalid_proof_cannot_be_verified() fail {
   groth_verify(snark_vk, invalid_proof, public_inputs)
 }
 
-test test_proof_of_innocence_validator_permits_a_spending_transaction_that_is_verifying_a_valid_proof() fail {
-  let redeemer = ValidateProof(proof, transaction_id_hash)
+test test_proof_of_innocence_validator_permits_a_spending_transaction_that_is_verifying_a_valid_proof() {
+  let redeemer = ValidateProof(happy_path_proof, 79)
 
   let value = value_with_number_of_script_tokens(1)
   let address = validator_address()
   let output = transaction_output(address, value)
 
-  let oref = OutputReference { transaction_id, output_index: 0 }
+   let oref_script = OutputReference { transaction_id, output_index: 0 }
+  let oref_vk = OutputReference { transaction_id: #"01", output_index: 0 }
 
-  let input = Input { output_reference: oref, output }
+  let input = Input { output_reference: oref_script, output }
 
   let datum =
     POIDatum {
-      verification_key_output_reference: oref,
+      verification_key_output_reference: oref_vk,
       oracle_token_policy_id: policy_id,
     }
 
   let transaction =
     spending_transaction_with(verification_key_hash, input, output)
+
+  // Create VK reference inputs 
   
   let verification_key_output = Output {
-    from_script(#"00"),
-    zero,
-    datum: ,
+    address: from_script(#"00"),
+    value: zero,
+    datum: InlineDatum(happy_path_snark_vk),
     reference_script: None,
   }
 
-  let input_verification_key = Input { output_reference: oref output: verification_key_output }
+  let input_verification_key = Input { output_reference: oref_vk, output: verification_key_output }
+
+  // Create Oracle reference input
+
+  let oracle_datum = OracleDatum {
+    merkle_tree_root_hash: 0,
+  }
+
+  let oref_oracle = OutputReference { transaction_id: #"02", output_index: 0 }
+
+  let oracle_output = Output {
+    address: from_script(#"01"),
+    value: from_asset(policy_id, #"01", 1),
+    datum: InlineDatum(oracle_datum),
+    reference_script: None,
+  }
+
+  let input_oracle = Input { output_reference: oref_oracle, output: oracle_output }
+
 
   let transaction_with_reference_input = transaction
     |> fn(transaction) {
         Transaction {
           ..transaction,
-          reference_inputs: [input_verification_key]
+          reference_inputs: [input_verification_key, input_oracle]
         }
       }
+
+
+  // Validator oref
+
+  
 
   proof_of_innocence.proof_of_innocence.spend(
     verification_key_hash,
     Some(datum),
     redeemer,
-    oref,
-    transaction,
+    oref_script,
+    transaction_with_reference_input,
   )
 }
