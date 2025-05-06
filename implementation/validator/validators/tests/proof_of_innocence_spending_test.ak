@@ -1,6 +1,7 @@
 use ak_381/groth16.{Proof, SnarkVerificationKey, groth_verify}
 use cardano/transaction.{Input, OutputReference}
-use proof_of_innocence.{Create, POIDatum, Update}
+use cardano/assets{zero}
+use proof_of_innocence.{Create, POIDatum, Update, ValidateProof}
 use test_objects.{
   arbitrary_address, arbitrary_signature, policy_id, spending_transaction_with,
   transaction_id, transaction_output, validator_address,
@@ -166,4 +167,50 @@ test test_invalid_proof_cannot_be_verified() fail {
 
   let public_inputs = []
   groth_verify(snark_vk, invalid_proof, public_inputs)
+}
+
+test test_proof_of_innocence_validator_permits_a_spending_transaction_that_is_verifying_a_valid_proof() fail {
+  let redeemer = ValidateProof(proof, transaction_id_hash)
+
+  let value = value_with_number_of_script_tokens(1)
+  let address = validator_address()
+  let output = transaction_output(address, value)
+
+  let oref = OutputReference { transaction_id, output_index: 0 }
+
+  let input = Input { output_reference: oref, output }
+
+  let datum =
+    POIDatum {
+      verification_key_output_reference: oref,
+      oracle_token_policy_id: policy_id,
+    }
+
+  let transaction =
+    spending_transaction_with(verification_key_hash, input, output)
+  
+  let verification_key_output = Output {
+    from_script(#"00"),
+    zero,
+    datum: ,
+    reference_script: None,
+  }
+
+  let input_verification_key = Input { output_reference: oref output: verification_key_output }
+
+  let transaction_with_reference_input = transaction
+    |> fn(transaction) {
+        Transaction {
+          ..transaction,
+          reference_inputs: [input_verification_key]
+        }
+      }
+
+  proof_of_innocence.proof_of_innocence.spend(
+    verification_key_hash,
+    Some(datum),
+    redeemer,
+    oref,
+    transaction,
+  )
 }

@@ -33,13 +33,7 @@ pub fn arbitrary_address() {
 }
 
 pub fn transaction_output(address: Address, value: Value) -> Output {
-  Output {
-    address,
-    value,
-    datum: unused_datum,
-    // The datum should technically have the root hash in our use case.
-    reference_script: None,
-  }
+  Output { address, value, datum: unused_datum, reference_script: None }
 }
 
 pub fn minting_transaction_with(
