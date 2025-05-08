@@ -83,24 +83,14 @@ async function compressedG2(point) {
 }
 
 
-export async function convertProofToUncompressed() {
-
-  if (typeof saludar !== 'function') {
-    console.error('⚠️ La función saludar no está importada correctamente');
-  } else {
-    saludar();
+export async function convertProofToUncompressed(proof) {
+  const uncompressedProof = {
+    "pi_a": await compressedG1(proof.pi_a),
+    "pi_b": await compressedG2(proof.pi_b),
+    "pi_c": await compressedG1(proof.pi_c),
   }
 
-  //const uncompressedProof = {
-  //  "pi_a": await compressedG1(proof.pi_a),
-  //  "pi_b": await compressedG2(proof.pi_b),
-  //  "pi_c": await compressedG1(proof.pi_c),
-  //}
-
-  console.log("Holi")
-  return 5
-  //console.log(proof.pi_a)
-  //return uncompressedProof;
+  return uncompressedProof;
 }
 
 
@@ -178,8 +168,3 @@ async function run_program () {
   //await printCompressedProof(proof);
   process.exit();
 }
-
-run_program();
-
-
-

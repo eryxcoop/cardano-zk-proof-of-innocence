@@ -2,7 +2,6 @@ import { hash } from "../common/dummyHash.js";
 // @ts-ignore
 import * as snarkjs from "snarkjs";
 import { convertProofToUncompressed } from "../common/conversion.js"
-const conversion = require("conversion");
 
 
 
@@ -44,20 +43,11 @@ export async function buildPoi(oracleMerkleTreeRootHash: hash, leafIndexHash: ha
 
     console.log(proof.pi_a)
 
-    try {
-        console.log(await convertProofToUncompressed())
-    } catch(e) {
-        console.log("Error")
-    }
-    
-    
-    //if (typeof convertProofToUncompressed !== 'function') {
-    //    console.error('⚠️ La función saludar no está importada correctamente');
-    //  } else {
-    //    console.log("xD")
-    //    //convertProofToUncompressed();
-    //}
-    //console.log(convertedProof)
+    const convertedProof = await convertProofToUncompressed(proof);
+    console.log("Converted proof:");
+    console.log(convertedProof);
+
+    process.exit(0);
 }
 
 
