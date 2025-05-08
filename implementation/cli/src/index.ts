@@ -1,11 +1,13 @@
 #!/usr/bin/env node
 //import { intro } from './intro.js';
+
 import { hashSingleValue } from "./common/dummyHash.js"
 import { MerkleTree } from "./common/MerkleTree.js"
 import { buildPoi } from "./off_chain/buildPoi.js"
 import { instantiateOracle } from "./on_chain/instantiateOracle.js"
 import { instantiatePoi } from "./on_chain/instantiatePoi.js"
 import { updateOracle } from "./on_chain/updateOracle.js"
+
 
 
 //instantiateOracle()
