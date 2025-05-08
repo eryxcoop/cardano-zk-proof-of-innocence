@@ -45,7 +45,7 @@ export async function buildPoi(oracleMerkleTreeRootHash: hash, leafIndexHash: ha
     console.log(proof.pi_a)
 
     const verificationKeyFilePath = "../circuit/setup/verification_key.json";
-    const verificationKey = JSON.parse(fs.readFileSync(verificationKeyFilePath, "utf-8"));;
+    const verificationKey = JSON.parse(fs.readFileSync(verificationKeyFilePath, "utf-8"));
 
     const convertedProof = await convertProofToUncompressed(proof);
     const convertedVerificationKey = await convertVerificationKeyToUncompressed(verificationKey);

@@ -4,6 +4,7 @@
 import { hashSingleValue } from "./common/dummyHash.js"
 import { MerkleTree } from "./common/MerkleTree.js"
 import { buildPoi } from "./off_chain/buildPoi.js"
+import { setVerificationKey } from "./on_chain/setVerificationKey.js"
 import { instantiateOracle } from "./on_chain/instantiateOracle.js"
 import { instantiatePoi } from "./on_chain/instantiatePoi.js"
 import { updateOracle } from "./on_chain/updateOracle.js"
@@ -90,8 +91,14 @@ program
       buildPoi(oracleMerkleTreeRootHash, leafIndexHash, pathElements, pathIndices, leafIndex);
     });
 
-
-
+    program
+    .command("set-verification-key")
+    .description("Set the verification key")
+    //.argument("contract", "Name of the contract")
+    .action(() => {
+      console.log(chalk.green(`Setting the verification key.`));
+      setVerificationKey();
+    });
 
   program.parse(process.argv);
 
