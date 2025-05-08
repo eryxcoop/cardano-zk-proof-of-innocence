@@ -94,7 +94,7 @@ export async function convertProofToUncompressed(proof) {
 }
 
 
-async function convertVerificationKeyToUncompressed(verificationKey) {
+export async function convertVerificationKeyToUncompressed(verificationKey) {
   const uncompressedVerificationKey = {
     "vk_alpha_1": await compressedG1(verificationKey.vk_alpha_1),
     "vk_beta_2": await compressedG2(verificationKey.vk_beta_2),
