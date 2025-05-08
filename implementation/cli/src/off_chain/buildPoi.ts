@@ -1,8 +1,7 @@
-import * as fs from "fs"
 import { hash } from "../common/dummyHash.js";
 // @ts-ignore
 import * as snarkjs from "snarkjs";
-import { convertProofToUncompressed, convertVerificationKeyToUncompressed } from "../common/conversion.js"
+import { convertProofToUncompressed } from "../common/conversion.js"
 
 
 
@@ -43,13 +42,7 @@ export async function buildPoi(oracleMerkleTreeRootHash: hash, leafIndexHash: ha
     );
 
     console.log(proof.pi_a)
-
-    const verificationKeyFilePath = "../circuit/setup/verification_key.json";
-    const verificationKey = JSON.parse(fs.readFileSync(verificationKeyFilePath, "utf-8"));
-
     const convertedProof = await convertProofToUncompressed(proof);
-    const convertedVerificationKey = await convertVerificationKeyToUncompressed(verificationKey);
-    console.log(convertedVerificationKey);
 
     process.exit(0);
 }
