@@ -63,9 +63,9 @@ export async function buildPoi(oracleMerkleTreeRootHash: hash, leafIndexHash: ha
     const wallet_utxos = await wallet.getUtxos()
     const { collateralUtxo, walletUtxosExcludingCollateral} = removeUtxoForCollateralFrom(wallet_utxos)
 
-    const oracleRedeemer = conStr(2, conStr(0,[ byteString(proof.pi_a.toString()), byteString(proof.pi_b.toString()), byteString(proof.pi_c.toString()) ]), integer(leafIndexHash))
+    // Check: What variable is the transaction ID hash.
+    const poiRedeemer = conStr(2, [conStr(0,[ byteString(proof.pi_a.toString()), byteString(proof.pi_b.toString()), byteString(proof.pi_c.toString()) ]), integer(leafIndexHash)])
     
-    integer(0);
 
     const outputOracleValue: Asset[] = [
           { unit: "lovelace", quantity: "5000000" },
@@ -78,7 +78,7 @@ export async function buildPoi(oracleMerkleTreeRootHash: hash, leafIndexHash: ha
           verbose: true,
     })
 
-    async function oracleTokenUtxoFrom(scriptAddress: string, policyId: string) {
+    async function poiTokenUtxoFrom(scriptAddress: string, policyId: string) {
           const utxosWithOracleToken = await blockchainProvider.fetchAddressUTxOs(
                 scriptAddress,
                 oracleTokenAsset(policyId).unit
@@ -86,15 +86,17 @@ export async function buildPoi(oracleMerkleTreeRootHash: hash, leafIndexHash: ha
           return utxosWithOracleToken[0]
     }
 
-    const oracleTokenUtxo = await oracleTokenUtxoFrom(scriptAddr, policyId)
+    const poiTokenUtxo = await poiTokenUtxoFrom(scriptAddr, policyId)
 
     const unsignedMintTx = await txBuilder
           .setNetwork("preprod")
           .spendingPlutusScriptV3()
-          .txIn(oracleTokenUtxo.input.txHash, oracleTokenUtxo.input.outputIndex)
+          .txIn(poiTokenUtxo.input.txHash, poiTokenUtxo.input.outputIndex)
           .txInInlineDatumPresent()
           .txInScript(scriptCbor)
-          .txInRedeemerValue(oracleRedeemer, "JSON")
+          .txInRedeemerValue(poiRedeemer, "JSON")
+          .spendingTxInReference("6521fdd0bce90a3dd4b4e90a7d71641faebc03a4ac470109c0fd58593364c233", 0)
+          .spendingTxInReference("6521fdd0bce90a3dd4b4e90a7d71641faebc03a4ac470109c0fd58593364c233", 0) // Oracle Merkle Tree Reference Input.
           .selectUtxosFrom(walletUtxosExcludingCollateral)
           .txInCollateral(collateralUtxo.input.txHash, collateralUtxo.input.outputIndex, [lovelaceAssetIn(collateralUtxo)], walletAddr)
           .txOut(scriptAddr, outputOracleValue)
