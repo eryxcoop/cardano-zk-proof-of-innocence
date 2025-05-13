@@ -1,4 +1,4 @@
-import { Asset, conStr, integer, MeshTxBuilder, resolveScriptHash } from "@meshsdk/core"
+import { Asset, conStr, integer, MeshTxBuilder, resolveScriptHash, byteString } from "@meshsdk/core"
 import { blockchainProvider, createWallet, instantiateOracleContract, lovelaceAssetIn, oracleTokenAsset, paymentKeyHashForWallet, removeUtxoForCollateralFrom, scriptAddressFor, walletBaseAddress } from "./common.js"
 
 export async function instantiateOracle() {
