@@ -17,8 +17,10 @@ async function buildVerificationKeyDatum() {
         byteString(convertedVerificationKey.vk_beta_2),
         byteString(convertedVerificationKey.vk_gamma_2),
         byteString(convertedVerificationKey.vk_delta_2),
-        // TODO: convert vk_alpha_beta
-        list([]),
+        list([
+            byteString(convertedVerificationKey.vk_alphabeta_12[0]),
+            byteString(convertedVerificationKey.vk_alphabeta_12[1]),
+        ]),
         list([
             byteString(convertedVerificationKey.IC[0]),
             byteString(convertedVerificationKey.IC[1]),

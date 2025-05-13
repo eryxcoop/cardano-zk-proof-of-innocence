@@ -100,6 +100,14 @@ export async function convertVerificationKeyToUncompressed(verificationKey) {
     "vk_beta_2": await compressedG2(verificationKey.vk_beta_2),
     "vk_gamma_2": await compressedG2(verificationKey.vk_gamma_2),
     "vk_delta_2": await compressedG2(verificationKey.vk_delta_2),
+    "vk_alphabeta_12": await Promise.all(verificationKey.vk_alphabeta_12.map(async (item) => {
+      try {
+          return await compressedG2(item);
+      } catch (error) {
+          console.error('Error processing item:', item, error);
+          return null; 
+      }
+    })),
     "IC": await Promise.all(verificationKey.IC.map(async (item) => {
       try {
           return await compressedG1(item);
