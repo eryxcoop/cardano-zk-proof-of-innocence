@@ -173,7 +173,7 @@ A command that let's you create an Oracle.
       - Sends this token again to script.
       - Attachs the new Datum.
       - Attaches theand Redeemer.
-*/
+*
 
 // Execute a proof of innocence.
 /*

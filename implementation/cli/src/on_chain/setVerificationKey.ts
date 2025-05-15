@@ -69,5 +69,4 @@ export async function setVerificationKey () {
     console.log("Success! Here's the transaction hash:")
     console.log(txHash);
 
-    process.exit(0);
 }

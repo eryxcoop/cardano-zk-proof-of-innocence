@@ -1,4 +1,4 @@
-import { Asset, conStr, integer, MeshTxBuilder, resolveScriptHash, byteString } from "@meshsdk/core"
+import { Asset, conStr, integer, MeshTxBuilder, resolveScriptHash } from "@meshsdk/core"
 import { blockchainProvider, createWallet, instantiateOracleContract, lovelaceAssetIn, oracleTokenAsset, paymentKeyHashForWallet, removeUtxoForCollateralFrom, scriptAddressFor, walletBaseAddress } from "./common.js"
 
 export async function instantiateOracle() {
@@ -14,7 +14,7 @@ export async function instantiateOracle() {
 
 
     // Todo: Right now we'll use a dummy value hash to define the datum, but in the future we will need to create a roothash and make it an integer compatible with ak_381.grothverify() function.
-    const oracleDatum = conStr(0, [integer(0)]);
+    const oracleDatum = conStr(0, [integer(79)]);
     const policyId = resolveScriptHash(scriptCbor, "V3");
     console.log("Script policyId: " + policyId);
 
@@ -27,11 +27,12 @@ export async function instantiateOracle() {
     })
 
     const wallet_utxos = await wallet.getUtxos()
+    console.log(wallet_utxos)
 
    
     const mint_oracle_value: Asset[] = [
           { unit: "lovelace", quantity: "5000000" },
-          oracleTokenAsset(policyId),
+          oracleTokenAsset(policyId, "7465737431"),
         ];
 
     const { collateralUtxo, walletUtxosExcludingCollateral} = removeUtxoForCollateralFrom(wallet_utxos)
@@ -39,7 +40,7 @@ export async function instantiateOracle() {
     const unsignedMintTx = await txBuilder
           .setNetwork("preprod")
           .mintPlutusScriptV3()
-          .mint("1", policyId, "6d6173746572")
+          .mint("1", policyId, "7465737431")
           .mintingScript(scriptCbor)
           .mintRedeemerValue(oracleRedeemer, "JSON")
           .selectUtxosFrom(walletUtxosExcludingCollateral)
@@ -52,5 +53,5 @@ export async function instantiateOracle() {
 
     const signedTx =  await wallet.signTx(unsignedMintTx, true);
     const txHash = await wallet.submitTx(signedTx);
-    console.log(txHash);         
+    console.log(txHash);
 }

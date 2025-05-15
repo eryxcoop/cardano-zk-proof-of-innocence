@@ -44,7 +44,6 @@ export async function buildPoi(oracleMerkleTreeRootHash: hash, leafIndexHash: ha
         privateKeyFilePath
     );
 
-    console.log(proof.pi_a)
     const convertedProof = await convertProofToUncompressed(proof); 
 
     // ===== Transaction Section ===== 
@@ -58,18 +57,18 @@ export async function buildPoi(oracleMerkleTreeRootHash: hash, leafIndexHash: ha
     const policyId = resolveScriptHash(scriptCbor, "V3");
 
     // Todo: Must contain the same datum as the previous utxo. Maybe we can create a function that checks that. 
-    const oracleDatum = conStr(0, [conStr(0, [byteString("aabb"), integer(0)]), byteString("aabb")]);
+    const poiDatum = conStr(0, [conStr(0, [byteString("6521fdd0bce90a3dd4b4e90a7d71641faebc03a4ac470109c0fd58593364c233"), integer(0)]), byteString("d0b9639d6365a7bad5d1af3c8d59cc902e1c810188ee0d4c34748918")]);
 
     const wallet_utxos = await wallet.getUtxos()
     const { collateralUtxo, walletUtxosExcludingCollateral} = removeUtxoForCollateralFrom(wallet_utxos)
 
-    // Check: What variable is the transaction ID hash.
-    const poiRedeemer = conStr(2, [conStr(0,[ byteString(proof.pi_a.toString()), byteString(proof.pi_b.toString()), byteString(proof.pi_c.toString()) ]), integer(leafIndexHash)])
+
+    const poiRedeemer = conStr(2, [conStr(0,[ byteString(convertedProof.pi_a.toString()), byteString(convertedProof.pi_b.toString()), byteString(convertedProof.pi_c.toString()) ]), integer(leafIndexHash)])
     
 
-    const outputOracleValue: Asset[] = [
+    const outputPoiValue: Asset[] = [
           { unit: "lovelace", quantity: "5000000" },
-          { unit: policyId + "6d6173746572", quantity: "1" },
+          { unit: policyId + "7465737431", quantity: "1" },
         ];
 
     const txBuilder = new MeshTxBuilder({
@@ -81,12 +80,13 @@ export async function buildPoi(oracleMerkleTreeRootHash: hash, leafIndexHash: ha
     async function poiTokenUtxoFrom(scriptAddress: string, policyId: string) {
           const utxosWithOracleToken = await blockchainProvider.fetchAddressUTxOs(
                 scriptAddress,
-                oracleTokenAsset(policyId).unit
+                oracleTokenAsset(policyId, "7465737431").unit
           );
-          return utxosWithOracleToken[0]
+          return utxosWithOracleToken[1]
     }
 
     const poiTokenUtxo = await poiTokenUtxoFrom(scriptAddr, policyId)
+    console.log(poiTokenUtxo)
 
     const unsignedMintTx = await txBuilder
           .setNetwork("preprod")
@@ -95,12 +95,12 @@ export async function buildPoi(oracleMerkleTreeRootHash: hash, leafIndexHash: ha
           .txInInlineDatumPresent()
           .txInScript(scriptCbor)
           .txInRedeemerValue(poiRedeemer, "JSON")
-          .spendingTxInReference("6521fdd0bce90a3dd4b4e90a7d71641faebc03a4ac470109c0fd58593364c233", 0)
-          .spendingTxInReference("6521fdd0bce90a3dd4b4e90a7d71641faebc03a4ac470109c0fd58593364c233", 0) // Oracle Merkle Tree Reference Input.
+          .readOnlyTxInReference("6521fdd0bce90a3dd4b4e90a7d71641faebc03a4ac470109c0fd58593364c233", 0)
+          .readOnlyTxInReference("b9de06c5855b040dfef7733cfdae139666639b63cf167fba76196c2d01237fd4", 0)
           .selectUtxosFrom(walletUtxosExcludingCollateral)
           .txInCollateral(collateralUtxo.input.txHash, collateralUtxo.input.outputIndex, [lovelaceAssetIn(collateralUtxo)], walletAddr)
-          .txOut(scriptAddr, outputOracleValue)
-          .txOutInlineDatumValue(oracleDatum, "JSON")
+          .txOut(scriptAddr, outputPoiValue)
+          .txOutInlineDatumValue(poiDatum, "JSON")
           .changeAddress(walletAddr!)
           .requiredSignerHash(paymentKeyHash!.to_hex())
           .complete()
@@ -110,4 +110,4 @@ export async function buildPoi(oracleMerkleTreeRootHash: hash, leafIndexHash: ha
     const txHash = await wallet.submitTx(signedTx);
     console.log(txHash);
 
-
+}

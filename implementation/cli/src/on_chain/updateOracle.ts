@@ -31,7 +31,7 @@ export async function updateOracle() {
     async function oracleTokenUtxoFrom(scriptAddress: string, policyId: string) {
           const utxosWithOracleToken = await blockchainProvider.fetchAddressUTxOs(
                 scriptAddress,
-                oracleTokenAsset(policyId).unit
+                oracleTokenAsset(policyId, "7465737431").unit
           );
           return utxosWithOracleToken[0]
     }

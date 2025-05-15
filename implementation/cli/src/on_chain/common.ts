@@ -103,8 +103,7 @@ export function instantiatePoIContract(wallet: MeshWallet) {
       return scriptCbor
 }
 
-export function oracleTokenAsset(policyId: string) {
-      return { unit: policyId + "6d6173746572", quantity: "1" }
+export function oracleTokenAsset(policyId: string, assetName: string) {
+      return { unit: policyId + assetName, quantity: "1" }
 }
 
-/***********************/
