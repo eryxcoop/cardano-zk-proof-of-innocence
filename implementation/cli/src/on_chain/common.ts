@@ -91,7 +91,7 @@ export function instantiateOracleContract(wallet: MeshWallet) {
       const paymentKeyHash = paymentKeyHashForWallet(wallet)
       const paymentKeyHashData = (Buffer.from(paymentKeyHash!.to_bytes()).toString('hex'));
       const blueprint = JSON.parse(fs.readFileSync("../validator/plutus.json", "utf-8"));
-      const scriptCbor =  applyParamsToScript(blueprint.validators[0].compiledCode, [paymentKeyHashData]);
+      const scriptCbor =  applyParamsToScript(blueprint.validators[2].compiledCode, [paymentKeyHashData]);
       return scriptCbor
 }
 
@@ -99,7 +99,7 @@ export function instantiatePoIContract(wallet: MeshWallet) {
       const paymentKeyHash = paymentKeyHashForWallet(wallet)
       const paymentKeyHashData = (Buffer.from(paymentKeyHash!.to_bytes()).toString('hex'));
       const blueprint = JSON.parse(fs.readFileSync("../validator/plutus.json", "utf-8"));
-      const scriptCbor =  applyParamsToScript(blueprint.validators[3].compiledCode, [paymentKeyHashData]);
+      const scriptCbor =  applyParamsToScript(blueprint.validators[5].compiledCode, [paymentKeyHashData]);
       return scriptCbor
 }
 
