@@ -3,7 +3,7 @@ import dotenv from 'dotenv';
 import { integer, BlockfrostProvider, MeshWallet, serializePlutusScript, conStr, MeshTxBuilder, resolveScriptHash, Asset} from '@meshsdk/core';
 import { applyParamsToScript, skeyToPubKeyHash, toPlutusData, deserializeAddress } from "@meshsdk/core-csl";
 import { Address, Int } from '@emurgo/cardano-serialization-lib-nodejs';
-import { UTxO } from "@meshsdk/common"
+import { Dict, UTxO } from "@meshsdk/common"
 import fs, { read } from 'fs';
 import { error } from 'console';
 
@@ -87,20 +87,30 @@ export function lovelaceAmountIn(utxo: UTxO): number {
 
 /* Oracle */
 
-export function instantiateOracleContract(wallet: MeshWallet) {
+function cborOfValidatorWith(name: string, purpose: string) {
+      const blueprint = JSON.parse(fs.readFileSync("../validator/plutus.json", "utf-8"));
+      // TODO: define the type for the parameter
+      const validatorWithName = blueprint.validators.find((validator: any) => {
+            const title = name + "." + name + "." + purpose;
+            return validator.title == title;
+      })
+      return validatorWithName;
+}
+
+function instantiateContract(wallet: MeshWallet, name: string) {
       const paymentKeyHash = paymentKeyHashForWallet(wallet)
       const paymentKeyHashData = (Buffer.from(paymentKeyHash!.to_bytes()).toString('hex'));
-      const blueprint = JSON.parse(fs.readFileSync("../validator/plutus.json", "utf-8"));
-      const scriptCbor =  applyParamsToScript(blueprint.validators[2].compiledCode, [paymentKeyHashData]);
+      const validator = cborOfValidatorWith(name, "spend");
+      const scriptCbor =  applyParamsToScript(validator.compiledCode, [paymentKeyHashData]);
       return scriptCbor
 }
 
+export function instantiateOracleContract(wallet: MeshWallet) {
+      return instantiateContract(wallet, "oracle");
+}
+
 export function instantiatePoIContract(wallet: MeshWallet) {
-      const paymentKeyHash = paymentKeyHashForWallet(wallet)
-      const paymentKeyHashData = (Buffer.from(paymentKeyHash!.to_bytes()).toString('hex'));
-      const blueprint = JSON.parse(fs.readFileSync("../validator/plutus.json", "utf-8"));
-      const scriptCbor =  applyParamsToScript(blueprint.validators[5].compiledCode, [paymentKeyHashData]);
-      return scriptCbor
+      return instantiateContract(wallet, "proof_of_innocence");
 }
 
 export function oracleTokenAsset(policyId: string, assetName: string) {
