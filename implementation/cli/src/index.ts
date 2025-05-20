@@ -19,9 +19,11 @@ const list = [1, 1, 0, 1]
 const merkleTree = new MerkleTree(list)
 const leafIndex = 2
 const oracleMerkleTreeRootHash = merkleTree.root()
+console.log(oracleMerkleTreeRootHash)
 const pathElements = merkleTree.authenticationPathElementsFor(leafIndex)
 const pathIndices = merkleTree.authenticationPathIndicesFor(leafIndex)
 const leafIndexHash = hashSingleValue(leafIndex)
+
 
 //await buildPoi(oracleMerkleTreeRootHash, leafIndexHash, pathElements, pathIndices, leafIndex)
 
@@ -162,7 +164,7 @@ A command that let's you create an Oracle.
 4.. Define a Tx that:
       - Mints a single POI token and sends it to script address.
       - Attaches the datum.
-      - Attaches the redeemer.
+      - Attaddr_test1qr5cplxtu4xe7pm50ldavtvg9p650m6m6nefwzctq7mhhj4kekym3jnzus8zguzfcxy4natchu0836ka2dq32hxggh2qk573kpaches the redeemer.
 */
 
 // Update the Datum of the PoI validator.

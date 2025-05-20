@@ -234,7 +234,6 @@ test test_proof_of_innocence_validator_permits_a_spending_transaction_that_is_ve
   // Validator oref
 
   
-
   proof_of_innocence.proof_of_innocence.spend(
     verification_key_hash,
     Some(datum),
@@ -242,4 +241,32 @@ test test_proof_of_innocence_validator_permits_a_spending_transaction_that_is_ve
     oref_script,
     transaction_with_reference_input,
   )
+}
+
+test groth_verify_1() {
+  let proof = Proof {
+    piA: #"8d47869bfb8a21556d7fb5e2d08fbcaf074602b3b2b615630a23ecb426ce5aae9a3d1f5ab7a3e91445deca68232bc1ff",
+    piB: #"805b96c6c35f56ccbc7708b4d21c5db9f5a64ed961c901b8f6d4ad05496bc8d7350a2f75c60fad1990954ff0300038d80194f0c8c6f7644b1188d7b0cbe88a58a694f86d6e294e5bf242ce30dc1911dc1d8eed21c27785fa73599161e3b55851",
+    piC: #"9268315b6ba4561b31850c66b56a1bd65b123104481068d63f3001576421ea01e66d40d437e84f8576613d8929d32e3b",
+  }
+
+  let vk: SnarkVerificationKey = SnarkVerificationKey {
+    nPublic: 2,
+    vkAlpha: #"87002aed4b240e827686f8264e0ae9db2e83d8569b78fc692f225c93d28dcd34eb9f42429af31fa06bc7401b060066a8",
+    vkBeta: #"94c9685c9dbcdaa39134046a7fd8b16072d37114fd6f5c79e0466298d03e8ead9dfa5d19cabe79726f9459aabe95651d0c088f712df38523b8f64e03fb1692a4666505d1e184e2ec6cba995f2bf465889c3df2a2620c670ca99cce35c2d57a06",
+    vkGamma: #"93e02b6052719f607dacd3a088274f65596bd0d09920b61ab5da61bbdc7f5049334cf11213945d57e5ac7d055d042b7e024aa2b2f08f0a91260805272dc51051c6e47ad4fa403b02b4510b647ae3d1770bac0326a805bbefd48056c8c121bdb8",
+    vkDelta: #"899fbed0bd154fa173072b3353a00b36b7cb1b7b91f43465af249c7be70d255b3f2d10f69bd19d50495e27abb5ba39ed00da5021dedc58019bcbf7107486d527eae8c0507c5bf741ab73a430f4db0d3ccd21b695bb08e99a6886ea9d575b2950",
+    vkAlphaBeta: [
+      #"d6574d88ab7cd30d8670887b8c97a3da2f51ada024d599b86c65c7d2efeea2400b8360a087648e0131548c90b31e9daf04f1bf384716c752626636317ea3c4613c5827e784954c1123b6833d134fff94aaee2ff6628d0154cbe4ef610ce0e90e",
+      #"d8be55d6446c83a271c36cc331d000f5916862e23d57b34dea72bb8500e379a60ba6bb8af76d1d1582208b71e5a568c10e5213e7c9535d3fc782474f8715635d1ed358257409f4dc825b67b35add9a1b1d5330b900ef29ddd32933d6e14bfca4",
+    ],
+    vkIC: [
+      #"8320572bc050f9a58f6868c6d521ea91b2db5082b8e07e5abf7a9522876351a676029ea661444a8b0caabfcae5693e70",
+      #"b0220209c8d3100a3119cf0528fc265bff7ce8d14d5f4b8ae4e955beb681ead788fc17a122a7478cce57f5c9a7c09d65",
+      #"824dd1f45ae01b97a1c9fdac10de473a2a9e2e32ec1758d2d180d48e4c95e3e14cbdc6b9e713f7d624b449142524f7d7",
+    ],
+  }
+
+  groth_verify(vk, proof, [9,79])
+
 }
