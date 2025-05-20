@@ -130,7 +130,7 @@ validator proof_of_innocence(verification_key_hash: ByteArray) {
           groth_verify(
             snark_verification_key,
             proof,
-            [transaction_id_hash, merkle_tree_root_hash.merkle_tree_root_hash],
+            [merkle_tree_root_hash.merkle_tree_root_hash, transaction_id_hash],
           )
 
         // The spent tokens are sent to the validator address (policy_id).
