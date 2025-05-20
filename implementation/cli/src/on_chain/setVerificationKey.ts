@@ -10,6 +10,7 @@ async function buildVerificationKeyDatum() {
     const verificationKey = JSON.parse(fs.readFileSync(verificationKeyFilePath, "utf-8"));
 
     const convertedVerificationKey = await convertVerificationKeyToUncompressed(verificationKey);
+    console.log(convertedVerificationKey)
     
     const datum = conStr(0, [
         integer(2),
