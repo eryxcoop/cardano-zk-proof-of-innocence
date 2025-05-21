@@ -1,5 +1,8 @@
 export type hash = number
 
+export function identity(value: number) {
+    return value;
+}
 export function hashSingleValue(value: hash) {
     return 2 * value + 5;
 }

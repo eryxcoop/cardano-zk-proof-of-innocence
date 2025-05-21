@@ -15,7 +15,7 @@ const expect = chai.expect;
 // The dummy "hash" function for the Merkle tree is H(a,b) = 3a+7b
 // The dummy hash function for verifying the secret leaf is H(x) = 2x+5
 
-describe("ProofOfInnocence", function () {
+describe("ProofOfInnocenceDummy", function () {
 
   this.timeout(10000);
 

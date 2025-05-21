@@ -29,9 +29,12 @@ generate_and_verify_proof: generate_groth_16_keys $(SCRIPTS_PATH)generate_and_ve
 	bash $(SCRIPTS_PATH)generate_and_verify_proof.sh
 
 
-### Circuit generation and testing
+### Testing
 test_circuit:
 	npx mocha -pr ts-node/register tests/*.js
+
+test_merkle_tree:
+	npx vitest
 
 
 .PHONY: compile_circuit_and_generate_constraints generate_and_validate_witnesses generate_groth_16_keys generate_and_verify_proof

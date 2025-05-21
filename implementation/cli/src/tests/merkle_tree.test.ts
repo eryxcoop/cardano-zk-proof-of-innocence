@@ -1,16 +1,24 @@
 import { describe, expect, test } from 'vitest'
-import { hash, hashSingleValue, hashPair } from '../common/dummyHash.js'
+import { hash, hashSingleValue, hashPair, identity } from '../common/dummyHash.js'
 import { MerkleTree } from '../common/MerkleTree.js'
 
 describe("Merkle tree", () => {
-    const list = [1,2,3,4]
-    const v1 = list[0]
-    const v2 = list[1]
-    const v3 = list[2]
-    const v4 = list[3]
+    const list = [1,1,0,1]
+    const v1 = identity(list[0])
+    const v2 = identity(list[1])
+    const v3 = identity(list[2])
+    const v4 = identity(list[3])
     const v12 = hashPair(v1,v2) 
     const v34 = hashPair(v3,v4) 
     const v1234 = hashPair(v12,v34)
+
+    console.log("Context:")
+    console.log("Leaves are:", v1, v2, v3, v4);
+    console.log("hash(", v1, ",", v2, ") =", v12);
+    console.log("hash(", v3, ",", v4, ") =", v34);
+    console.log("hash(", v12, ",", v34, ") =", v1234);
+
+    console.log(hashSingleValue(2))
 
     test("Cannot create a Merkle tree from an empty list", () => {
         expect(
@@ -29,7 +37,7 @@ describe("Merkle tree", () => {
 
         const root = merkleTree.root()
 
-        const expectedRoot = 1
+        const expectedRoot = identity(1)
 
         expect(root).toEqual(expectedRoot)
 

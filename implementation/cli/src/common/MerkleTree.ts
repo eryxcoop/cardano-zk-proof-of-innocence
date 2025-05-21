@@ -1,4 +1,5 @@
-import { hash, hashSingleValue, hashPair } from './dummyHash.js';
+import { hash, hashSingleValue, hashPair, identity } from './dummyHash.js';
+
 
 function isPowerOfTwo(value: number): boolean {
     return value > 0 && (value & (value - 1)) === 0;
@@ -21,7 +22,7 @@ export class MerkleTree {
 
     root(): hash {
         if (this.size() == 1) {
-            return this.list[0];
+            return identity(this.list[0]);
         } else {
             return hashPair(this.left().root(), this.right().root());
         }
@@ -41,7 +42,7 @@ export class MerkleTree {
         }
     }
 
-    authenticationPathIndicesFor(index: merkleTreeLeafIndex): hash[] {
+    authenticationPathIndicesFor(index: merkleTreeLeafIndex): number[] {
         if (this.size() == 1) {
             return [];
         } else {
