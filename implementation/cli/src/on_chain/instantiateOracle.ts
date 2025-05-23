@@ -1,7 +1,9 @@
-import { Asset, conStr, integer, MeshTxBuilder, resolveScriptHash } from "@meshsdk/core"
+import * as fs from "fs"
+import { Asset, conStr, Integer, integer, MeshTxBuilder, resolveScriptHash } from "@meshsdk/core"
 import { blockchainProvider, createWallet, instantiateOracleContract, lovelaceAssetIn, oracleTokenAsset, paymentKeyHashForWallet, removeUtxoForCollateralFrom, scriptAddressFor, walletBaseAddress } from "./common.js"
 
-export async function instantiateOracle() {
+
+export async function instantiateOracle(merke_root: number, oracle_token_name: string) {
     const wallet = await createWallet()
 
     const walletAddr = walletBaseAddress(wallet)
@@ -10,11 +12,11 @@ export async function instantiateOracle() {
     const scriptCbor = instantiateOracleContract(wallet)
     const scriptAddr = scriptAddressFor(scriptCbor)
 
+
+
     // console.log("Script Address: " + scriptAddr); 
-
-
     // Todo: Right now we'll use a dummy value hash to define the datum, but in the future we will need to create a roothash and make it an integer compatible with ak_381.grothverify() function.
-    const oracleDatum = conStr(0, [integer(79)]);
+    const oracleDatum = conStr(0, [integer(merke_root)]);
     const policyId = resolveScriptHash(scriptCbor, "V3");
     console.log("Script policyId: " + policyId);
 
@@ -29,10 +31,9 @@ export async function instantiateOracle() {
     const wallet_utxos = await wallet.getUtxos()
     console.log(wallet_utxos)
 
-   
     const mint_oracle_value: Asset[] = [
           { unit: "lovelace", quantity: "5000000" },
-          oracleTokenAsset(policyId, "7465737431"),
+          oracleTokenAsset(policyId, oracle_token_name),
         ];
 
     const { collateralUtxo, walletUtxosExcludingCollateral} = removeUtxoForCollateralFrom(wallet_utxos)
@@ -40,7 +41,7 @@ export async function instantiateOracle() {
     const unsignedMintTx = await txBuilder
           .setNetwork("preprod")
           .mintPlutusScriptV3()
-          .mint("1", policyId, "7465737431")
+          .mint("1", policyId, oracle_token_name)
           .mintingScript(scriptCbor)
           .mintRedeemerValue(oracleRedeemer, "JSON")
           .selectUtxosFrom(walletUtxosExcludingCollateral)

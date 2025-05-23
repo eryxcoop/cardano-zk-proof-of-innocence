@@ -1,9 +1,8 @@
-import * as fs from "fs"
-
 import { Asset, byteString, conStr, integer, MeshTxBuilder, resolveScriptHash } from "@meshsdk/core"
 import { blockchainProvider, createWallet, instantiatePoIContract, lovelaceAssetIn, oracleTokenAsset, paymentKeyHashForWallet, removeUtxoForCollateralFrom, scriptAddressFor, walletBaseAddress } from "./common.js"
 
-export async function instantiatePoi() {
+
+export async function instantiatePoi(poi_token_name: string) {
     const wallet = await createWallet()
 
     const walletAddr = walletBaseAddress(wallet)
@@ -29,10 +28,9 @@ export async function instantiatePoi() {
 
     const wallet_utxos = await wallet.getUtxos()
 
-   
     const mint_oracle_value: Asset[] = [
           { unit: "lovelace", quantity: "5000000" },
-          oracleTokenAsset(policyId, "746573743"),
+          oracleTokenAsset(policyId, poi_token_name),
     ];
 
     const { collateralUtxo, walletUtxosExcludingCollateral} = removeUtxoForCollateralFrom(wallet_utxos)
@@ -40,7 +38,7 @@ export async function instantiatePoi() {
     const unsignedMintTx = await txBuilder
           .setNetwork("preprod")
           .mintPlutusScriptV3()
-          .mint("1", policyId, "7465737433")
+          .mint("1", policyId, poi_token_name)
           .mintingScript(scriptCbor)
           .mintRedeemerValue(poiRedeemer, "JSON")
           .selectUtxosFrom(walletUtxosExcludingCollateral)

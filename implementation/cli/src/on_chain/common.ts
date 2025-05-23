@@ -117,3 +117,9 @@ export function oracleTokenAsset(policyId: string, assetName: string) {
       return { unit: policyId + assetName, quantity: "1" }
 }
 
+export function textToHex(text: string): string {
+      return Array.from(text)
+          .map(character => character.charCodeAt(0).toString(16).padStart(2, '0'))
+          .join('');
+}
+

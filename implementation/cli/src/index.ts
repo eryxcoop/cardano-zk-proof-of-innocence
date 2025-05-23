@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 //import { intro } from './intro.js';
-
+import * as fs from "fs"
 import { hashSingleValue } from "./common/dummyHash.js"
 import { MerkleTree } from "./common/MerkleTree.js"
 import { buildPoi } from "./off_chain/buildPoi.js"
@@ -8,30 +8,35 @@ import { setVerificationKey } from "./on_chain/setVerificationKey.js"
 import { instantiateOracle } from "./on_chain/instantiateOracle.js"
 import { instantiatePoi } from "./on_chain/instantiatePoi.js"
 import { updateOracle } from "./on_chain/updateOracle.js"
+import { textToHex } from "./on_chain/common.js"
 
 
+const cliInputsFilePath = "./cli_input.json";
+const cliInputs = JSON.parse(fs.readFileSync(cliInputsFilePath, "utf-8"));
 
-//instantiateOracle()
-//updateOracle()
-//instantiatePoi()
+// CLI Inputs
 
-const list = [1, 1, 0, 1]
-const merkleTree = new MerkleTree(list)
-const leafIndex = 2
+const treeList: number[] = cliInputs.tree_list
+const leafIndex: number = cliInputs.leaf_index.to
+const oracleTokenName = textToHex(cliInputs.oracle_thread_token_name)
+const poiTokenName = textToHex(cliInputs.poi_thread_token_name)
+const vkOutputReference = cliInputs.vk_output_reference
+
+// Proof Inputs
+
+const merkleTree = new MerkleTree(treeList)
 const oracleMerkleTreeRootHash = merkleTree.root()
-console.log(oracleMerkleTreeRootHash)
 const pathElements = merkleTree.authenticationPathElementsFor(leafIndex)
 const pathIndices = merkleTree.authenticationPathIndicesFor(leafIndex)
 const leafIndexHash = hashSingleValue(leafIndex)
 
-
-//await buildPoi(oracleMerkleTreeRootHash, leafIndexHash, pathElements, pathIndices, leafIndex)
 
 //process.exit(0)
 
 
 import { Command } from "commander";
 import chalk from "chalk";
+import { Integer } from "@meshsdk/core"
 
 const program = new Command();
 
@@ -58,10 +63,10 @@ program
     .argument("contract", "Name of the contract")
     .action((contract) => {
       if (contract == "oracle") {
-            instantiateOracle()
+            instantiateOracle(oracleMerkleTreeRootHash, oracleTokenName)
             console.log(chalk.green(`Creating an instance of the PoI Oracle`));
       } else if (contract == "poi") {
-            instantiatePoi()
+            instantiatePoi(poiTokenName)
             console.log(chalk.green(`Creating an instance of the PoI contract.`));
       } else {
             console.log(chalk.red(`Error: "${contract}" contract doesn't exist.`));
@@ -74,7 +79,7 @@ program
     .argument("contract", "Name of the contract")
     .action((contract) => {
       if (contract == "oracle") {
-            updateOracle()
+            updateOracle(oracleMerkleTreeRootHash, oracleTokenName)
             console.log(chalk.green(`Updating the PoI Oracle`));
       } else if (contract == "poi") {
             //updatePoi()
@@ -90,7 +95,7 @@ program
     //.argument("contract", "Name of the contract")
     .action(() => {
       console.log(chalk.green(`Verifying the PoI proof.`));
-      buildPoi(oracleMerkleTreeRootHash, leafIndexHash, pathElements, pathIndices, leafIndex);
+      buildPoi(oracleMerkleTreeRootHash, leafIndexHash, pathElements, pathIndices, leafIndex, poiTokenName);
     });
 
     program

@@ -47,7 +47,7 @@ async function verifyProof(
 }
 
 
-export async function buildPoi(oracleMerkleTreeRootHash: hash, leafIndexHash: hash, pathElements: hash[], pathIndices: number[], leafIndex: number) {
+export async function buildPoi(oracleMerkleTreeRootHash: hash, leafIndexHash: hash, pathElements: hash[], pathIndices: number[], leafIndex: number, tokenName: string) {
 
     // ===== Proof Section =====
     console.log("Help")
@@ -105,7 +105,7 @@ export async function buildPoi(oracleMerkleTreeRootHash: hash, leafIndexHash: ha
 
     const outputPoiValue: Asset[] = [
           { unit: "lovelace", quantity: "5000000" },
-          { unit: policyId + "7465737431", quantity: "1" },
+          { unit: policyId + tokenName, quantity: "1" },
         ];
 
     const txBuilder = new MeshTxBuilder({
@@ -117,7 +117,7 @@ export async function buildPoi(oracleMerkleTreeRootHash: hash, leafIndexHash: ha
     async function poiTokenUtxoFrom(scriptAddress: string, policyId: string) {
           const utxosWithOracleToken = await blockchainProvider.fetchAddressUTxOs(
                 scriptAddress,
-                oracleTokenAsset(policyId, "7465737431").unit
+                oracleTokenAsset(policyId, tokenName).unit
           );
           return utxosWithOracleToken[0]
     }

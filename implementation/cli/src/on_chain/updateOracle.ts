@@ -2,7 +2,7 @@ import { Asset, conStr, integer, MeshTxBuilder, resolveScriptHash } from "@meshs
 import { blockchainProvider, createWallet, instantiateOracleContract, lovelaceAssetIn, oracleTokenAsset, paymentKeyHashForWallet, removeUtxoForCollateralFrom, scriptAddressFor, walletBaseAddress } from "./common.js"
 
 
-export async function updateOracle() {
+export async function updateOracle(new_merkle_root: number, oracle_token_name: string) {
     const wallet = await createWallet()
     const walletAddr = walletBaseAddress(wallet)
     const paymentKeyHash = paymentKeyHashForWallet(wallet)
@@ -11,7 +11,7 @@ export async function updateOracle() {
     const scriptAddr = scriptAddressFor(scriptCbor)
     const policyId = resolveScriptHash(scriptCbor, "V3");
 
-    const oracleDatum = conStr(0, [integer(4)]);
+    const oracleDatum = conStr(0, [integer(new_merkle_root)]);
 
     const wallet_utxos = await wallet.getUtxos()
     const { collateralUtxo, walletUtxosExcludingCollateral} = removeUtxoForCollateralFrom(wallet_utxos)
@@ -19,7 +19,7 @@ export async function updateOracle() {
     const oracleRedeemer = integer(0);
     const outputOracleValue: Asset[] = [
           { unit: "lovelace", quantity: "5000000" },
-          { unit: policyId + "6d6173746572", quantity: "1" },
+          { unit: policyId + oracle_token_name, quantity: "1" },
         ];
 
     const txBuilder = new MeshTxBuilder({
@@ -31,7 +31,7 @@ export async function updateOracle() {
     async function oracleTokenUtxoFrom(scriptAddress: string, policyId: string) {
           const utxosWithOracleToken = await blockchainProvider.fetchAddressUTxOs(
                 scriptAddress,
-                oracleTokenAsset(policyId, "7465737431").unit
+                oracleTokenAsset(policyId, oracle_token_name).unit
           );
           return utxosWithOracleToken[0]
     }
