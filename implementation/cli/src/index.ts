@@ -19,7 +19,8 @@ const treeList = cliInputs.tree_list as number[]
 const leafIndex: number = cliInputs.leaf_index as number
 const oracleTokenName = textToHex(cliInputs.oracle_thread_token_name)
 const poiTokenName = textToHex(cliInputs.poi_thread_token_name)
-const vkOutputReference = cliInputs.vk_output_reference
+const oracleOutputReference = [cliInputs.oracle_tx_id, cliInputs.oracle_tx_index]
+const verifificationOutputReference = [cliInputs.verification_key_tx_id, cliInputs.verification_key_tx_index]
 
 // Proof Inputs
 
@@ -65,7 +66,7 @@ program
             instantiateOracle(oracleMerkleTreeRootHash, oracleTokenName)
             console.log(chalk.green(`Creating an instance of the PoI Oracle`));
       } else if (contract == "poi") {
-            instantiatePoi(poiTokenName)
+            instantiatePoi(poiTokenName, verifificationOutputReference[0], verifificationOutputReference[1])
             console.log(chalk.green(`Creating an instance of the PoI contract.`));
       } else {
             console.log(chalk.red(`Error: "${contract}" contract doesn't exist.`));
@@ -94,7 +95,7 @@ program
     //.argument("contract", "Name of the contract")
     .action(() => {
       console.log(chalk.green(`Verifying the PoI proof.`));
-      buildPoi(oracleMerkleTreeRootHash, leafIndexHash, pathElements, pathIndices, leafIndex, poiTokenName);
+      buildPoi(oracleMerkleTreeRootHash, leafIndexHash, pathElements, pathIndices, leafIndex, poiTokenName, oracleOutputReference[0], oracleOutputReference[1], verifificationOutputReference[0], verifificationOutputReference[1]);
     });
 
     program

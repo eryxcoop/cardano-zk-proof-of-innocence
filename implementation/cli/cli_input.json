@@ -1,8 +1,10 @@
 {
     "tree_list": [1, 1, 0, 1],
     "leaf_index": 2,
-    "oracle_thread_token_name": "test6",
-    "oracle_policy_id": "",
-    "poi_thread_token_name": "test6",
-    "vk_output_reference": ""
+    "oracle_thread_token_name": "test10",
+    "poi_thread_token_name": "test10",
+    "oracle_tx_id": "15c7e51c10770926dcb589ef1bcdba35c59c87d9bedbc9ed865f0dd8eadd683c",
+    "oracle_tx_index": 0,
+    "verification_key_tx_id": "f7cec7595513632af812c0ccf32f6781c8134ca6bd663dc5f4f52662d128ea86",
+    "verification_key_tx_index": 0
 }

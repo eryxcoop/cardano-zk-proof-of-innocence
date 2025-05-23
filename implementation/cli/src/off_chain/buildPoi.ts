@@ -4,7 +4,7 @@ import { hash } from "../common/dummyHash.js";
 import * as snarkjs from "snarkjs";
 import { convertProofToUncompressed } from "../common/conversion.js"
 import { Asset, conStr, integer, MeshTxBuilder, resolveScriptHash, byteString } from "@meshsdk/core"
-import { blockchainProvider, createWallet, instantiatePoIContract, lovelaceAssetIn, oracleTokenAsset, paymentKeyHashForWallet, removeUtxoForCollateralFrom, scriptAddressFor, walletBaseAddress } from "../on_chain/common.js"
+import { blockchainProvider, createWallet, instantiatePoIContract, instantiateOracleContract, lovelaceAssetIn, oracleTokenAsset, paymentKeyHashForWallet, removeUtxoForCollateralFrom, scriptAddressFor, walletBaseAddress } from "../on_chain/common.js"
 import { verify } from "crypto";
 import { UTxO } from "@lucid-evolution/lucid";
 //import { console } from "inspector";
@@ -48,7 +48,7 @@ async function verifyProof(
 }
 
 
-export async function buildPoi(oracleMerkleTreeRootHash: hash, leafIndexHash: hash, pathElements: hash[], pathIndices: number[], leafIndex: number, tokenName: string) {
+export async function buildPoi(oracleMerkleTreeRootHash: hash, leafIndexHash: hash, pathElements: hash[], pathIndices: number[], leafIndex: number, tokenName: string, oracle_tx_id: string, oracle_tx_index: number, verification_key_tx_id: string, verification_key_tx_index: number ) {
 
     // ===== Proof Section =====
     console.log("Help")
@@ -94,8 +94,12 @@ export async function buildPoi(oracleMerkleTreeRootHash: hash, leafIndexHash: ha
     const scriptAddr = scriptAddressFor(scriptCbor)
     const policyId = resolveScriptHash(scriptCbor, "V3");
 
+    const oracleScriptCbor = instantiateOracleContract(wallet)
+    const oraclePolicyId = resolveScriptHash(oracleScriptCbor, "V3");
+
     // Todo: Must contain the same datum as the previous utxo. Maybe we can create a function that checks that. 
-    const poiDatum = conStr(0, [conStr(0, [byteString("6521fdd0bce90a3dd4b4e90a7d71641faebc03a4ac470109c0fd58593364c233"), integer(0)]), byteString("d0b9639d6365a7bad5d1af3c8d59cc902e1c810188ee0d4c34748918")]);
+    const poiDatum = conStr(0, [conStr(0, [byteString(verification_key_tx_id), integer(verification_key_tx_index)]), byteString(oraclePolicyId)]);
+
 
     const wallet_utxos = await wallet.getUtxos()
     const { collateralUtxo, walletUtxosExcludingCollateral} = removeUtxoForCollateralFrom(wallet_utxos)
@@ -133,8 +137,8 @@ export async function buildPoi(oracleMerkleTreeRootHash: hash, leafIndexHash: ha
           .txInInlineDatumPresent()
           .txInScript(scriptCbor)
           .txInRedeemerValue(poiRedeemer, "JSON")
-          .readOnlyTxInReference("6521fdd0bce90a3dd4b4e90a7d71641faebc03a4ac470109c0fd58593364c233", 0)
-          .readOnlyTxInReference("ccf24037e847aec430ad5e4e43fa74638e7bc5fc5c0f28bacbc1e959163c0786", 0)
+          .readOnlyTxInReference(verification_key_tx_id, verification_key_tx_index)
+          .readOnlyTxInReference(oracle_tx_id, oracle_tx_index)
           .selectUtxosFrom(walletUtxosExcludingCollateral)
           .txInCollateral(collateralUtxo.input.txHash, collateralUtxo.input.outputIndex, [lovelaceAssetIn(collateralUtxo)], walletAddr)
           .txOut(scriptAddr, outputPoiValue)
@@ -146,5 +150,6 @@ export async function buildPoi(oracleMerkleTreeRootHash: hash, leafIndexHash: ha
     const signedTx =  await wallet.signTx(unsignedMintTx, true);
     const txHash = await wallet.submitTx(signedTx);
     console.log(txHash);
+    process.exit(0)
 }
 

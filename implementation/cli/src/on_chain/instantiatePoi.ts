@@ -1,8 +1,9 @@
 import { Asset, byteString, conStr, integer, MeshTxBuilder, resolveScriptHash } from "@meshsdk/core"
-import { blockchainProvider, createWallet, instantiatePoIContract, lovelaceAssetIn, oracleTokenAsset, paymentKeyHashForWallet, removeUtxoForCollateralFrom, scriptAddressFor, walletBaseAddress } from "./common.js"
+import { blockchainProvider, createWallet, instantiatePoIContract, instantiateOracleContract, lovelaceAssetIn, oracleTokenAsset, paymentKeyHashForWallet, removeUtxoForCollateralFrom, scriptAddressFor, walletBaseAddress } from "./common.js"
 
 
-export async function instantiatePoi(poi_token_name: string) {
+
+export async function instantiatePoi(poi_token_name: string, verification_key_tx_id: string, verification_key_tx_index: number) {
     const wallet = await createWallet()
 
     const walletAddr = walletBaseAddress(wallet)
@@ -11,10 +12,12 @@ export async function instantiatePoi(poi_token_name: string) {
     const scriptCbor = instantiatePoIContract(wallet)
     const scriptAddr = scriptAddressFor(scriptCbor)
 
-    // console.log("Script Address: " + scriptAddr); 
+    const oracleScriptCbor = instantiateOracleContract(wallet)
+    const oraclePolicyId = resolveScriptHash(oracleScriptCbor, "V3");
+
 
     // Todo: Right now we'll use a dummy value hash to define the datum, but in the future we will need to create a roothash and make it an integer compatible with ak_381.grothverify() function.
-    const poiDatum = conStr(0, [conStr(0, [byteString("6521fdd0bce90a3dd4b4e90a7d71641faebc03a4ac470109c0fd58593364c233"), integer(0)]), byteString("d0b9639d6365a7bad5d1af3c8d59cc902e1c810188ee0d4c34748918")]);
+    const poiDatum = conStr(0, [conStr(0, [byteString(verification_key_tx_id), integer(verification_key_tx_index)]), byteString(oraclePolicyId)]);
     const policyId = resolveScriptHash(scriptCbor, "V3");
     console.log("Script policyId: " + policyId);
 

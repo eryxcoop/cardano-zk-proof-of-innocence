@@ -70,4 +70,10 @@ export async function setVerificationKey () {
     console.log("Success! Here's the transaction hash:")
     console.log(txHash);
 
+    //const cliStatus = fs.readFileSync("../../cli_input.json", 'utf-8');
+    //const cliStatusObj = JSON.parse(cliStatus);
+//
+    //cliStatusObj.verification_key_tx_id = txHash;
+    //cliStatusObj.verification_key_tx_index = 0;
+    //fs.writeFileSync('data.json', JSON.stringify(cliStatusObj, null, 2), 'utf-8');
 }
