@@ -6,6 +6,7 @@ import { convertProofToUncompressed } from "../common/conversion.js"
 import { Asset, conStr, integer, MeshTxBuilder, resolveScriptHash, byteString } from "@meshsdk/core"
 import { blockchainProvider, createWallet, instantiatePoIContract, lovelaceAssetIn, oracleTokenAsset, paymentKeyHashForWallet, removeUtxoForCollateralFrom, scriptAddressFor, walletBaseAddress } from "../on_chain/common.js"
 import { verify } from "crypto";
+import { UTxO } from "@lucid-evolution/lucid";
 //import { console } from "inspector";
 
 export type SnarkJSProof = {
@@ -129,12 +130,11 @@ export async function buildPoi(oracleMerkleTreeRootHash: hash, leafIndexHash: ha
           .setNetwork("preprod")
           .spendingPlutusScriptV3()
           .txIn(poiTokenUtxo.input.txHash, poiTokenUtxo.input.outputIndex)
-          //.txIn("d5d6d6de5c4c13ce0929396fde1fdaa5c3b9120b542b0f3244c70345779037a4", 0)
           .txInInlineDatumPresent()
           .txInScript(scriptCbor)
           .txInRedeemerValue(poiRedeemer, "JSON")
           .readOnlyTxInReference("6521fdd0bce90a3dd4b4e90a7d71641faebc03a4ac470109c0fd58593364c233", 0)
-          .readOnlyTxInReference("b9de06c5855b040dfef7733cfdae139666639b63cf167fba76196c2d01237fd4", 0)
+          .readOnlyTxInReference("ccf24037e847aec430ad5e4e43fa74638e7bc5fc5c0f28bacbc1e959163c0786", 0)
           .selectUtxosFrom(walletUtxosExcludingCollateral)
           .txInCollateral(collateralUtxo.input.txHash, collateralUtxo.input.outputIndex, [lovelaceAssetIn(collateralUtxo)], walletAddr)
           .txOut(scriptAddr, outputPoiValue)

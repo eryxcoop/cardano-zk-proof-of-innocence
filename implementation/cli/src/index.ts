@@ -15,9 +15,8 @@ const cliInputsFilePath = "./cli_input.json";
 const cliInputs = JSON.parse(fs.readFileSync(cliInputsFilePath, "utf-8"));
 
 // CLI Inputs
-
-const treeList: number[] = cliInputs.tree_list
-const leafIndex: number = cliInputs.leaf_index.to
+const treeList = cliInputs.tree_list as number[]
+const leafIndex: number = cliInputs.leaf_index as number
 const oracleTokenName = textToHex(cliInputs.oracle_thread_token_name)
 const poiTokenName = textToHex(cliInputs.poi_thread_token_name)
 const vkOutputReference = cliInputs.vk_output_reference
