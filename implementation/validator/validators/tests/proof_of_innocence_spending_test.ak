@@ -27,10 +27,6 @@ const altered_merkle_tree_root_hash = merkle_tree_root_hash + 1
 
 const oracle_datum = OracleDatum { merkle_tree_root_hash }
 
-test tuki() {
-  merkle_tree_root_hash == 79
-}
-
 // Valid update of POI script.
 test valid_update() {
   let value = value_with_number_of_script_tokens(1)
