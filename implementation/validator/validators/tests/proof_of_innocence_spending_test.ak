@@ -15,7 +15,7 @@ use test_objects.{
 const innocent_transaction_id = #"02"
 
 // Actually hash it?
-const innocent_transaction_id_hash = 9
+const innocent_transaction_id_hash = 
 
 // Actually hash it?
 const merkle_tree_root_hash = 79
