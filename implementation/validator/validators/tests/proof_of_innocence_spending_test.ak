@@ -98,6 +98,12 @@ const input_verification_key =
     output: verification_key_output,
   }
 
+const datum =
+  POIDatum {
+    verification_key_output_reference,
+    oracle_token_policy_id: policy_id,
+  }
+
 // Valid update of POI script.
 test valid_update() {
   let output =
@@ -265,16 +271,8 @@ test zk_verify_fail_2() fail {
 test proof_of_innocence_success() {
   let output =
     transaction_output(validator_address(), value_with_one_script_token)
-  let verification_key_output_reference =
-    OutputReference { transaction_id: #"01", output_index: 0 }
 
   let input = Input { output_reference: output_reference_for_script, output }
-
-  let datum =
-    POIDatum {
-      verification_key_output_reference,
-      oracle_token_policy_id: policy_id,
-    }
 
   let transaction =
     spending_transaction_with(verification_key_hash, input, output)
@@ -306,12 +304,6 @@ test proof_of_innocence_success_2() {
     transaction_output(validator_address(), value_with_one_script_token)
 
   let input = Input { output_reference: output_reference_for_script, output }
-
-  let datum =
-    POIDatum {
-      verification_key_output_reference,
-      oracle_token_policy_id: policy_id,
-    }
 
   let transaction =
     spending_transaction_with(verification_key_hash, input, output)
@@ -383,12 +375,6 @@ test proof_of_innocence_fails_due_to_wrong_public_input() fail {
 
   let input = Input { output_reference: output_reference_for_script, output }
 
-  let datum =
-    POIDatum {
-      verification_key_output_reference,
-      oracle_token_policy_id: policy_id,
-    }
-
   let transaction =
     spending_transaction_with(verification_key_hash, input, output)
 
@@ -432,12 +418,6 @@ test proof_of_innocence_fails_due_to_wrong_address_destination() fail {
 
   let input = Input { output_reference: output_reference_for_script, output }
 
-  let datum =
-    POIDatum {
-      verification_key_output_reference,
-      oracle_token_policy_id: policy_id,
-    }
-
   let transaction =
     spending_transaction_with(verification_key_hash, input, output)
 
@@ -467,12 +447,6 @@ test proof_of_innocence_fails_due_to_datum_alteration() fail {
   let output = transaction_output(address, value_with_one_script_token)
 
   let input = Input { output_reference: output_reference_for_script, output }
-
-  let datum =
-    POIDatum {
-      verification_key_output_reference,
-      oracle_token_policy_id: policy_id,
-    }
 
   let modified_datum =
     POIDatum {
