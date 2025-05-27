@@ -14,6 +14,8 @@ use test_objects.{
   value_with_number_of_script_tokens, verification_key_hash,
 }
 
+const verification_key_transaction_id = #"01"
+
 const innocent_transaction_id = #"02"
 
 const innocent_transaction_id_hash =
@@ -33,8 +35,6 @@ const output_reference_for_script =
 const oracle_output_reference =
   OutputReference { transaction_id: innocent_transaction_id, output_index: 0 }
 
-const verification_key_output_reference = OutputReference { transaction_id: #"01", output_index: 0 }
-
 const vk: SnarkVerificationKey =
   SnarkVerificationKey {
     nPublic: 2,
@@ -51,6 +51,26 @@ const vk: SnarkVerificationKey =
       #"b0220209c8d3100a3119cf0528fc265bff7ce8d14d5f4b8ae4e955beb681ead788fc17a122a7478cce57f5c9a7c09d65",
       #"824dd1f45ae01b97a1c9fdac10de473a2a9e2e32ec1758d2d180d48e4c95e3e14cbdc6b9e713f7d624b449142524f7d7",
     ],
+  }
+
+const verification_key_output_reference =
+  OutputReference {
+    transaction_id: verification_key_transaction_id,
+    output_index: 0,
+  }
+
+const verification_key_output =
+  Output {
+    address: from_script(#"00"),
+    value: zero,
+    datum: InlineDatum(vk),
+    reference_script: None,
+  }
+
+const input_verification_key =
+  Input {
+    output_reference: verification_key_output_reference,
+    output: verification_key_output,
   }
 
 // Valid update of POI script.
@@ -238,30 +258,19 @@ test proof_of_innocence_success() {
 
   let value = value_with_number_of_script_tokens(1)
   let output = transaction_output(validator_address(), value)
-  let verification_key_output_reference = OutputReference { transaction_id: #"01", output_index: 0 }
+  let verification_key_output_reference =
+    OutputReference { transaction_id: #"01", output_index: 0 }
 
   let input = Input { output_reference: output_reference_for_script, output }
 
   let datum =
     POIDatum {
-      verification_key_output_reference: verification_key_output_reference,
+      verification_key_output_reference,
       oracle_token_policy_id: policy_id,
     }
 
   let transaction =
     spending_transaction_with(verification_key_hash, input, output)
-
-  // Create VK reference inputs 
-  let verification_key_output =
-    Output {
-      address: from_script(#"00"),
-      value: zero,
-      datum: InlineDatum(vk),
-      reference_script: None,
-    }
-
-  let input_verification_key =
-    Input { output_reference: verification_key_output_reference, output: verification_key_output }
 
   let oracle_output =
     Output {
@@ -311,24 +320,12 @@ test proof_of_innocence_success_2() {
 
   let datum =
     POIDatum {
-      verification_key_output_reference: verification_key_output_reference,
+      verification_key_output_reference,
       oracle_token_policy_id: policy_id,
     }
 
   let transaction =
     spending_transaction_with(verification_key_hash, input, output)
-
-  // Create VK reference inputs 
-  let verification_key_output =
-    Output {
-      address: from_script(#"00"),
-      value: zero,
-      datum: InlineDatum(vk),
-      reference_script: None,
-    }
-
-  let input_verification_key =
-    Input { output_reference: verification_key_output_reference, output: verification_key_output }
 
   let oracle_output =
     Output {
@@ -387,18 +384,6 @@ test proof_of_innocence_fails_due_invalid_vk_oref() fail {
   let transaction =
     spending_transaction_with(verification_key_hash, input, output)
 
-  // Create VK reference inputs 
-  let verification_key_output =
-    Output {
-      address: from_script(#"00"),
-      value: zero,
-      datum: InlineDatum(vk),
-      reference_script: None,
-    }
-
-  let input_verification_key =
-    Input { output_reference: verification_key_output_reference, output: verification_key_output }
-
   let oracle_output =
     Output {
       address: from_script(#"01"),
@@ -447,24 +432,12 @@ test proof_of_innocence_fails_due_to_wrong_public_input() fail {
 
   let datum =
     POIDatum {
-      verification_key_output_reference: verification_key_output_reference,
+      verification_key_output_reference,
       oracle_token_policy_id: policy_id,
     }
 
   let transaction =
     spending_transaction_with(verification_key_hash, input, output)
-
-  // Create VK reference inputs 
-  let verification_key_output =
-    Output {
-      address: from_script(#"00"),
-      value: zero,
-      datum: InlineDatum(vk),
-      reference_script: None,
-    }
-
-  let input_verification_key =
-    Input { output_reference: verification_key_output_reference, output: verification_key_output }
 
   // Create Oracle reference input
   let altered_oracle_datum =
@@ -519,24 +492,12 @@ test proof_of_innocence_fails_due_to_wrong_address_destination() fail {
 
   let datum =
     POIDatum {
-      verification_key_output_reference: verification_key_output_reference,
+      verification_key_output_reference,
       oracle_token_policy_id: policy_id,
     }
 
   let transaction =
     spending_transaction_with(verification_key_hash, input, output)
-
-  // Create VK reference inputs 
-  let verification_key_output =
-    Output {
-      address: from_script(#"00"),
-      value: zero,
-      datum: InlineDatum(vk),
-      reference_script: None,
-    }
-
-  let input_verification_key =
-    Input { output_reference: verification_key_output_reference, output: verification_key_output }
 
   let oracle_output =
     Output {
@@ -586,13 +547,13 @@ test proof_of_innocence_fails_due_to_datum_alteration() fail {
 
   let datum =
     POIDatum {
-      verification_key_output_reference: verification_key_output_reference,
+      verification_key_output_reference,
       oracle_token_policy_id: policy_id,
     }
 
   let modified_datum =
     POIDatum {
-      verification_key_output_reference: verification_key_output_reference,
+      verification_key_output_reference,
       oracle_token_policy_id: #"12",
     }
 
@@ -606,18 +567,6 @@ test proof_of_innocence_fails_due_to_datum_alteration() fail {
 
   let transaction =
     spending_transaction_with(verification_key_hash, input, new_output)
-
-  // Create VK reference inputs 
-  let verification_key_output =
-    Output {
-      address: from_script(#"00"),
-      value: zero,
-      datum: InlineDatum(vk),
-      reference_script: None,
-    }
-
-  let input_verification_key =
-    Input { output_reference: verification_key_output_reference, output: verification_key_output }
 
   let oracle_output =
     Output {
