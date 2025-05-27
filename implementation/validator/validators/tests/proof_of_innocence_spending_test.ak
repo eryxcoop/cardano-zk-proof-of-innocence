@@ -30,8 +30,7 @@ const oracle_datum = OracleDatum { merkle_tree_root_hash }
 // Valid update of POI script.
 test valid_update() {
   let value = value_with_number_of_script_tokens(1)
-  let address = validator_address()
-  let output = transaction_output(address, value)
+  let output = transaction_output(validator_address(), value)
 
   let oref = OutputReference { transaction_id, output_index: 0 }
 
@@ -58,8 +57,7 @@ test valid_update() {
 // Invalid PoI update using an incorrect signature.
 test invalid_update_due_to_wrong_vk() fail {
   let value = value_with_number_of_script_tokens(1)
-  let address = validator_address()
-  let output = transaction_output(address, value)
+  let output = transaction_output(validator_address(), value)
   let signature_different_from_verification_key_hash = arbitrary_signature
 
   let oref = OutputReference { transaction_id, output_index: 0 }
