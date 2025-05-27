@@ -464,8 +464,7 @@ test proof_of_innocence_fails_due_to_wrong_address_destination() fail {
 
 test proof_of_innocence_fails_due_to_datum_alteration() fail {
   let address = validator_address()
-  let output =
-    transaction_output(validator_address(), value_with_one_script_token)
+  let output = transaction_output(address, value_with_one_script_token)
 
   let input = Input { output_reference: output_reference_for_script, output }
 
