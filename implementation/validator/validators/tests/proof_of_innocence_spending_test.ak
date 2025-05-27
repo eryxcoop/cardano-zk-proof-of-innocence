@@ -33,7 +33,25 @@ const output_reference_for_script =
 const oracle_output_reference =
   OutputReference { transaction_id: innocent_transaction_id, output_index: 0 }
 
-const oref_vk = OutputReference { transaction_id: #"01", output_index: 0 }
+const verification_key_output_reference = OutputReference { transaction_id: #"01", output_index: 0 }
+
+const vk: SnarkVerificationKey =
+  SnarkVerificationKey {
+    nPublic: 2,
+    vkAlpha: #"87002aed4b240e827686f8264e0ae9db2e83d8569b78fc692f225c93d28dcd34eb9f42429af31fa06bc7401b060066a8",
+    vkBeta: #"94c9685c9dbcdaa39134046a7fd8b16072d37114fd6f5c79e0466298d03e8ead9dfa5d19cabe79726f9459aabe95651d0c088f712df38523b8f64e03fb1692a4666505d1e184e2ec6cba995f2bf465889c3df2a2620c670ca99cce35c2d57a06",
+    vkGamma: #"93e02b6052719f607dacd3a088274f65596bd0d09920b61ab5da61bbdc7f5049334cf11213945d57e5ac7d055d042b7e024aa2b2f08f0a91260805272dc51051c6e47ad4fa403b02b4510b647ae3d1770bac0326a805bbefd48056c8c121bdb8",
+    vkDelta: #"899fbed0bd154fa173072b3353a00b36b7cb1b7b91f43465af249c7be70d255b3f2d10f69bd19d50495e27abb5ba39ed00da5021dedc58019bcbf7107486d527eae8c0507c5bf741ab73a430f4db0d3ccd21b695bb08e99a6886ea9d575b2950",
+    vkAlphaBeta: [
+      #"d6574d88ab7cd30d8670887b8c97a3da2f51ada024d599b86c65c7d2efeea2400b8360a087648e0131548c90b31e9daf04f1bf384716c752626636317ea3c4613c5827e784954c1123b6833d134fff94aaee2ff6628d0154cbe4ef610ce0e90e",
+      #"d8be55d6446c83a271c36cc331d000f5916862e23d57b34dea72bb8500e379a60ba6bb8af76d1d1582208b71e5a568c10e5213e7c9535d3fc782474f8715635d1ed358257409f4dc825b67b35add9a1b1d5330b900ef29ddd32933d6e14bfca4",
+    ],
+    vkIC: [
+      #"a5b0bbeda9d342ec2cfa598db21d585818bd4139db4089868ebcd178361f42414fc4fd4b2964ea690ff207435cd026b6",
+      #"b0220209c8d3100a3119cf0528fc265bff7ce8d14d5f4b8ae4e955beb681ead788fc17a122a7478cce57f5c9a7c09d65",
+      #"824dd1f45ae01b97a1c9fdac10de473a2a9e2e32ec1758d2d180d48e4c95e3e14cbdc6b9e713f7d624b449142524f7d7",
+    ],
+  }
 
 // Valid update of POI script.
 test valid_update() {
@@ -146,24 +164,6 @@ test invalid_spend_due_to_wrong_redeemer() fail {
 
 // Zero-Knowledge proofs
 
-const vk: SnarkVerificationKey =
-  SnarkVerificationKey {
-    nPublic: 2,
-    vkAlpha: #"87002aed4b240e827686f8264e0ae9db2e83d8569b78fc692f225c93d28dcd34eb9f42429af31fa06bc7401b060066a8",
-    vkBeta: #"94c9685c9dbcdaa39134046a7fd8b16072d37114fd6f5c79e0466298d03e8ead9dfa5d19cabe79726f9459aabe95651d0c088f712df38523b8f64e03fb1692a4666505d1e184e2ec6cba995f2bf465889c3df2a2620c670ca99cce35c2d57a06",
-    vkGamma: #"93e02b6052719f607dacd3a088274f65596bd0d09920b61ab5da61bbdc7f5049334cf11213945d57e5ac7d055d042b7e024aa2b2f08f0a91260805272dc51051c6e47ad4fa403b02b4510b647ae3d1770bac0326a805bbefd48056c8c121bdb8",
-    vkDelta: #"899fbed0bd154fa173072b3353a00b36b7cb1b7b91f43465af249c7be70d255b3f2d10f69bd19d50495e27abb5ba39ed00da5021dedc58019bcbf7107486d527eae8c0507c5bf741ab73a430f4db0d3ccd21b695bb08e99a6886ea9d575b2950",
-    vkAlphaBeta: [
-      #"d6574d88ab7cd30d8670887b8c97a3da2f51ada024d599b86c65c7d2efeea2400b8360a087648e0131548c90b31e9daf04f1bf384716c752626636317ea3c4613c5827e784954c1123b6833d134fff94aaee2ff6628d0154cbe4ef610ce0e90e",
-      #"d8be55d6446c83a271c36cc331d000f5916862e23d57b34dea72bb8500e379a60ba6bb8af76d1d1582208b71e5a568c10e5213e7c9535d3fc782474f8715635d1ed358257409f4dc825b67b35add9a1b1d5330b900ef29ddd32933d6e14bfca4",
-    ],
-    vkIC: [
-      #"a5b0bbeda9d342ec2cfa598db21d585818bd4139db4089868ebcd178361f42414fc4fd4b2964ea690ff207435cd026b6",
-      #"b0220209c8d3100a3119cf0528fc265bff7ce8d14d5f4b8ae4e955beb681ead788fc17a122a7478cce57f5c9a7c09d65",
-      #"824dd1f45ae01b97a1c9fdac10de473a2a9e2e32ec1758d2d180d48e4c95e3e14cbdc6b9e713f7d624b449142524f7d7",
-    ],
-  }
-
 test zk_verify_1() {
   let proof =
     Proof {
@@ -238,13 +238,13 @@ test proof_of_innocence_success() {
 
   let value = value_with_number_of_script_tokens(1)
   let output = transaction_output(validator_address(), value)
-  let oref_vk = OutputReference { transaction_id: #"01", output_index: 0 }
+  let verification_key_output_reference = OutputReference { transaction_id: #"01", output_index: 0 }
 
   let input = Input { output_reference: output_reference_for_script, output }
 
   let datum =
     POIDatum {
-      verification_key_output_reference: oref_vk,
+      verification_key_output_reference: verification_key_output_reference,
       oracle_token_policy_id: policy_id,
     }
 
@@ -261,7 +261,7 @@ test proof_of_innocence_success() {
     }
 
   let input_verification_key =
-    Input { output_reference: oref_vk, output: verification_key_output }
+    Input { output_reference: verification_key_output_reference, output: verification_key_output }
 
   let oracle_output =
     Output {
@@ -311,7 +311,7 @@ test proof_of_innocence_success_2() {
 
   let datum =
     POIDatum {
-      verification_key_output_reference: oref_vk,
+      verification_key_output_reference: verification_key_output_reference,
       oracle_token_policy_id: policy_id,
     }
 
@@ -328,7 +328,7 @@ test proof_of_innocence_success_2() {
     }
 
   let input_verification_key =
-    Input { output_reference: oref_vk, output: verification_key_output }
+    Input { output_reference: verification_key_output_reference, output: verification_key_output }
 
   let oracle_output =
     Output {
@@ -397,7 +397,7 @@ test proof_of_innocence_fails_due_invalid_vk_oref() fail {
     }
 
   let input_verification_key =
-    Input { output_reference: oref_vk, output: verification_key_output }
+    Input { output_reference: verification_key_output_reference, output: verification_key_output }
 
   let oracle_output =
     Output {
@@ -447,7 +447,7 @@ test proof_of_innocence_fails_due_to_wrong_public_input() fail {
 
   let datum =
     POIDatum {
-      verification_key_output_reference: oref_vk,
+      verification_key_output_reference: verification_key_output_reference,
       oracle_token_policy_id: policy_id,
     }
 
@@ -464,7 +464,7 @@ test proof_of_innocence_fails_due_to_wrong_public_input() fail {
     }
 
   let input_verification_key =
-    Input { output_reference: oref_vk, output: verification_key_output }
+    Input { output_reference: verification_key_output_reference, output: verification_key_output }
 
   // Create Oracle reference input
   let altered_oracle_datum =
@@ -519,7 +519,7 @@ test proof_of_innocence_fails_due_to_wrong_address_destination() fail {
 
   let datum =
     POIDatum {
-      verification_key_output_reference: oref_vk,
+      verification_key_output_reference: verification_key_output_reference,
       oracle_token_policy_id: policy_id,
     }
 
@@ -536,7 +536,7 @@ test proof_of_innocence_fails_due_to_wrong_address_destination() fail {
     }
 
   let input_verification_key =
-    Input { output_reference: oref_vk, output: verification_key_output }
+    Input { output_reference: verification_key_output_reference, output: verification_key_output }
 
   let oracle_output =
     Output {
@@ -586,13 +586,13 @@ test proof_of_innocence_fails_due_to_datum_alteration() fail {
 
   let datum =
     POIDatum {
-      verification_key_output_reference: oref_vk,
+      verification_key_output_reference: verification_key_output_reference,
       oracle_token_policy_id: policy_id,
     }
 
   let modified_datum =
     POIDatum {
-      verification_key_output_reference: oref_vk,
+      verification_key_output_reference: verification_key_output_reference,
       oracle_token_policy_id: #"12",
     }
 
@@ -617,7 +617,7 @@ test proof_of_innocence_fails_due_to_datum_alteration() fail {
     }
 
   let input_verification_key =
-    Input { output_reference: oref_vk, output: verification_key_output }
+    Input { output_reference: verification_key_output_reference, output: verification_key_output }
 
   let oracle_output =
     Output {
