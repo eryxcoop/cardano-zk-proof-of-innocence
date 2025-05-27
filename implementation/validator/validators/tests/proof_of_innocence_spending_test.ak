@@ -14,6 +14,8 @@ use test_objects.{
   value_with_number_of_script_tokens, verification_key_hash,
 }
 
+const verification_key_policy_id = #"00"
+
 const verification_key_transaction_id = #"01"
 
 const innocent_transaction_id = #"02"
@@ -24,6 +26,8 @@ const innocent_transaction_id_hash =
 const sparse_merkle_tree = [1, 1, 0, 1]
 
 const merkle_tree_root_hash = merkle_tree_root_for(sparse_merkle_tree)
+
+const merkle_tree_path_elements = [79, 9]
 
 const altered_merkle_tree_root_hash = merkle_tree_root_hash + 1
 
@@ -61,7 +65,7 @@ const verification_key_output_reference =
 
 const verification_key_output =
   Output {
-    address: from_script(#"00"),
+    address: from_script(verification_key_policy_id),
     value: zero,
     datum: InlineDatum(vk),
     reference_script: None,
@@ -191,7 +195,7 @@ test zk_verify_1() {
       piB: #"b099258ba29e8951213a2f4f0c2740a82ab5c0976d344d73846d787cea76fbe438dc95bfedd3f7a894a4c455552642fa1125125fefc45738f00c945684f89062120c305aa2be468a345be1cc5063b30da90677996a05cabf353d7b23133fa3e3",
       piC: #"b6afada8f98b26d6a028b811ed0e7d89c3e71d0cec315c0eb933d99bd8f4061f94c135ab3561c14c4dda5570ed39e702",
     }
-  groth_verify(vk, proof, [79, 9])
+  groth_verify(vk, proof, merkle_tree_path_elements)
 }
 
 test zk_verify_2() {
@@ -202,7 +206,7 @@ test zk_verify_2() {
       piC: #"822a1af322bee8cf78843ef13118889ec90d047e5aacb6d811b1e1f528f16cea4cc5068b2e923dc05e331a712f65e1e2",
     }
 
-  groth_verify(vk, proof, [79, 9])
+  groth_verify(vk, proof, merkle_tree_path_elements)
 }
 
 test zk_verify_3() {
@@ -213,7 +217,7 @@ test zk_verify_3() {
       piC: #"b5a61ee647de62c096369c62e6e5ba773ac37a27d7a43aab0524f54ee33a6349d0851c2933b1367f4d2baae428a38907",
     }
 
-  groth_verify(vk, proof, [79, 9])
+  groth_verify(vk, proof, merkle_tree_path_elements)
 }
 
 test zk_verify_4() {
@@ -224,7 +228,7 @@ test zk_verify_4() {
       piC: #"9437e46cdf7baea1658efaac148473e0eb027914d8444fab4db6da42ab0f56c80e13d4f82f7d0f6c2d4e63fc0c4ab003",
     }
 
-  groth_verify(vk, proof, [79, 9])
+  groth_verify(vk, proof, merkle_tree_path_elements)
 }
 
 test zk_verify_fail_1() fail {
