@@ -27,9 +27,12 @@ pub fn validator_address() {
   from_script(policy_id)
 }
 
+pub fn arbitrary_script() {
+  bytearray.from_string(@"arbitrary_script")
+}
+
 pub fn arbitrary_address() {
-  let arbitrary_script = bytearray.from_string(@"arbitrary_script")
-  from_script(arbitrary_script)
+  from_script(arbitrary_script())
 }
 
 pub fn transaction_output(address: Address, value: Value) -> Output {
