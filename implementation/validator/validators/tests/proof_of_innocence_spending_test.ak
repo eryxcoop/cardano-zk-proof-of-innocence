@@ -27,18 +27,16 @@ const altered_merkle_tree_root_hash = merkle_tree_root_hash + 1
 
 const oracle_datum = OracleDatum { merkle_tree_root_hash }
 
+const output_reference_for_script = OutputReference { transaction_id, output_index: 0 }
+
 // Valid update of POI script.
 test valid_update() {
   let value = value_with_number_of_script_tokens(1)
   let output = transaction_output(validator_address(), value)
-
-  let oref = OutputReference { transaction_id, output_index: 0 }
-
-  let input = Input { output_reference: oref, output }
-
+  let input = Input { output_reference: output_reference_for_script, output }
   let datum =
     POIDatum {
-      verification_key_output_reference: oref,
+      verification_key_output_reference: output_reference_for_script,
       oracle_token_policy_id: policy_id,
     }
 
@@ -49,7 +47,7 @@ test valid_update() {
     verification_key_hash,
     Some(datum),
     Update,
-    oref,
+    output_reference_for_script,
     transaction,
   )
 }
@@ -58,18 +56,14 @@ test valid_update() {
 test invalid_update_due_to_wrong_vk() fail {
   let value = value_with_number_of_script_tokens(1)
   let output = transaction_output(validator_address(), value)
-  let signature_different_from_verification_key_hash = arbitrary_signature
-
-  let oref = OutputReference { transaction_id, output_index: 0 }
-
-  let input = Input { output_reference: oref, output }
-
+  let input = Input { output_reference: output_reference_for_script, output }
   let datum =
     POIDatum {
-      verification_key_output_reference: oref,
+      verification_key_output_reference: output_reference_for_script,
       oracle_token_policy_id: policy_id,
     }
 
+  let signature_different_from_verification_key_hash = arbitrary_signature
   let transaction =
     spending_transaction_with(
       signature_different_from_verification_key_hash,
@@ -81,7 +75,7 @@ test invalid_update_due_to_wrong_vk() fail {
     verification_key_hash,
     Some(datum),
     Update,
-    oref,
+    output_reference_for_script,
     transaction,
   )
 }
@@ -95,14 +89,12 @@ test invalid_update_due_wrong_address_destination() fail {
   let transaction_otuput_address = arbitrary_address()
   let transaction_output = transaction_output(transaction_otuput_address, value)
 
-  let oref = OutputReference { transaction_id, output_index: 0 }
-
   let input =
-    Input { output_reference: oref, output: previous_transaction_output }
+    Input { output_reference: output_reference_for_script, output: previous_transaction_output }
 
   let datum =
     POIDatum {
-      verification_key_output_reference: oref,
+      verification_key_output_reference: output_reference_for_script,
       oracle_token_policy_id: policy_id,
     }
 
@@ -113,7 +105,7 @@ test invalid_update_due_wrong_address_destination() fail {
     verification_key_hash,
     Some(datum),
     Update,
-    oref,
+    output_reference_for_script,
     transaction,
   )
 }
@@ -125,13 +117,11 @@ test invalid_spend_due_to_wrong_redeemer() fail {
   let address = validator_address()
   let output = transaction_output(address, value)
 
-  let oref = OutputReference { transaction_id, output_index: 0 }
-
-  let input = Input { output_reference: oref, output }
+  let input = Input { output_reference: output_reference_for_script, output }
 
   let datum =
     POIDatum {
-      verification_key_output_reference: oref,
+      verification_key_output_reference: output_reference_for_script,
       oracle_token_policy_id: policy_id,
     }
 
@@ -142,7 +132,7 @@ test invalid_spend_due_to_wrong_redeemer() fail {
     verification_key_hash,
     Some(datum),
     Create,
-    oref,
+    output_reference_for_script,
     transaction,
   )
 }
@@ -242,11 +232,9 @@ test proof_of_innocence_success() {
   let value = value_with_number_of_script_tokens(1)
   let address = validator_address()
   let output = transaction_output(address, value)
-
-  let oref_script = OutputReference { transaction_id, output_index: 0 }
   let oref_vk = OutputReference { transaction_id: #"01", output_index: 0 }
 
-  let input = Input { output_reference: oref_script, output }
+  let input = Input { output_reference: output_reference_for_script, output }
 
   let datum =
     POIDatum {
@@ -298,7 +286,7 @@ test proof_of_innocence_success() {
     verification_key_hash,
     Some(datum),
     redeemer,
-    oref_script,
+    output_reference_for_script,
     transaction_with_reference_input,
   )
 }
@@ -317,11 +305,9 @@ test proof_of_innocence_success_2() {
   let value = value_with_number_of_script_tokens(1)
   let address = validator_address()
   let output = transaction_output(address, value)
-
-  let oref_script = OutputReference { transaction_id, output_index: 0 }
   let oref_vk = OutputReference { transaction_id: #"01", output_index: 0 }
 
-  let input = Input { output_reference: oref_script, output }
+  let input = Input { output_reference: output_reference_for_script, output }
 
   let datum =
     POIDatum {
@@ -373,7 +359,7 @@ test proof_of_innocence_success_2() {
     verification_key_hash,
     Some(datum),
     redeemer,
-    oref_script,
+    output_reference_for_script,
     transaction_with_reference_input,
   )
 }
@@ -391,11 +377,9 @@ test proof_of_innocence_fails_due_invalid_vk_oref() fail {
   let value = value_with_number_of_script_tokens(1)
   let address = validator_address()
   let output = transaction_output(address, value)
-
-  let oref_script = OutputReference { transaction_id, output_index: 0 }
   let oref_vk = OutputReference { transaction_id: #"01", output_index: 0 }
 
-  let input = Input { output_reference: oref_script, output }
+  let input = Input { output_reference: output_reference_for_script, output }
 
   let datum =
     POIDatum {
@@ -450,7 +434,7 @@ test proof_of_innocence_fails_due_invalid_vk_oref() fail {
     verification_key_hash,
     Some(datum),
     redeemer,
-    oref_script,
+    output_reference_for_script,
     transaction_with_reference_input,
   )
 }
@@ -470,10 +454,9 @@ test proof_of_innocence_fails_due_to_wrong_public_input() fail {
   let address = validator_address()
   let output = transaction_output(address, value)
 
-  let oref_script = OutputReference { transaction_id, output_index: 0 }
   let oref_vk = OutputReference { transaction_id: #"01", output_index: 0 }
 
-  let input = Input { output_reference: oref_script, output }
+  let input = Input { output_reference: output_reference_for_script, output }
 
   let datum =
     POIDatum {
@@ -528,7 +511,7 @@ test proof_of_innocence_fails_due_to_wrong_public_input() fail {
     verification_key_hash,
     Some(datum),
     redeemer,
-    oref_script,
+    output_reference_for_script,
     transaction_with_reference_input,
   )
 }
@@ -548,10 +531,9 @@ test proof_of_innocence_fails_due_to_wrong_address_destination() fail {
   let other_address = from_script(#"1234")
   let output = transaction_output(other_address, value)
 
-  let oref_script = OutputReference { transaction_id, output_index: 0 }
   let oref_vk = OutputReference { transaction_id: #"01", output_index: 0 }
 
-  let input = Input { output_reference: oref_script, output }
+  let input = Input { output_reference: output_reference_for_script, output }
 
   let datum =
     POIDatum {
@@ -603,7 +585,7 @@ test proof_of_innocence_fails_due_to_wrong_address_destination() fail {
     verification_key_hash,
     Some(datum),
     redeemer,
-    oref_script,
+    output_reference_for_script,
     transaction_with_reference_input,
   )
 }
@@ -622,10 +604,9 @@ test proof_of_innocence_fails_due_to_datum_alteration() fail {
   let address = validator_address()
   let output = transaction_output(address, value)
 
-  let oref_script = OutputReference { transaction_id, output_index: 0 }
   let oref_vk = OutputReference { transaction_id: #"01", output_index: 0 }
 
-  let input = Input { output_reference: oref_script, output }
+  let input = Input { output_reference: output_reference_for_script, output }
 
   let datum =
     POIDatum {
@@ -691,7 +672,7 @@ test proof_of_innocence_fails_due_to_datum_alteration() fail {
     verification_key_hash,
     Some(datum),
     redeemer,
-    oref_script,
+    output_reference_for_script,
     transaction_with_reference_input,
   )
 }
