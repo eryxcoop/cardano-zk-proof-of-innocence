@@ -5,7 +5,8 @@ use cardano/transaction.{
   InlineDatum, Input, Output, OutputReference, Transaction,
 }
 use common.{OracleDatum}
-use dummy_hash.{dummy_hash_single}
+use dummy_hash.{dummy_hash_transaction_id}
+use merkle_tree.{merkle_tree_root_for}
 use proof_of_innocence.{Create, POIDatum, Update, ValidateProof}
 use test_objects.{
   arbitrary_address, arbitrary_signature, policy_id, spending_transaction_with,
@@ -15,14 +16,20 @@ use test_objects.{
 
 const innocent_transaction_id = #"02"
 
-const innocent_transaction_id_hash = dummy_hash_single(innocent_transaction_id)
+const innocent_transaction_id_hash =
+  dummy_hash_transaction_id(innocent_transaction_id)
 
-// Actually hash it?
-const merkle_tree_root_hash = 79
+const sparse_merkle_tree = [1, 1, 0, 1]
 
-const altered_merkle_tree_root_hash = 100
+const merkle_tree_root_hash = merkle_tree_root_for(sparse_merkle_tree)
+
+const altered_merkle_tree_root_hash = merkle_tree_root_hash + 1
 
 const oracle_datum = OracleDatum { merkle_tree_root_hash }
+
+test tuki() {
+  merkle_tree_root_hash == 79
+}
 
 // Valid update of POI script.
 test valid_update() {
