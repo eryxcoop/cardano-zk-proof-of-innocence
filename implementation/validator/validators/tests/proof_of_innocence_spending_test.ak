@@ -14,12 +14,14 @@ use test_objects.{
 
 const innocent_transaction_id = #"02"
 
+// Actually hash it?
 const innocent_transaction_id_hash = 9
 
 // Actually hash it?
 const merkle_tree_root_hash = 79
 
-// Actually hash it?
+const altered_merkle_tree_root_hash = 100
+
 const oracle_datum = OracleDatum { merkle_tree_root_hash }
 
 // Valid update of POI script.
@@ -494,7 +496,8 @@ test proof_of_innocence_fails_due_to_wrong_public_input() fail {
     Input { output_reference: oref_vk, output: verification_key_output }
 
   // Create Oracle reference input
-  let oracle_datum = OracleDatum { merkle_tree_root_hash: 100 }
+  let oracle_datum =
+    OracleDatum { merkle_tree_root_hash: altered_merkle_tree_root_hash }
 
   let oref_oracle =
     OutputReference { transaction_id: innocent_transaction_id, output_index: 0 }
