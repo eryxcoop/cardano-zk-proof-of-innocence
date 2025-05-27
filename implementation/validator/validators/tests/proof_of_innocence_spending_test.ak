@@ -27,7 +27,6 @@ const sparse_merkle_tree = [1, 1, 0, 1]
 
 const merkle_tree_root_hash = merkle_tree_root_for(sparse_merkle_tree)
 
-// Actually hash it
 const proof_verification_inputs = [merkle_tree_root_hash, innocent_transaction_id_hash]
 
 const altered_merkle_tree_root_hash = merkle_tree_root_hash + 1
@@ -297,7 +296,6 @@ test proof_of_innocence_success() {
           }
         }
 
-  // Validator oref
   proof_of_innocence.proof_of_innocence.spend(
     verification_key_hash,
     Some(datum),
@@ -352,7 +350,6 @@ test proof_of_innocence_success_2() {
           }
         }
 
-  // Validator oref
   proof_of_innocence.proof_of_innocence.spend(
     verification_key_hash,
     Some(datum),
@@ -409,7 +406,6 @@ test proof_of_innocence_fails_due_invalid_vk_oref() fail {
           }
         }
 
-  // Validator oref
   proof_of_innocence.proof_of_innocence.spend(
     verification_key_hash,
     Some(datum),
@@ -468,7 +464,6 @@ test proof_of_innocence_fails_due_to_wrong_public_input() fail {
           }
         }
 
-  // Validator oref
   proof_of_innocence.proof_of_innocence.spend(
     verification_key_hash,
     Some(datum),
@@ -524,7 +519,6 @@ test proof_of_innocence_fails_due_to_wrong_address_destination() fail {
           }
         }
 
-  // Validator oref
   proof_of_innocence.proof_of_innocence.spend(
     verification_key_hash,
     Some(datum),
@@ -593,7 +587,6 @@ test proof_of_innocence_fails_due_to_datum_alteration() fail {
           }
         }
 
-  // Validator oref
   proof_of_innocence.proof_of_innocence.spend(
     verification_key_hash,
     Some(datum),
