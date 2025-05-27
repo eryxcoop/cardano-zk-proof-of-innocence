@@ -9,9 +9,9 @@ use dummy_hash.{dummy_hash_transaction_id}
 use merkle_tree.{merkle_tree_root_for}
 use proof_of_innocence.{Create, POIDatum, Update, ValidateProof}
 use test_objects.{
-  arbitrary_address, arbitrary_script, arbitrary_signature, asset_name,
-  policy_id, spending_transaction_with, transaction_id, transaction_output,
-  validator_address, value_with_number_of_script_tokens, verification_key_hash,
+  arbitrary_address, arbitrary_signature, policy_id, spending_transaction_with,
+  transaction_id, transaction_output, validator_address,
+  value_with_number_of_script_tokens, verification_key_hash,
 }
 
 const verification_key_policy_id = #"00"
@@ -42,7 +42,7 @@ const oracle_output_reference =
 
 const oracle_output =
   Output {
-    address: from_script(arbitrary_script()),
+    address: arbitrary_address(),
     value: value_with_number_of_script_tokens(1),
     datum: InlineDatum(oracle_datum),
     reference_script: None,
