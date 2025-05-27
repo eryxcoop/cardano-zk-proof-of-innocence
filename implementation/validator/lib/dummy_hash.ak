@@ -6,6 +6,5 @@ pub fn dummy_hash_pair(left: Hash, right: Hash) -> Hash {
 }
 
 pub fn dummy_hash_single(element: Hash) -> Hash {
-  let hash = element
-  hash
+  2 * element + 5
 }
