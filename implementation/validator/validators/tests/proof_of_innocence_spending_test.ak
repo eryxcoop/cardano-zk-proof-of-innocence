@@ -239,30 +239,17 @@ test zk_verify_fail_1() fail {
   let invalid_curve_point =
     #"83965444cb17e432e7b9d1991e4db327806339602072e1a9c6fa09037e12fd7c0d74f609ac4edaf20319762299ce3010"
 
-  let proof =
-    Proof {
-      piA: #"aa4bf2c5c7e50be140c72078ac93d146b5b7655c32402ddd5da6c0eb4056a726b9eb72560a0ee38eab37dc23c42387d1",
-      piB: #"a374a087d4f780a76383ab4da50883ed9965059735eeeaaad2ef831bb24e621a5919d463a8d9aa43638f7a4cc228f1720f2742c83bca796f3c7288152de0a442a90d969050e7fc1386057e6e2bcfaa83968d369c43508e6e13f10608170c9369",
-      piC: #"9437e46cdf7baea1658efaac148473e0eb027914d8444fab4db6da42ab0f56c80e13d4f82f7d0f6c2d4e63fc0c4ab003",
-    }
-
-  let invalid_proof = Proof { ..proof, piA: invalid_curve_point }
+  let invalid_proof =
+    Proof { ..valid_proof_of_innocence, piA: invalid_curve_point }
 
   groth_verify(vk, invalid_proof, proof_verification_inputs)
 }
 
 test zk_verify_fail_2() fail {
-  let proof =
-    Proof {
-      piA: #"aa4bf2c5c7e50be140c72078ac93d146b5b7655c32402ddd5da6c0eb4056a726b9eb72560a0ee38eab37dc23c42387d1",
-      piB: #"a374a087d4f780a76383ab4da50883ed9965059735eeeaaad2ef831bb24e621a5919d463a8d9aa43638f7a4cc228f1720f2742c83bca796f3c7288152de0a442a90d969050e7fc1386057e6e2bcfaa83968d369c43508e6e13f10608170c9369",
-      piC: #"9437e46cdf7baea1658efaac148473e0eb027914d8444fab4db6da42ab0f56c80e13d4f82f7d0f6c2d4e63fc0c4ab003",
-    }
-
   let invalid_verification_inputs =
     [merkle_tree_root_hash, innocent_transaction_id_hash + 1]
 
-  groth_verify(vk, proof, invalid_verification_inputs)
+  groth_verify(vk, valid_proof_of_innocence, invalid_verification_inputs)
 }
 
 test proof_of_innocence_success() {
