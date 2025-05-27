@@ -480,7 +480,7 @@ test proof_of_innocence_fails_due_to_wrong_public_input() fail {
     Input { output_reference: oref_vk, output: verification_key_output }
 
   // Create Oracle reference input
-  let oracle_datum =
+  let altered_oracle_datum =
     OracleDatum { merkle_tree_root_hash: altered_merkle_tree_root_hash }
 
   let oref_oracle =
@@ -490,7 +490,7 @@ test proof_of_innocence_fails_due_to_wrong_public_input() fail {
     Output {
       address: from_script(#"01"),
       value: from_asset(policy_id, #"01", 1),
-      datum: InlineDatum(oracle_datum),
+      datum: InlineDatum(altered_oracle_datum),
       reference_script: None,
     }
 
