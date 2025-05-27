@@ -33,6 +33,8 @@ const output_reference_for_script =
 const oracle_output_reference =
   OutputReference { transaction_id: innocent_transaction_id, output_index: 0 }
 
+const oref_vk = OutputReference { transaction_id: #"01", output_index: 0 }
+
 // Valid update of POI script.
 test valid_update() {
   let value = value_with_number_of_script_tokens(1)
@@ -87,9 +89,8 @@ test invalid_update_due_to_wrong_vk() fail {
 // Invalid PoI update - Send funds to a different address than the script adress.
 test invalid_update_due_wrong_address_destination() fail {
   let value = value_with_number_of_script_tokens(1)
-  let transaction_input_address = validator_address()
   let previous_transaction_output =
-    transaction_output(transaction_input_address, value)
+    transaction_output(validator_address(), value)
   let transaction_otuput_address = arbitrary_address()
   let transaction_output = transaction_output(transaction_otuput_address, value)
 
@@ -121,8 +122,7 @@ test invalid_update_due_wrong_address_destination() fail {
 // Revisor: Similarly, to the spending Oracle test, we need to check this out further.
 test invalid_spend_due_to_wrong_redeemer() fail {
   let value = value_with_number_of_script_tokens(1)
-  let address = validator_address()
-  let output = transaction_output(address, value)
+  let output = transaction_output(validator_address(), value)
 
   let input = Input { output_reference: output_reference_for_script, output }
 
@@ -237,8 +237,7 @@ test proof_of_innocence_success() {
   let redeemer = ValidateProof(proof, innocent_transaction_id_hash)
 
   let value = value_with_number_of_script_tokens(1)
-  let address = validator_address()
-  let output = transaction_output(address, value)
+  let output = transaction_output(validator_address(), value)
   let oref_vk = OutputReference { transaction_id: #"01", output_index: 0 }
 
   let input = Input { output_reference: output_reference_for_script, output }
@@ -306,9 +305,7 @@ test proof_of_innocence_success_2() {
   let redeemer = ValidateProof(proof, innocent_transaction_id_hash)
 
   let value = value_with_number_of_script_tokens(1)
-  let address = validator_address()
-  let output = transaction_output(address, value)
-  let oref_vk = OutputReference { transaction_id: #"01", output_index: 0 }
+  let output = transaction_output(validator_address(), value)
 
   let input = Input { output_reference: output_reference_for_script, output }
 
@@ -374,9 +371,7 @@ test proof_of_innocence_fails_due_invalid_vk_oref() fail {
   let redeemer = ValidateProof(proof, innocent_transaction_id_hash)
 
   let value = value_with_number_of_script_tokens(1)
-  let address = validator_address()
-  let output = transaction_output(address, value)
-  let oref_vk = OutputReference { transaction_id: #"01", output_index: 0 }
+  let output = transaction_output(validator_address(), value)
 
   let input = Input { output_reference: output_reference_for_script, output }
 
@@ -446,10 +441,7 @@ test proof_of_innocence_fails_due_to_wrong_public_input() fail {
   let redeemer = ValidateProof(proof, innocent_transaction_id_hash)
 
   let value = value_with_number_of_script_tokens(1)
-  let address = validator_address()
-  let output = transaction_output(address, value)
-
-  let oref_vk = OutputReference { transaction_id: #"01", output_index: 0 }
+  let output = transaction_output(validator_address(), value)
 
   let input = Input { output_reference: output_reference_for_script, output }
 
@@ -523,8 +515,6 @@ test proof_of_innocence_fails_due_to_wrong_address_destination() fail {
   let other_address = from_script(#"1234")
   let output = transaction_output(other_address, value)
 
-  let oref_vk = OutputReference { transaction_id: #"01", output_index: 0 }
-
   let input = Input { output_reference: output_reference_for_script, output }
 
   let datum =
@@ -590,9 +580,7 @@ test proof_of_innocence_fails_due_to_datum_alteration() fail {
 
   let value = value_with_number_of_script_tokens(1)
   let address = validator_address()
-  let output = transaction_output(address, value)
-
-  let oref_vk = OutputReference { transaction_id: #"01", output_index: 0 }
+  let output = transaction_output(validator_address(), value)
 
   let input = Input { output_reference: output_reference_for_script, output }
 
