@@ -10,6 +10,10 @@ use test_objects.{
 }
 use common.{OracleDatum}
 
+const innocent_transaction_id = #"02"
+const innocent_transaction_id_hash = 9  // Actually hash it?
+const merkle_tree_root_hash = 79  // Actually hash it?
+
 
 // Valid update of POI script.
 test valid_update() {
@@ -221,7 +225,7 @@ test proof_of_innocence_success() {
     piC: #"b6afada8f98b26d6a028b811ed0e7d89c3e71d0cec315c0eb933d99bd8f4061f94c135ab3561c14c4dda5570ed39e702",
   }
 
-  let redeemer = ValidateProof(proof, 9)
+  let redeemer = ValidateProof(proof, innocent_transaction_id_hash)
 
   let value = value_with_number_of_script_tokens(1)
   let address = validator_address()
@@ -255,10 +259,10 @@ test proof_of_innocence_success() {
   // Create Oracle reference input
 
   let oracle_datum = OracleDatum {
-    merkle_tree_root_hash: 79,
+    merkle_tree_root_hash: merkle_tree_root_hash,
   }
 
-  let oref_oracle = OutputReference { transaction_id: #"02", output_index: 0 }
+  let oref_oracle = OutputReference { transaction_id: innocent_transaction_id, output_index: 0 }
 
   let oracle_output = Output {
     address: from_script(#"01"),
@@ -297,7 +301,7 @@ test proof_of_innocence_success_2() {
     piC: #"822a1af322bee8cf78843ef13118889ec90d047e5aacb6d811b1e1f528f16cea4cc5068b2e923dc05e331a712f65e1e2",
   }
 
-  let redeemer = ValidateProof(proof, 9)
+  let redeemer = ValidateProof(proof, innocent_transaction_id_hash)
 
   let value = value_with_number_of_script_tokens(1)
   let address = validator_address()
@@ -331,10 +335,10 @@ test proof_of_innocence_success_2() {
   // Create Oracle reference input
 
   let oracle_datum = OracleDatum {
-    merkle_tree_root_hash: 79,
+    merkle_tree_root_hash: merkle_tree_root_hash,
   }
 
-  let oref_oracle = OutputReference { transaction_id: #"02", output_index: 0 }
+  let oref_oracle = OutputReference { transaction_id: innocent_transaction_id, output_index: 0 }
 
   let oracle_output = Output {
     address: from_script(#"01"),
@@ -373,7 +377,7 @@ test proof_of_innocence_fails_due_invalid_vk_oref() fail {
     piC: #"822a1af322bee8cf78843ef13118889ec90d047e5aacb6d811b1e1f528f16cea4cc5068b2e923dc05e331a712f65e1e2",
   }
 
-  let redeemer = ValidateProof(proof, 9)
+  let redeemer = ValidateProof(proof, innocent_transaction_id_hash)
 
   let value = value_with_number_of_script_tokens(1)
   let address = validator_address()
@@ -386,7 +390,7 @@ test proof_of_innocence_fails_due_invalid_vk_oref() fail {
 
   let datum =
     POIDatum {
-      verification_key_output_reference: OutputReference { transaction_id: #"02", output_index: 0 },
+      verification_key_output_reference: OutputReference { transaction_id: innocent_transaction_id, output_index: 0 },
       oracle_token_policy_id: policy_id,
     }
 
@@ -407,10 +411,10 @@ test proof_of_innocence_fails_due_invalid_vk_oref() fail {
   // Create Oracle reference input
 
   let oracle_datum = OracleDatum {
-    merkle_tree_root_hash: 79,
+    merkle_tree_root_hash: merkle_tree_root_hash,
   }
 
-  let oref_oracle = OutputReference { transaction_id: #"02", output_index: 0 }
+  let oref_oracle = OutputReference { transaction_id: innocent_transaction_id, output_index: 0 }
 
   let oracle_output = Output {
     address: from_script(#"01"),
@@ -449,7 +453,7 @@ test proof_of_innocence_fails_due_to_wrong_public_input() fail {
     piC: #"822a1af322bee8cf78843ef13118889ec90d047e5aacb6d811b1e1f528f16cea4cc5068b2e923dc05e331a712f65e1e2",
   }
 
-  let redeemer = ValidateProof(proof, 9)
+  let redeemer = ValidateProof(proof, innocent_transaction_id_hash)
 
   let value = value_with_number_of_script_tokens(1)
   let address = validator_address()
@@ -486,7 +490,7 @@ test proof_of_innocence_fails_due_to_wrong_public_input() fail {
     merkle_tree_root_hash: 100,
   }
 
-  let oref_oracle = OutputReference { transaction_id: #"02", output_index: 0 }
+  let oref_oracle = OutputReference { transaction_id: innocent_transaction_id, output_index: 0 }
 
   let oracle_output = Output {
     address: from_script(#"01"),
@@ -525,7 +529,7 @@ test proof_of_innocence_fails_due_to_wrong_address_destination() fail {
     piC: #"822a1af322bee8cf78843ef13118889ec90d047e5aacb6d811b1e1f528f16cea4cc5068b2e923dc05e331a712f65e1e2",
   }
 
-  let redeemer = ValidateProof(proof, 9)
+  let redeemer = ValidateProof(proof, innocent_transaction_id_hash)
 
   let value = value_with_number_of_script_tokens(1)
   let other_address = from_script(#"1234")
@@ -559,10 +563,10 @@ test proof_of_innocence_fails_due_to_wrong_address_destination() fail {
   // Create Oracle reference input
 
   let oracle_datum = OracleDatum {
-    merkle_tree_root_hash: 79,
+    merkle_tree_root_hash: merkle_tree_root_hash,
   }
 
-  let oref_oracle = OutputReference { transaction_id: #"02", output_index: 0 }
+  let oref_oracle = OutputReference { transaction_id: innocent_transaction_id, output_index: 0 }
 
   let oracle_output = Output {
     address: from_script(#"01"),
@@ -600,7 +604,7 @@ test proof_of_innocence_fails_due_to_datum_alteration() fail {
     piC: #"b6afada8f98b26d6a028b811ed0e7d89c3e71d0cec315c0eb933d99bd8f4061f94c135ab3561c14c4dda5570ed39e702",
   }
 
-  let redeemer = ValidateProof(proof, 9)
+  let redeemer = ValidateProof(proof, innocent_transaction_id_hash)
 
   let value = value_with_number_of_script_tokens(1)
   let address = validator_address()
@@ -642,10 +646,10 @@ test proof_of_innocence_fails_due_to_datum_alteration() fail {
   // Create Oracle reference input
 
   let oracle_datum = OracleDatum {
-    merkle_tree_root_hash: 79,
+    merkle_tree_root_hash: merkle_tree_root_hash,
   }
 
-  let oref_oracle = OutputReference { transaction_id: #"02", output_index: 0 }
+  let oref_oracle = OutputReference { transaction_id: innocent_transaction_id, output_index: 0 }
 
   let oracle_output = Output {
     address: from_script(#"01"),
