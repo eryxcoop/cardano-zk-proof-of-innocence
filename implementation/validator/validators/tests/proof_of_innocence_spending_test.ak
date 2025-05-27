@@ -45,6 +45,8 @@ const value_with_one_script_token = value_with_number_of_script_tokens(1)
 const output =
   transaction_output(validator_address(), value_with_one_script_token)
 
+const input = Input { output_reference: output_reference_for_script, output }
+
 const oracle_output =
   Output {
     address: arbitrary_address(),
@@ -109,7 +111,6 @@ const datum =
 
 // Valid update of POI script.
 test valid_update() {
-  let input = Input { output_reference: output_reference_for_script, output }
   let datum =
     POIDatum {
       verification_key_output_reference: output_reference_for_script,
@@ -130,7 +131,6 @@ test valid_update() {
 
 // Invalid PoI update using an incorrect signature.
 test invalid_update_due_to_wrong_vk() fail {
-  let input = Input { output_reference: output_reference_for_script, output }
   let datum =
     POIDatum {
       verification_key_output_reference: output_reference_for_script,
@@ -187,8 +187,6 @@ test invalid_update_due_wrong_address_destination() fail {
 // Tries to spend the validator invoking the minting part of the script.
 // Revisor: Similarly, to the spending Oracle test, we need to check this out further.
 test invalid_spend_due_to_wrong_redeemer() fail {
-  let input = Input { output_reference: output_reference_for_script, output }
-
   let datum =
     POIDatum {
       verification_key_output_reference: output_reference_for_script,
@@ -263,8 +261,6 @@ test zk_verify_fail_2() fail {
 }
 
 test proof_of_innocence_success() {
-  let input = Input { output_reference: output_reference_for_script, output }
-
   let transaction =
     spending_transaction_with(verification_key_hash, input, output)
 
@@ -291,8 +287,6 @@ test proof_of_innocence_success() {
 
 // Executes the previous proof_of_innocence_success test with another valid proof.
 test proof_of_innocence_success_2() {
-  let input = Input { output_reference: output_reference_for_script, output }
-
   let transaction =
     spending_transaction_with(verification_key_hash, input, output)
 
@@ -318,8 +312,6 @@ test proof_of_innocence_success_2() {
 }
 
 test proof_of_innocence_fails_due_invalid_vk_oref() fail {
-  let input = Input { output_reference: output_reference_for_script, output }
-
   let datum =
     POIDatum {
       verification_key_output_reference: OutputReference {
@@ -355,8 +347,6 @@ test proof_of_innocence_fails_due_invalid_vk_oref() fail {
 
 // Executes the previous proof_of_innocence_success test with another valid proof.
 test proof_of_innocence_fails_due_to_wrong_public_input() fail {
-  let input = Input { output_reference: output_reference_for_script, output }
-
   let transaction =
     spending_transaction_with(verification_key_hash, input, output)
 
@@ -398,8 +388,6 @@ test proof_of_innocence_fails_due_to_wrong_address_destination() fail {
   let other_address = from_script(#"1234")
   let output = transaction_output(other_address, value_with_one_script_token)
 
-  let input = Input { output_reference: output_reference_for_script, output }
-
   let transaction =
     spending_transaction_with(verification_key_hash, input, output)
 
@@ -425,11 +413,6 @@ test proof_of_innocence_fails_due_to_wrong_address_destination() fail {
 }
 
 test proof_of_innocence_fails_due_to_datum_alteration() fail {
-  let address = validator_address()
-  let output = transaction_output(address, value_with_one_script_token)
-
-  let input = Input { output_reference: output_reference_for_script, output }
-
   let modified_datum =
     POIDatum {
       verification_key_output_reference,
@@ -438,7 +421,7 @@ test proof_of_innocence_fails_due_to_datum_alteration() fail {
 
   let new_output =
     Output {
-      address,
+      address: validator_address(),
       value: value_with_one_script_token,
       datum: InlineDatum(modified_datum),
       reference_script: None,
