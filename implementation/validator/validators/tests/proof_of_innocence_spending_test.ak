@@ -43,7 +43,7 @@ const oracle_output_reference =
 const oracle_output =
   Output {
     address: from_script(arbitrary_script()),
-    value: from_asset(policy_id, asset_name, 1),
+    value: value_with_number_of_script_tokens(1),
     datum: InlineDatum(oracle_datum),
     reference_script: None,
   }
