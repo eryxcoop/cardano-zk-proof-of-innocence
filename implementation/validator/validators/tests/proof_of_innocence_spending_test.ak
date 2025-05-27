@@ -5,6 +5,7 @@ use cardano/transaction.{
   InlineDatum, Input, Output, OutputReference, Transaction,
 }
 use common.{OracleDatum}
+use dummy_hash.{dummy_hash_single}
 use proof_of_innocence.{Create, POIDatum, Update, ValidateProof}
 use test_objects.{
   arbitrary_address, arbitrary_signature, policy_id, spending_transaction_with,
@@ -14,8 +15,7 @@ use test_objects.{
 
 const innocent_transaction_id = #"02"
 
-// Actually hash it?
-const innocent_transaction_id_hash = 
+const innocent_transaction_id_hash = dummy_hash_single(innocent_transaction_id)
 
 // Actually hash it?
 const merkle_tree_root_hash = 79

@@ -30,3 +30,7 @@ pub fn is_power_of_two(number: Int) {
     number_has_exactly_one_bit_set_to_one,
   }
 }
+
+pub fn hex_to_dec(input: ByteArray) -> Int {
+  bytearray.foldl(input, 0, fn(byte, acc) { acc * 256 + byte })
+}

@@ -3,9 +3,9 @@ use common.{value_at}
 use dummy_hash.{Hash, dummy_hash_pair, dummy_hash_single}
 use merkle_tree.{merkle_tree_authentication_path_for, merkle_tree_root_for}
 
-const vector = [1, 2, 3, 4]
+const vector = [#"01", #"02", #"03", #"04"]
 
-const vector_with_size_that_is_not_power_of_two = [1, 2, 3]
+const vector_with_size_that_is_not_power_of_two = [#"01", #"02", #"03"]
 
 fn vector_with_one_element() {
   slice(vector, from: 0, to: 0)
