@@ -27,7 +27,11 @@ const altered_merkle_tree_root_hash = merkle_tree_root_hash + 1
 
 const oracle_datum = OracleDatum { merkle_tree_root_hash }
 
-const output_reference_for_script = OutputReference { transaction_id, output_index: 0 }
+const output_reference_for_script =
+  OutputReference { transaction_id, output_index: 0 }
+
+const oracle_output_reference =
+  OutputReference { transaction_id: innocent_transaction_id, output_index: 0 }
 
 // Valid update of POI script.
 test valid_update() {
@@ -90,7 +94,10 @@ test invalid_update_due_wrong_address_destination() fail {
   let transaction_output = transaction_output(transaction_otuput_address, value)
 
   let input =
-    Input { output_reference: output_reference_for_script, output: previous_transaction_output }
+    Input {
+      output_reference: output_reference_for_script,
+      output: previous_transaction_output,
+    }
 
   let datum =
     POIDatum {
@@ -257,10 +264,6 @@ test proof_of_innocence_success() {
   let input_verification_key =
     Input { output_reference: oref_vk, output: verification_key_output }
 
-  // Create Oracle reference input
-  let oref_oracle =
-    OutputReference { transaction_id: innocent_transaction_id, output_index: 0 }
-
   let oracle_output =
     Output {
       address: from_script(#"01"),
@@ -270,7 +273,7 @@ test proof_of_innocence_success() {
     }
 
   let input_oracle =
-    Input { output_reference: oref_oracle, output: oracle_output }
+    Input { output_reference: oracle_output_reference, output: oracle_output }
 
   let transaction_with_reference_input =
     transaction
@@ -330,10 +333,6 @@ test proof_of_innocence_success_2() {
   let input_verification_key =
     Input { output_reference: oref_vk, output: verification_key_output }
 
-  // Create Oracle reference input
-  let oref_oracle =
-    OutputReference { transaction_id: innocent_transaction_id, output_index: 0 }
-
   let oracle_output =
     Output {
       address: from_script(#"01"),
@@ -343,7 +342,7 @@ test proof_of_innocence_success_2() {
     }
 
   let input_oracle =
-    Input { output_reference: oref_oracle, output: oracle_output }
+    Input { output_reference: oracle_output_reference, output: oracle_output }
 
   let transaction_with_reference_input =
     transaction
@@ -405,10 +404,6 @@ test proof_of_innocence_fails_due_invalid_vk_oref() fail {
   let input_verification_key =
     Input { output_reference: oref_vk, output: verification_key_output }
 
-  // Create Oracle reference input
-  let oref_oracle =
-    OutputReference { transaction_id: innocent_transaction_id, output_index: 0 }
-
   let oracle_output =
     Output {
       address: from_script(#"01"),
@@ -418,7 +413,7 @@ test proof_of_innocence_fails_due_invalid_vk_oref() fail {
     }
 
   let input_oracle =
-    Input { output_reference: oref_oracle, output: oracle_output }
+    Input { output_reference: oracle_output_reference, output: oracle_output }
 
   let transaction_with_reference_input =
     transaction
@@ -483,9 +478,6 @@ test proof_of_innocence_fails_due_to_wrong_public_input() fail {
   let altered_oracle_datum =
     OracleDatum { merkle_tree_root_hash: altered_merkle_tree_root_hash }
 
-  let oref_oracle =
-    OutputReference { transaction_id: innocent_transaction_id, output_index: 0 }
-
   let oracle_output =
     Output {
       address: from_script(#"01"),
@@ -495,7 +487,7 @@ test proof_of_innocence_fails_due_to_wrong_public_input() fail {
     }
 
   let input_oracle =
-    Input { output_reference: oref_oracle, output: oracle_output }
+    Input { output_reference: oracle_output_reference, output: oracle_output }
 
   let transaction_with_reference_input =
     transaction
@@ -556,10 +548,6 @@ test proof_of_innocence_fails_due_to_wrong_address_destination() fail {
   let input_verification_key =
     Input { output_reference: oref_vk, output: verification_key_output }
 
-  // Create Oracle reference input
-  let oref_oracle =
-    OutputReference { transaction_id: innocent_transaction_id, output_index: 0 }
-
   let oracle_output =
     Output {
       address: from_script(#"01"),
@@ -569,7 +557,7 @@ test proof_of_innocence_fails_due_to_wrong_address_destination() fail {
     }
 
   let input_oracle =
-    Input { output_reference: oref_oracle, output: oracle_output }
+    Input { output_reference: oracle_output_reference, output: oracle_output }
 
   let transaction_with_reference_input =
     transaction
@@ -643,10 +631,6 @@ test proof_of_innocence_fails_due_to_datum_alteration() fail {
   let input_verification_key =
     Input { output_reference: oref_vk, output: verification_key_output }
 
-  // Create Oracle reference input
-  let oref_oracle =
-    OutputReference { transaction_id: innocent_transaction_id, output_index: 0 }
-
   let oracle_output =
     Output {
       address: from_script(#"01"),
@@ -656,7 +640,7 @@ test proof_of_innocence_fails_due_to_datum_alteration() fail {
     }
 
   let input_oracle =
-    Input { output_reference: oref_oracle, output: oracle_output }
+    Input { output_reference: oracle_output_reference, output: oracle_output }
 
   let transaction_with_reference_input =
     transaction
