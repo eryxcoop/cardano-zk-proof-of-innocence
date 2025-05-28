@@ -44,9 +44,9 @@ When you're back from that, you can run any test file in the `tests` folder with
 
 ## CLI application
 
-We developed a CLI application for test the basic functionalities of the development. 
+We developed a CLI application to test the basic functionalities of the development. 
 
-The main interface of the application is the `cli_input.json` present at `/cardano-zk-proof-of-innocence/implementation/cli`. Here is an example with values that we used to test the functionalities right away.
+The main interface of the application is the `cli_input.json` file present at `/cardano-zk-proof-of-innocence/implementation/cli`. Here is an example with values that we used to test the functionalities right away.
 
 ```JSON
 {
@@ -62,13 +62,13 @@ The main interface of the application is the `cli_input.json` present at `/carda
 ```
 
 * tree_list: The collection of transaction you are working with.
-* leaf_index: The element to proof the exclusion.
+* leaf_index: The index on the list of the target element to proof the exclusion.
 * oracle_thread_token_name: An arbitrary token name used to differentiate each oracle instance.
 * poi_thread_token_name: An arbitrary token name used to differentiate each poi instance.
-* oracle_tx_id. The transaction id of the UTxO with the root hash of the collection of elements to check the PoI.
+* oracle_tx_id. The transaction-id of the UTxO with the root hash of the collection of elements to check the PoI.
 * oracle_tx_id. The index of the Oracle's UTxO.
-* verification_key_tx_id: The transaction id with the verification key used to verify the proof.
-* verification_key_tx_index: The index of the UTxO with the verification key.
+* verification_key_tx_id: The transaction-id with the verification key used to verify the proof.
+* verification_key_tx_index: The index of the UTxO with the verification key above.
 
 *Create oracle* 
 
@@ -96,9 +96,9 @@ npx tsx --trace-warnings src/index.ts update oracle
 This will update the merkle root hash published previously. It is important to note that the `oracle_tx_id` value must be updated again.
 
 
-*Set the verificiation key*oracle_tx_id
+*Set the verificiation key*
 
-The PoI contract needs a verification key in a reference input to verify the Zero-Knowledge proof. If you are testing the application on prepod you can use the value `verification_key_tx_id` mentioned above. But you can also set your own verification key by running this command.
+The PoI contract needs a verification key in a reference input to verify the Zero-Knowledge proof. If you are testing the application on prepod you can use the value `verification_key_tx_id` mentioned above. But you can also set your own verification key by running this command and update the value on the `cli_input.json` file.
 
 ```bash
 npx tsx --trace-warnings src/index.ts set-verification-key
