@@ -31,9 +31,6 @@ const pathIndices = merkleTree.authenticationPathIndicesFor(leafIndex)
 const leafIndexHash = hashSingleValue(leafIndex)
 
 
-//process.exit(0)
-
-
 import { Command } from "commander";
 import chalk from "chalk";
 import { Integer } from "@meshsdk/core"

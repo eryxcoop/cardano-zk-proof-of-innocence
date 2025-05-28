@@ -54,5 +54,7 @@ export async function instantiateOracle(merke_root: number, oracle_token_name: s
 
     const signedTx =  await wallet.signTx(unsignedMintTx, true);
     const txHash = await wallet.submitTx(signedTx);
+    console.log("Copy and paste this value at the field 'oracle_tx_id' in the cli_input.json file:")
     console.log(txHash);
+    process.exit(0)
 }

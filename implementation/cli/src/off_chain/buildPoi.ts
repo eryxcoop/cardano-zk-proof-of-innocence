@@ -52,7 +52,7 @@ export async function buildPoi(oracleMerkleTreeRootHash: hash, leafIndexHash: ha
 
     // ===== Proof Section =====
     console.log("Help")
-    const levels = 2
+    const levels = pathElements.length
 
     const inputs = {
         // Public inputs

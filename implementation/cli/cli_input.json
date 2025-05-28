@@ -1,10 +1,10 @@
 {
-    "tree_list": [1, 1, 0, 1],
+    "tree_list": [0, 0, 0, 1],
     "leaf_index": 2,
-    "oracle_thread_token_name": "test10",
-    "poi_thread_token_name": "test10",
-    "oracle_tx_id": "15c7e51c10770926dcb589ef1bcdba35c59c87d9bedbc9ed865f0dd8eadd683c",
+    "oracle_thread_token_name": "test12",
+    "poi_thread_token_name": "test12",
+    "oracle_tx_id": "36347d3caa4a7f215d46ac52247b1a0af1728612e69b6397b4a772fa825ab473",
     "oracle_tx_index": 0,
-    "verification_key_tx_id": "f7cec7595513632af812c0ccf32f6781c8134ca6bd663dc5f4f52662d128ea86",
+    "verification_key_tx_id": "d827021060f3c918c7390651905b3ebc19650baf114bd809c9526f434ae68f25",
     "verification_key_tx_index": 0
 }

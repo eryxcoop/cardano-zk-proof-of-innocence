@@ -57,6 +57,7 @@ export async function updateOracle(new_merkle_root: number, oracle_token_name: s
     const signedTx =  await wallet.signTx(unsignedMintTx, true);
     const txHash = await wallet.submitTx(signedTx);
     console.log(txHash);
+    process.exit(0)
 
     // Obtener el código del validador
 

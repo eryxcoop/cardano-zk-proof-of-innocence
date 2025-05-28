@@ -54,5 +54,6 @@ export async function instantiatePoi(poi_token_name: string, verification_key_tx
 
     const signedTx =  await wallet.signTx(unsignedMintTx, true);
     const txHash = await wallet.submitTx(signedTx);
-    console.log(txHash);         
+    console.log(txHash);      
+    process.exit(0)   
 }

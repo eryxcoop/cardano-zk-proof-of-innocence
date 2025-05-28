@@ -67,8 +67,9 @@ export async function setVerificationKey () {
 
     const signedTx = await wallet.signTx(unsignedTx, true);
     const txHash = await wallet.submitTx(signedTx);
-    console.log("Success! Here's the transaction hash:")
+    console.log("Success! Here's the transaction hash to paste in the verification_key_tx_id value:")
     console.log(txHash);
+    process.exit(0)
 
     //const cliStatus = fs.readFileSync("../../cli_input.json", 'utf-8');
     //const cliStatusObj = JSON.parse(cliStatus);
