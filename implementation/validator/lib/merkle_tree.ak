@@ -1,6 +1,6 @@
 use aiken/collection/list.{concat, length, slice}
 use common.{is_power_of_two, value_at}
-use dummy_hash.{Hash, dummy_hash_pair, dummy_hash_single}
+use dummy_hash.{Hash, dummy_hash_pair}
 
 pub type MerkleTreeLeafElement =
   Int
@@ -8,9 +8,11 @@ pub type MerkleTreeLeafElement =
 pub type MerkleTreeLeafIndex =
   Int
 
-const length_is_zero_error_message = @"The length of the list used to build this Merkle tree must be greater than zero"
+const length_is_zero_error_message =
+  @"The length of the list used to build this Merkle tree must be greater than zero"
 
-const length_is_not_power_of_two_error_message = @"The length of the list used to build this Merkle tree must be a power of two"
+const length_is_not_power_of_two_error_message =
+  @"The length of the list used to build this Merkle tree must be a power of two"
 
 fn left_part_of(vector: List<a>) -> List<a> {
   let half_length = length(vector) / 2
@@ -30,8 +32,7 @@ pub fn merkle_tree_root_for(vector: List<MerkleTreeLeafElement>) -> Hash {
   if length == 0 {
     fail length_is_zero_error_message
   } else if length == 1 {
-    let value = value_at(vector, 0)
-    dummy_hash_single(value)
+    value_at(vector, 0)
   } else if !is_power_of_two(length) {
     fail length_is_not_power_of_two_error_message
   } else {

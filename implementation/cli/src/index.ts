@@ -38,73 +38,73 @@ import { Integer } from "@meshsdk/core"
 const program = new Command();
 
 program
-  .name("poi-cli")
-  .description("A simple cli for testing PoI in Cardano")
-  .version("0.1");
+      .name("poi-cli")
+      .description("A simple cli for testing PoI in Cardano")
+      .version("0.1");
 
-  program.addHelpText('beforeAll', `
+program.addHelpText('beforeAll', `
       General description:
         This cli program allows you to run transactions related to a PoI application on the Cardano network. You can create an instance of a PoI contract and verify it on-chain. Also you can manage the Oracle needed to verify the PoI proof.
       `);
 
-   program.addHelpText('afterAll', `
+program.addHelpText('afterAll', `
       examples:
           $ poi-cli create oracle
           $ poi-cli create poi
           $ poi-cli update oracle
       `);
 
-  program
-    .command("create")
-    .description("Creating an instance of a contract")
-    .argument("contract", "Name of the contract")
-    .action((contract) => {
-      if (contract == "oracle") {
-            instantiateOracle(oracleMerkleTreeRootHash, oracleTokenName)
-            console.log(chalk.green(`Creating an instance of the PoI Oracle`));
-      } else if (contract == "poi") {
-            instantiatePoi(poiTokenName, verifificationOutputReference[0], verifificationOutputReference[1])
-            console.log(chalk.green(`Creating an instance of the PoI contract.`));
-      } else {
-            console.log(chalk.red(`Error: "${contract}" contract doesn't exist.`));
-      }
-    });
+program
+      .command("create")
+      .description("Creating an instance of a contract")
+      .argument("contract", "Name of the contract")
+      .action((contract) => {
+            if (contract == "oracle") {
+                  instantiateOracle(oracleMerkleTreeRootHash, oracleTokenName)
+                  console.log(chalk.green(`Creating an instance of the PoI Oracle`));
+            } else if (contract == "poi") {
+                  instantiatePoi(poiTokenName, verifificationOutputReference[0], verifificationOutputReference[1])
+                  console.log(chalk.green(`Creating an instance of the PoI contract.`));
+            } else {
+                  console.log(chalk.red(`Error: "${contract}" contract doesn't exist.`));
+            }
+      });
 
-    program
-    .command("update")
-    .description("Updating the data of a concract")
-    .argument("contract", "Name of the contract")
-    .action((contract) => {
-      if (contract == "oracle") {
-            updateOracle(oracleMerkleTreeRootHash, oracleTokenName)
-            console.log(chalk.green(`Updating the PoI Oracle`));
-      } else if (contract == "poi") {
-            //updatePoi()
-            console.log(chalk.green(`Updating the PoI contract.`));
-      } else {
-            console.log(chalk.red(`Error: "${contract}" contract doesn't exist.`));
-      }
-    });
+program
+      .command("update")
+      .description("Updating the data of a concract")
+      .argument("contract", "Name of the contract")
+      .action((contract) => {
+            if (contract == "oracle") {
+                  updateOracle(oracleMerkleTreeRootHash, oracleTokenName)
+                  console.log(chalk.green(`Updating the PoI Oracle`));
+            } else if (contract == "poi") {
+                  //updatePoi()
+                  console.log(chalk.green(`Updating the PoI contract.`));
+            } else {
+                  console.log(chalk.red(`Error: "${contract}" contract doesn't exist.`));
+            }
+      });
 
-    program
-    .command("verify")
-    .description("Verify the PoI proof")
-    //.argument("contract", "Name of the contract")
-    .action(() => {
-      console.log(chalk.green(`Verifying the PoI proof.`));
-      buildPoi(oracleMerkleTreeRootHash, leafIndexHash, pathElements, pathIndices, leafIndex, poiTokenName, oracleOutputReference[0], oracleOutputReference[1], verifificationOutputReference[0], verifificationOutputReference[1]);
-    });
+program
+      .command("verify")
+      .description("Verify the PoI proof")
+      //.argument("contract", "Name of the contract")
+      .action(() => {
+            console.log(chalk.green(`Verifying the PoI proof.`));
+            buildPoi(oracleMerkleTreeRootHash, leafIndexHash, pathElements, pathIndices, leafIndex, poiTokenName, oracleOutputReference[0], oracleOutputReference[1], verifificationOutputReference[0], verifificationOutputReference[1]);
+      });
 
-    program
-    .command("set-verification-key")
-    .description("Set the verification key")
-    //.argument("contract", "Name of the contract")
-    .action(() => {
-      console.log(chalk.green(`Setting the verification key.`));
-      setVerificationKey();
-    });
+program
+      .command("set-verification-key")
+      .description("Set the verification key")
+      //.argument("contract", "Name of the contract")
+      .action(() => {
+            console.log(chalk.green(`Setting the verification key.`));
+            setVerificationKey();
+      });
 
-  program.parse(process.argv);
+program.parse(process.argv);
 
 // =================================== Preliminaries ===================================
 
