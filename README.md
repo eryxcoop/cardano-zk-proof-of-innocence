@@ -56,7 +56,7 @@ One known issue with `circom_tester` is that it defaults to using a very outdate
 
 **Temporary Workaround**
 
-Until a more robust solution is available—such as passing a custom Circom path to circom_tester via CLI or submitting a pull request to improve this. You’ll need to apply a manual fix:
+Until a more robust solution is available such as passing a custom Circom path to circom_tester via CLI or submitting a pull request to improve this. You’ll need to apply a manual fix:
 
 Open the file:
 
