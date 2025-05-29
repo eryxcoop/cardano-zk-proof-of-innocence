@@ -32,15 +32,58 @@ All relevant files generated in the process will be in the `implementation/setup
 2. Run `aiken check`.
 
 ## Running cricuit tests
-The circuit tests are run using `circom_tester`. There are a few inconveniences though.
 
-To run the tests you must have `chai`, `mocha` and `circom_tester` installed. Since they're listed in the package.json, you can install them using `npm install`.
+The circuit tests are executed using circom_tester, a JavaScript testing framework for Circom circuits. While the setup is mostly straightforward, there are a few quirks to be aware of.
 
-For some reason, `circom_tester` tries to use the version of circom that is present in the `node_modules` folder. This is a very older version that was frozen according to the circom website (version 0.45 instead of 2.0 or 2.1).
+**Prerequisites**
+Make sure you have the required dependencies installed:
 
-The workaround we found for this is ugly for now, until we find a way to pass the terminal context to Javascript or that we make a PR to `circom_tester` to be able to send a custom route to circom as a parameter. You have to edit the file `node_modules/circom_tester/wasm/tester.js` so that all calls to `circom` are replaced with `$HOME/.cargo/bin/circom` (because this is the directory in which the setup instructions put circom 2.1, if you installed it somewhere else this may vary). In this version this happens in two places: function `compiler_above_version` (around line 240) and function `compile` (around line 87). We intend to fix this in some neater way.
+* chai
 
-When you're back from that, you can run any test file in the `tests` folder with `npx mocha -pr ts-node/register tests/proofOfInnocence.js`. To run all tests, use `make test_circuit` from the `implementation` folder.
+* mocha
+
+* circom_tester
+
+These are already listed in the package.json, so installing them is as simple as running:
+
+```bash 
+npm install
+```
+
+**Version Compatibility Issue**
+
+One known issue with `circom_tester` is that it defaults to using a very outdated version of Circom (v0.45) from `node_modules`. This is problematic if you're working with more recent versions (e.g., Circom 2.0 or 2.1), which include breaking changes and new features.
+
+**Temporary Workaround**
+
+Until a more robust solution is available—such as passing a custom Circom path to circom_tester via CLI or submitting a pull request to improve configurability—you’ll need to apply a manual fix:
+
+Open the file:
+
+```bash
+node_modules/circom_tester/wasm/tester.js
+```
+
+Modify the two functions that invoke Circom, in this version it happens in two places: On `compiler_above_version` (around line 240) and `compile` (around line 87)
+
+Replace the calls to circom with the full path to your installed version (e.g., ~/.cargo/bin/circom), assuming that’s where Circom 2.1 was installed via the setup instructions.
+
+> ⚠️ If you installed Circom elsewhere, be sure to update the path accordingly.
+
+We recognize this workaround is not ideal and plan to address it with a cleaner, long-term solution.
+
+Running the Tests
+Once the workaround is applied, you can run individual test files using:
+
+```bash
+npx mocha -r ts-node/register tests/proofOfInnocence.js
+```
+
+To execute all tests at once from the implementation directory., run:
+
+```bash
+make test_circuit
+```
 
 ## CLI application
 
