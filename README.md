@@ -31,7 +31,7 @@ All relevant files generated in the process will be in the `implementation/setup
 1. Enter the `implementation/validator` directory.
 2. Run `aiken check`.
 
-## Running cricuit tests
+## Running circuit tests
 
 The circuit tests are executed using circom_tester, a JavaScript testing framework for Circom circuits. While the setup is mostly straightforward, there are a few quirks to be aware of.
 
@@ -56,7 +56,7 @@ One known issue with `circom_tester` is that it defaults to using a very outdate
 
 **Temporary Workaround**
 
-Until a more robust solution is available—such as passing a custom Circom path to circom_tester via CLI or submitting a pull request to improve configurability—you’ll need to apply a manual fix:
+Until a more robust solution is available—such as passing a custom Circom path to circom_tester via CLI or submitting a pull request to improve this. You’ll need to apply a manual fix:
 
 Open the file:
 
@@ -66,13 +66,12 @@ node_modules/circom_tester/wasm/tester.js
 
 Modify the two functions that invoke Circom, in this version it happens in two places: On `compiler_above_version` (around line 240) and `compile` (around line 87)
 
-Replace the calls to circom with the full path to your installed version (e.g., ~/.cargo/bin/circom), assuming that’s where Circom 2.1 was installed via the setup instructions.
-
-> ⚠️ If you installed Circom elsewhere, be sure to update the path accordingly.
+Replace the calls to circom with the full path to your installed version (e.g., ~/.cargo/bin/circom), assuming that’s where Circom 2.1 was installed via the setup instructions(If you installed Circom elsewhere, be sure to update the path accordingly).
 
 We recognize this workaround is not ideal and plan to address it with a cleaner, long-term solution.
 
-Running the Tests
+**Running the Tests**
+
 Once the workaround is applied, you can run individual test files using:
 
 ```bash
