@@ -55,6 +55,9 @@ const oracle_output =
     reference_script: None,
   }
 
+const input_oracle =
+  Input { output_reference: oracle_output_reference, output: oracle_output }
+
 const valid_proof_of_innocence =
   Proof {
     piA: #"8d41aa700e446d8531e0d940c6f50d16ea1a61aa76808db14fb14dbc7ed69ae7f11e6df20d62cee01320faf9886cea00",
@@ -429,9 +432,6 @@ test proof_of_innocence_fails_due_to_datum_alteration() fail {
 
   let transaction =
     spending_transaction_with(verification_key_hash, input, new_output)
-
-  let input_oracle =
-    Input { output_reference: oracle_output_reference, output: oracle_output }
 
   let transaction_with_reference_input =
     transaction
